@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Input;
 using Bloomdo.Client.Application.ViewModels.Items;
-using Bloomdo.Client.Core.Models;
+using Bloomdo.Client.Domain.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

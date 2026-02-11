@@ -1,0 +1,108 @@
+<UserControl
+    x:Class="Bloomdo.Client.UI.LoginView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shad="clr-namespace:ShadUI;assembly=ShadUI"
+    xmlns:viewModels="clr-namespace:Bloomdo.Client.Application.ViewModels;assembly=Bloomdo.Client.Application"
+    d:DesignHeight="800"
+    d:DesignWidth="400"
+    x:DataType="viewModels:LoginViewModel"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <Grid
+            Margin="24"
+            RowDefinitions="Auto,*,Auto"
+            Background="{DynamicResource Brush.Background}">
+
+            <!-- Logo / Branding -->
+            <StackPanel Grid.Row="0" Margin="0,32,0,0" Spacing="8">
+                <TextBlock
+                    FontSize="32"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource Brush.Foreground}"
+                    HorizontalAlignment="Center"
+                    Text="Welcome Back" />
+                <TextBlock
+                    FontSize="16"
+                    Foreground="{DynamicResource Brush.Foreground.Subtle}"
+                    HorizontalAlignment="Center"
+                    Text="Sign in to continue to Bloomdo"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <!-- Login Form -->
+            <shad:Card Grid.Row="1" Margin="0,32,0,0" VerticalAlignment="Top">
+                <StackPanel Spacing="20">
+                    <!-- Error Message -->
+                    <Border
+                        Background="#20EF4444"
+                        BorderBrush="{DynamicResource DestructiveColor}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Padding="12">
+                        <TextBlock
+                            Foreground="{DynamicResource DestructiveColor}"
+                            FontWeight="Medium"
+                            Text="{Binding ErrorMessage}"
+                            TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Email Input -->
+                    <TextBox
+                        Classes="Clearable"
+                        IsEnabled="{Binding !IsLoading}"
+                        Text="{Binding Email, Mode=TwoWay}"
+                        Watermark="user@example.com"
+                        shad:ControlAssist.Label="Email"
+                        shad:ElementAssist.FocusOnLoad="True" />
+
+                    <!-- Password Input -->
+                    <TextBox
+                        Classes="PasswordReveal"
+                        IsEnabled="{Binding !IsLoading}"
+                        PasswordChar="*"
+                        Text="{Binding Password, Mode=TwoWay}"
+                        Watermark="Enter your password"
+                        shad:ControlAssist.Label="Password" />
+
+                    <!-- Login Button -->
+                    <Button
+                        Classes="Primary"
+                        Command="{Binding LoginCommand}"
+                        Height="48"
+                        HorizontalAlignment="Stretch"
+                        IsEnabled="{Binding !IsLoading}">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding IsLoading}" IsVisible="False" />
+                            <TextBlock VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}">
+                                        <Binding Path="IsLoading" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                                Sign In
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Register Link -->
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="4">
+                        <TextBlock
+                            Foreground="{DynamicResource Brush.Foreground.Subtle}"
+                            Text="Don't have an account?"
+                            VerticalAlignment="Center" />
+                        <Button
+                            Classes="Ghost"
+                            Command="{Binding NavigateToRegisterCommand}"
+                            Content="Sign Up"
+                            Padding="4,2" />
+                    </StackPanel>
+                </StackPanel>
+            </shad:Card>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,5 +1,6 @@
 using Bloomdo.Server.Api.Extensions;
 using Bloomdo.Server.Api.Middleware;
+using Bloomdo.Server.Infrastructure.Settings;
 using Microsoft.OpenApi;
 using Serilog;
 
@@ -16,37 +17,41 @@ public class Program
             .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
-        builder.Services.AddControllers();
+        // Configure JWT Settings
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-        // Dependency injection configuration
+        // JWT Authentication & authorization
+        builder.Services.AddJwtAuthentication(jwtSettings);
+
+        // Dependency injection
         builder.Services.AddDatabaseContext(builder.Configuration.GetConnectionString("DefaultConnection"));
         builder.Services.RegisterServices();
         builder.Services.RegisterRepositories();
 
+        // CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
-                Description = "Please insert JWT with Bearer into field (e.g. Bearer mytoken)",
+                Description = "Enter JWT token (e.g. Bearer eyJ...)",
                 Name = "Authorization",
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"
             });
-            /*
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] { }
-            }});
-            */
         });
 
         var app = builder.Build();
@@ -59,6 +64,8 @@ public class Program
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
+
+        app.UseCors("AllowAll");
 
         app.UseAuthentication();
         app.UseAuthorization();

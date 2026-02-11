@@ -5,10 +5,9 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Bloomdo.Client.Application.ViewModels;
-using Bloomdo.Client.Application.ViewModels.OnbordingComponents;
-using Bloomdo.Client.Core.Interfaces;
 using Bloomdo.Client.UI;
 using Microsoft.Extensions.DependencyInjection;
+using ShadUI;
 
 namespace Bloomdo.Client.Startup;
 
@@ -28,9 +27,8 @@ public partial class App : Avalonia.Application
         base.OnFrameworkInitializationCompleted();
 
         var serviceProvider = DependencyContainer.ConfigureServices();
-        var authService = serviceProvider.GetRequiredService<IAccessTokenManager>();
-        var navigationService = serviceProvider.GetRequiredService<INavigationService>();
         var shellViewModel = serviceProvider.GetRequiredService<ShellViewModel>();
+        var toastManager = serviceProvider.GetRequiredService<ToastManager>();
 
         Current!.RequestedThemeVariant = ThemeVariant.Dark;
 
@@ -38,31 +36,24 @@ public partial class App : Avalonia.Application
         {
             DisableAvaloniaDataAnnotationValidation();
 
-            desktop.MainWindow = new MainWindow
+            var mainWindow = new MainWindow
             {
                 DataContext = shellViewModel
             };
+            mainWindow.SetToastManager(toastManager);
+            desktop.MainWindow = mainWindow;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new ShellView()
+            var shellView = new ShellView
             {
                 DataContext = shellViewModel
             };
+            shellView.SetToastManager(toastManager);
+            singleViewPlatform.MainView = shellView;
         }
 
-        await authService.TryLoadTokenFromStorage();
-
-        if (authService.IsAuthenticated)
-        {
-            // navigationService.NavigateTo<DashboardViewModel>(); 
-        }
-        else
-        {
-            // navigationService.NavigateTo<OnboardingViewModel>();
-        }
-
-        navigationService.NavigateTo<OnboardingViewModel>();
+        await shellViewModel.InitializeAsync();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

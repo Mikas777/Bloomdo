@@ -30,6 +30,12 @@ public class ViewLocator : IDataTemplate
             case ShellViewModel:
                 return new ShellView();
                 
+            case LoginViewModel:
+                return new LoginView();
+                
+            case RegisterViewModel:
+                return new RegisterView();
+                
             case MainViewModel:
                 return new MainView();
                 

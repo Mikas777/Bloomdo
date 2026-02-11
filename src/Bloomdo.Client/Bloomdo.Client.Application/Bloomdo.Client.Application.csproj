@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Bloomdo.Client.Domain\Bloomdo.Client.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Managers\" />
-  </ItemGroup>
-
 </Project>

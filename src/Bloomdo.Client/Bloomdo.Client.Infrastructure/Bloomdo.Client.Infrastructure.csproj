@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bloomdo.Client.Core\Bloomdo.Client.Core.csproj" />
     <ProjectReference Include="..\Bloomdo.Client.Domain\Bloomdo.Client.Domain.csproj" />
+    <ProjectReference Include="..\..\Bloomdo.Shared\Bloomdo.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using Bloomdo.Client.Application.Services;
 using Bloomdo.Client.Application.ViewModels;
 using Bloomdo.Client.Application.ViewModels.MainComponents;
@@ -8,8 +9,10 @@ using Bloomdo.Client.Core.Interfaces;
 using Bloomdo.Client.Infrastructure.DatabaseContexts;
 using Bloomdo.Client.Infrastructure.Middleware;
 using Bloomdo.Client.Infrastructure.Services;
+using Bloomdo.Client.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using ShadUI;
 
 namespace Bloomdo.Client.Startup;
 
@@ -57,8 +60,25 @@ public static class DependencyContainer
     }
     private static void RegisterServices(IServiceCollection services)
     {
+        services.AddSingleton<ITokenStorage, TokenStorage>();
+        services.AddSingleton<IAuthApiService, AuthApiService>();
         services.AddSingleton<IAccessTokenManager, AccessTokenManager>();
-        services.AddSingleton<INavigationService, NavigationService>();
+
+        // Authorization service
+        services.AddSingleton<IAuthorizationService, AuthorizationService>();
+
+        // Toast system
+        services.AddSingleton<ToastManager>();
+        services.AddSingleton<IToastService, ToastService>();
+
+        // NavigationService requires ShellViewModel, use factory to avoid circular dependency
+        services.AddSingleton<INavigationService>(sp =>
+        {
+            var shellViewModel = sp.GetRequiredService<ShellViewModel>();
+            var authorizationService = sp.GetRequiredService<IAuthorizationService>();
+            var toastService = sp.GetRequiredService<IToastService>();
+            return new NavigationService(sp, authorizationService, toastService, shellViewModel);
+        });
     }
 
     private static void RegisterRepositories(IServiceCollection services)
@@ -68,20 +88,39 @@ public static class DependencyContainer
 
     private static void RegisterHttpClients(IServiceCollection services)
     {
-        services.AddHttpClient("ApiClient", client =>
-            {
-                client.BaseAddress = new Uri("https://test.com/api/");
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+        services.AddTransient<AuthHeaderHandler>();
+
+        var apiBaseUrl = "https://localhost:7001/";
+
+        // Auth endpoints (login, register, refresh) don't require authentication
+        // so we don't add AuthHeaderHandler here to avoid circular dependency
+        services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler());
+
+        // For other API services that need authentication, add AuthHeaderHandler:
+        // services.AddHttpClient<IOtherApiService, OtherApiService>(...)
+        //     .AddHttpMessageHandler<AuthHeaderHandler>();
     }
 
     private static void RegisterViewModels(IServiceCollection services)
     {
-        services.AddSingleton<ShellViewModel>();
+        services.AddSingleton<ShellViewModel>(sp =>
+        {
+            var tokenManager = sp.GetRequiredService<IAccessTokenManager>();
+            return new ShellViewModel(tokenManager, () => sp.GetRequiredService<INavigationService>());
+        });
+        
+        // Auth views
+        services.AddTransient<LoginViewModel>();
+        services.AddTransient<RegisterViewModel>();
+        services.AddTransient<AccessDeniedViewModel>();
         
         // Onboarding components
         services.AddSingleton<OnboardingViewModel>();
-        services.AddTransient<LoginViewModel>();
         services.AddTransient<WelcomeStepViewModel>();
         services.AddTransient<AskNameStepViewModel>();
         services.AddTransient<SetGoalsStepViewModel>();

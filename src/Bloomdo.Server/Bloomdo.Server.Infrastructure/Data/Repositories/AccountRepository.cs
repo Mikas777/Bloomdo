@@ -1,0 +1,22 @@
+using Bloomdo.Server.Domain.Entities;
+using Bloomdo.Server.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace Bloomdo.Server.Infrastructure.Data.Repositories;
+
+public class AccountRepository : Repository<Account>, IAccountRepository
+{
+    public AccountRepository(AppDbContext context) : base(context)
+    {
+    }
+
+    public async Task<Account?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FirstOrDefaultAsync(a => a.Email == email, cancellationToken);
+    }
+
+    public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.AnyAsync(a => a.Email == email, cancellationToken);
+    }
+}

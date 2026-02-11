@@ -9,7 +9,7 @@ using Android.Content.PM;
 using Android.Provider;
 using Android.Util;
 using Bloomdo.Client.Core.Interfaces;
-using Bloomdo.Client.Core.Models;
+using Bloomdo.Client.Domain.Models;
 
 namespace Bloomdo.Client.Android.Services;
 

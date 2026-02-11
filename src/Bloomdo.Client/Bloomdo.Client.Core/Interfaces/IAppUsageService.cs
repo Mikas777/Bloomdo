@@ -1,4 +1,4 @@
-using Bloomdo.Client.Core.Models;
+using Bloomdo.Client.Domain.Models;
 
 namespace Bloomdo.Client.Core.Interfaces;
 

@@ -1,13 +1,17 @@
 ﻿namespace Bloomdo.Shared.Constants;
 
-public class ApiRoutes
+public static class ApiRoutes
 {
     public const string Base = "api";
 
-    public static class Tasks
+    public static class Auth
     {
-        public const string GetAll = $"{Base}/tasks";
-        public const string Create = $"{Base}/tasks";
-        public const string GetById = $"{Base}/tasks/{{id}}";
+        private const string BaseRoute = $"{Base}/auth";
+        
+        public const string Register = $"{BaseRoute}/register";
+        public const string Login = $"{BaseRoute}/login";
+        public const string Refresh = $"{BaseRoute}/refresh";
+        public const string Revoke = $"{BaseRoute}/revoke";
+        public const string Me = $"{BaseRoute}/me";
     }
 }

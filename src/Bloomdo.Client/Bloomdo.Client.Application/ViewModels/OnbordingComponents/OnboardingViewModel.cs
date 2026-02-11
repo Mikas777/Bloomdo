@@ -88,8 +88,7 @@ public partial class OnboardingViewModel : PageViewModel
         else
         {
             Debug.WriteLine("Onboarding complete - calling NavigationService.OnboardingComplete");
-            // Complete onboarding and navigate to main view
-            _navigationService.OnboardingComplete("", "");
+            _navigationService.OnboardingComplete();
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Bloomdo.Server.Api.Extensions;
+using Bloomdo.Server.Domain.Exceptions;
 using FluentValidation;
 
 namespace Bloomdo.Server.Api.Middleware;
@@ -25,10 +26,19 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
 
             await HttpContextExtensions.SetResponse(e, context, HttpStatusCode.BadRequest).ConfigureAwait(false);
         }
+        catch (DomainException e)
+        {
+            logger.LogWarning("Domain exception: {Message}", e.Message);
+
+            var statusCode = MapDomainExceptionToStatusCode(e);
+            await HttpContextExtensions.SetResponse(e, context, statusCode).ConfigureAwait(false);
+        }
         catch (Exception mainException)
         {
-            var message = (mainException.InnerException != null ? mainException.Message + " -->" + mainException.InnerException.Message : mainException.Message);
-            logger.LogError(mainException, $"Exception: {message}");
+            var message = mainException.InnerException != null
+                ? mainException.Message + " --> " + mainException.InnerException.Message
+                : mainException.Message;
+            logger.LogError(mainException, "Exception: {Message}", message);
 
             if (context.Response.HasStarted)
             {
@@ -42,9 +52,20 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             }
             catch (Exception exception)
             {
-                logger.LogError(0, exception, $"The main exception handler threw while trying to report and format an error {mainException}.");
+                logger.LogError(0, exception, "The main exception handler threw while trying to report and format an error {MainException}.", mainException);
                 throw;
             }
         }
     }
+
+    private static HttpStatusCode MapDomainExceptionToStatusCode(DomainException exception) =>
+        exception switch
+        {
+            InvalidCredentialsException => HttpStatusCode.Unauthorized,
+            InvalidRefreshTokenException => HttpStatusCode.Unauthorized,
+            AccountNotFoundException => HttpStatusCode.NotFound,
+            EmailAlreadyExistsException => HttpStatusCode.Conflict,
+            ForbiddenAccessException => HttpStatusCode.Forbidden,
+            _ => HttpStatusCode.BadRequest
+        };
 }

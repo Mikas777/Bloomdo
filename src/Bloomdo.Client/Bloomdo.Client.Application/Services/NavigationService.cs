@@ -1,16 +1,17 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using Bloomdo.Client.Application.ViewModels;
 using Bloomdo.Client.Application.ViewModels.MainComponents;
-using Bloomdo.Client.Core.Attributes;
 using Bloomdo.Client.Core.Interfaces;
+using Bloomdo.Client.Domain.Enums;
+using Bloomdo.Client.Domain.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bloomdo.Client.Application.Services;
 
 public class NavigationService(
     IServiceProvider serviceProvider,
-    IAccessTokenManager authService,
+    IAuthorizationService authorizationService,
+    IToastService toastService,
     ShellViewModel shellViewModel)
     : INavigationService
 {
@@ -18,28 +19,24 @@ public class NavigationService(
     {
         var viewModelType = typeof(TViewModel);
 
-        if (viewModelType.GetCustomAttribute<AuthorizeAttribute>() != null)
+        var authResult = authorizationService.CheckAccess(viewModelType);
+
+        if (!authResult.IsAuthorized)
         {
-            if (!authService.IsAuthenticated)
-            {
-                var onboardingViewModel = serviceProvider.GetRequiredService<LoginViewModel>();
-                shellViewModel.SetViewModel(onboardingViewModel); 
-                return;
-            }
+            HandleUnauthorizedAccess(authResult);
+            return;
         }
 
         var viewModel = serviceProvider.GetRequiredService<TViewModel>();
         shellViewModel.SetViewModel(viewModel);
     }
 
-    public void OnboardingComplete(string name, string goals)
+    public void OnboardingComplete()
     {
         Debug.WriteLine("OnboardingComplete called - navigating to MainViewModel");
         try
         {
-            var mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
-            Debug.WriteLine($"MainViewModel created: {mainViewModel != null}");
-            shellViewModel.SetViewModel(mainViewModel);
+            NavigateTo<MainViewModel>();
             Debug.WriteLine("MainViewModel set in ShellViewModel");
         }
         catch (Exception ex)
@@ -47,5 +44,28 @@ public class NavigationService(
             Debug.WriteLine($"Error in OnboardingComplete: {ex.Message}");
             throw;
         }
+    }
+
+    private void HandleUnauthorizedAccess(AuthorizationResult authResult)
+    {
+        switch (authResult.FailureType)
+        {
+            case AuthorizationFailureType.NotAuthenticated:
+                var loginViewModel = serviceProvider.GetRequiredService<LoginViewModel>();
+                shellViewModel.SetViewModel(loginViewModel);
+                toastService.ShowWarning("Authentication required");
+                break;
+
+            case AuthorizationFailureType.InsufficientRole:
+            case AuthorizationFailureType.InsufficientPermission:
+            case AuthorizationFailureType.PolicyNotMet:
+                var accessDeniedViewModel = serviceProvider.GetRequiredService<AccessDeniedViewModel>();
+                accessDeniedViewModel.SetMessage(authResult.FailureReason ?? "Access denied");
+                shellViewModel.SetViewModel(accessDeniedViewModel);
+                toastService.ShowError(authResult.FailureReason ?? "Access denied");
+                break;
+        }
+
+        Debug.WriteLine($"Unauthorized access attempt: {authResult.FailureReason}");
     }
 }

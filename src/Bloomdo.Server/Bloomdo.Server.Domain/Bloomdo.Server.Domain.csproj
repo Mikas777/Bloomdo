@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bloomdo.Shared\Bloomdo.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
