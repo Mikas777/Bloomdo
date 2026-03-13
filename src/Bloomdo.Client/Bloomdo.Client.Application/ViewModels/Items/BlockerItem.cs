@@ -14,6 +14,12 @@ public partial class BlockerItem : ObservableObject
 	[ObservableProperty]
 	private bool _isActive;
 
+	[ObservableProperty]
+	private bool _isToggling;
+
+	[ObservableProperty]
+	private bool _isDeleting;
+
 	public string TypeLabel => Type switch
 	{
 		BlockType.Schedule => "Schedule",

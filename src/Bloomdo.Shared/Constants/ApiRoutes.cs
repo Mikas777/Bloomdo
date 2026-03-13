@@ -22,6 +22,7 @@ public static class ApiRoutes
         public const string Sync = $"{BaseRoute}/sync";
         public const string Daily = $"{BaseRoute}/daily";
         public const string Calendar = $"{BaseRoute}/calendar";
+        public const string Weekly = $"{BaseRoute}/weekly";
     }
 
     public static class Blocks

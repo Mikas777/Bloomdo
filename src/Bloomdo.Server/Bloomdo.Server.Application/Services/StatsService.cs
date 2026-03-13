@@ -112,6 +112,96 @@ public class StatsService(
         };
     }
 
+    public async Task<WeeklyStatsResponse?> GetWeeklyStatsAsync(Guid accountId, DateOnly weekStartDate, CancellationToken ct = default)
+    {
+        var weekEndDate = weekStartDate.AddDays(6);
+
+        var snapshots = await statsRepository.GetSnapshotsForMonthAsync(accountId, weekStartDate, weekEndDate, ct);
+        var snapshotDict = snapshots.ToDictionary(s => s.Date);
+
+        var dailyData = new List<DailyScreenTimeDto>();
+
+        for (var i = 0; i < 7; i++)
+        {
+            var date = weekStartDate.AddDays(i);
+            var hasData = snapshotDict.TryGetValue(date, out var snapshot);
+
+            dailyData.Add(new DailyScreenTimeDto
+            {
+                Date = date,
+                DayOfWeek = date.DayOfWeek,
+                ScreenTimeSeconds = hasData ? snapshot!.TotalScreenTimeSeconds : 0,
+                Pickups = hasData ? snapshot!.Pickups : 0,
+                GoalMet = hasData && snapshot!.GoalMet
+            });
+        }
+
+        var totalSeconds = dailyData.Sum(d => d.ScreenTimeSeconds);
+        var daysWithData = dailyData.Count(d => d.ScreenTimeSeconds > 0);
+        var avgSeconds = daysWithData > 0 ? totalSeconds / daysWithData : 0;
+
+        var totalPickups = dailyData.Sum(d => d.Pickups);
+        var avgPickups = daysWithData > 0 ? totalPickups / daysWithData : 0;
+
+        // Get comparison with previous week
+        var prevWeekStart = weekStartDate.AddDays(-7);
+        var prevWeekEnd = prevWeekStart.AddDays(6);
+        var prevSnapshots = await statsRepository.GetSnapshotsForMonthAsync(accountId, prevWeekStart, prevWeekEnd, ct);
+
+        WeekComparisonDto? comparison = null;
+        if (prevSnapshots.Count > 0)
+        {
+            var prevTotalSeconds = prevSnapshots.Sum(s => s.TotalScreenTimeSeconds);
+            var prevTotalPickups = prevSnapshots.Sum(s => s.Pickups);
+
+            var screenTimeChange = totalSeconds - prevTotalSeconds;
+            var screenTimeChangePercent = prevTotalSeconds > 0 
+                ? (double)screenTimeChange / prevTotalSeconds * 100 
+                : 0;
+
+            var pickupsChange = totalPickups - prevTotalPickups;
+            var pickupsChangePercent = prevTotalPickups > 0 
+                ? (double)pickupsChange / prevTotalPickups * 100 
+                : 0;
+
+            comparison = new WeekComparisonDto
+            {
+                ScreenTimeChangePercent = screenTimeChangePercent,
+                ScreenTimeChangeSeconds = screenTimeChange,
+                PickupsChangePercent = pickupsChangePercent,
+                PickupsChange = pickupsChange,
+                IsImproving = screenTimeChange < 0
+            };
+        }
+
+        // Get top apps for the week
+        var usageRecords = await statsRepository.GetUsageRecordsForRangeAsync(accountId, weekStartDate, weekEndDate, ct);
+        var topApps = usageRecords
+            .GroupBy(r => r.PackageName)
+            .Select(g => new AppUsageEntry
+            {
+                PackageName = g.Key,
+                AppLabel = g.FirstOrDefault(r => !string.IsNullOrEmpty(r.AppLabel))?.AppLabel,
+                ForegroundSeconds = g.Sum(r => r.ForegroundSeconds)
+            })
+            .OrderByDescending(a => a.ForegroundSeconds)
+            .Take(10)
+            .ToList();
+
+        return new WeeklyStatsResponse
+        {
+            WeekStartDate = weekStartDate,
+            WeekEndDate = weekEndDate,
+            DailyData = dailyData,
+            TotalScreenTimeSeconds = totalSeconds,
+            AverageScreenTimeSeconds = avgSeconds,
+            TotalPickups = totalPickups,
+            AveragePickups = avgPickups,
+            Comparison = comparison,
+            TopApps = topApps
+        };
+    }
+
     private async Task<(int Current, int Longest)> CalculateStreaksAsync(Guid accountId, CancellationToken ct)
     {
         var goalDays = await statsRepository.GetGoalMetDatesAsync(accountId, ct);

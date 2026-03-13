@@ -57,34 +57,52 @@ public partial class BlocksViewModel : PageViewModel
     [RelayCommand]
     private async Task ToggleBlockerActive(BlockerItem? item)
     {
-        if (item is null || _blockApiService is null) return;
+        if (item is null || _blockApiService is null || item.IsToggling) return;
 
+        item.IsToggling = true;
         var newState = !item.IsActive;
-        var result = await _blockApiService.UpdateBlockRuleAsync(item.Id, new UpdateBlockRuleRequest { IsActive = newState });
-        if (result is not null)
+
+        try
         {
-            item.IsActive = newState;
+            var result = await _blockApiService.UpdateBlockRuleAsync(item.Id, new UpdateBlockRuleRequest { IsActive = newState });
+            if (result is not null)
+            {
+                item.IsActive = newState;
 
-            var index = _cachedRules.FindIndex(r => r.Id == item.Id);
-            if (index >= 0 && result is not null)
-                _cachedRules[index] = result;
+                var index = _cachedRules.FindIndex(r => r.Id == item.Id);
+                if (index >= 0)
+                    _cachedRules[index] = result;
 
-            await SyncRulesToLocalStoreAsync();
+                await SyncRulesToLocalStoreAsync();
+            }
+        }
+        finally
+        {
+            item.IsToggling = false;
         }
     }
 
     [RelayCommand]
     private async Task DeleteBlocker(BlockerItem? item)
     {
-        if (item is null || _blockApiService is null) return;
+        if (item is null || _blockApiService is null || item.IsDeleting) return;
 
-        var deleted = await _blockApiService.DeleteBlockRuleAsync(item.Id);
-        if (deleted)
+        item.IsDeleting = true;
+
+        try
         {
-            Blockers.Remove(item);
-            _cachedRules.RemoveAll(r => r.Id == item.Id);
-            HasNoBlockers = Blockers.Count == 0;
-            await SyncRulesToLocalStoreAsync();
+            var deleted = await _blockApiService.DeleteBlockRuleAsync(item.Id);
+            if (deleted)
+            {
+                Blockers.Remove(item);
+                _cachedRules.RemoveAll(r => r.Id == item.Id);
+                HasNoBlockers = Blockers.Count == 0;
+                await SyncRulesToLocalStoreAsync();
+            }
+        }
+        finally
+        {
+            item.IsDeleting = false;
         }
     }
 

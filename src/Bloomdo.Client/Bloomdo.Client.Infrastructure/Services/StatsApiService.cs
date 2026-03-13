@@ -58,4 +58,23 @@ public class StatsApiService(HttpClient httpClient) : IStatsApiService
             return null;
         }
     }
+
+    public async Task<WeeklyStatsResponse?> GetWeeklyStatsAsync(DateOnly weekStartDate, CancellationToken ct = default)
+    {
+        try
+        {
+            var url = $"{ApiRoutes.Stats.Weekly}?weekStartDate={weekStartDate:yyyy-MM-dd}";
+            var response = await httpClient.GetAsync(url, ct);
+
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadFromJsonAsync<WeeklyStatsResponse>(ct);
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GetWeeklyStats failed: {ex.Message}");
+            return null;
+        }
+    }
 }

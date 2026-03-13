@@ -1,4 +1,5 @@
 using System.Globalization;
+using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 
@@ -37,6 +38,24 @@ public class BoolToBrushConverter : IValueConverter
     {
         var isToday = value is bool b && b;
         return isToday ? new SolidColorBrush(Color.Parse("#2E7D32")) : new SolidColorBrush(Color.Parse("#4A4A4A"));
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public static class BoolConverters
+{
+    public static readonly IValueConverter TodayFontWeight = new TodayFontWeightConverter();
+}
+
+public class TodayFontWeightConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value is true ? FontWeight.Bold : FontWeight.Normal;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

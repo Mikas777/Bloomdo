@@ -40,6 +40,14 @@ public class StatsRepository(AppDbContext context) : IStatsRepository
             .ToListAsync(ct);
     }
 
+    public async Task<List<AppUsageRecord>> GetUsageRecordsForRangeAsync(Guid accountId, DateOnly start, DateOnly end, CancellationToken ct = default)
+    {
+        return await context.AppUsageRecords
+            .AsNoTracking()
+            .Where(r => r.AccountId == accountId && r.Date >= start && r.Date <= end && !r.IsDeleted)
+            .ToListAsync(ct);
+    }
+
     public async Task<List<DateOnly>> GetGoalMetDatesAsync(Guid accountId, CancellationToken ct = default)
     {
         return await context.DailySnapshots

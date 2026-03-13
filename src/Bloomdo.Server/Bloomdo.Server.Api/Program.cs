@@ -1,5 +1,6 @@
 using Bloomdo.Server.Api.Extensions;
 using Bloomdo.Server.Api.Middleware;
+using Bloomdo.Server.Infrastructure.Data;
 using Bloomdo.Server.Infrastructure.Settings;
 using Microsoft.OpenApi;
 using Serilog;
@@ -8,7 +9,7 @@ namespace Bloomdo.Server.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +71,14 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            // Seed test data for development
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                await DevDataSeeder.SeedAsync(db, logger);
+            }
         }
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -81,6 +90,6 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-        app.Run();
+        await app.RunAsync();
     }
 }

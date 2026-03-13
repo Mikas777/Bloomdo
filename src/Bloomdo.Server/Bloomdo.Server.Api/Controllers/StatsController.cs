@@ -47,6 +47,17 @@ public class StatsController(IStatsService statsService, IAchievementService ach
         return Ok(calendar);
     }
 
+    [HttpGet(ApiRoutes.Stats.Weekly)]
+    [RequirePermission(Permissions.StatsView)]
+    public async Task<IActionResult> GetWeeklyStats([FromQuery] DateOnly weekStartDate, CancellationToken ct)
+    {
+        var accountId = GetAccountId();
+        if (accountId is null) return Unauthorized();
+
+        var stats = await statsService.GetWeeklyStatsAsync(accountId.Value, weekStartDate, ct);
+        return stats is not null ? Ok(stats) : NotFound();
+    }
+
     private Guid? GetAccountId()
     {
         var claim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;

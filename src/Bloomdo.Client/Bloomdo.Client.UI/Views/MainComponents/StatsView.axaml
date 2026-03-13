@@ -6,347 +6,410 @@
 			 xmlns:converters="clr-namespace:Bloomdo.Client.UI.Converters"
 			 xmlns:mainComponents1="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
 			 xmlns:items="clr-namespace:Bloomdo.Client.Application.ViewModels.Items;assembly=Bloomdo.Client.Application"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
+			 mc:Ignorable="d"
+			 d:DesignWidth="400"
+			 d:DesignHeight="1800"
 			 x:DataType="mainComponents1:StatsViewModel"
 			 x:Class="Bloomdo.Client.UI.MainComponents.StatsView">
 	<UserControl.Resources>
 		<converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter" />
 		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
 		<converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
-		<converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
 		<converters:StreakBrushConverter x:Key="StreakBrushConverter" />
+		<converters:StreakCornerRadiusConverter x:Key="StreakCornerRadiusConverter" />
+		<converters:StreakMarginConverter x:Key="StreakMarginConverter" />
+		<converters:StreakDotBrushConverter x:Key="StreakDotBrushConverter" />
 		<converters:SelectedDayBorderConverter x:Key="SelectedDayBorderConverter" />
+		<converters:BarHeightConverter x:Key="BarHeightConverter" />
+		<converters:GoalMetBarBrushConverter x:Key="GoalMetBarBrushConverter" />
+		<converters:ImprovingBrushConverter x:Key="ImprovingBrushConverter" />
+		<converters:ImprovingBackgroundConverter x:Key="ImprovingBackgroundConverter" />
+		<converters:PercentToWidthConverter x:Key="PercentToWidthConverter" />
+		<converters:PercentToRemainingWidthConverter x:Key="PercentToRemainingWidthConverter" />
+		<converters:AppColorConverter x:Key="AppColorConverter" />
 	</UserControl.Resources>
+
 	<Grid Background="{DynamicResource Brush.Background}">
 		<ScrollViewer>
-			<Grid Margin="24">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
+			<StackPanel Margin="20" Spacing="14">
 
 				<!-- Header -->
-				<Grid Grid.Row="0" ColumnDefinitions="*,Auto">
-					<StackPanel Spacing="4" VerticalAlignment="Top">
-						<TextBlock Text="Stats"
-								   FontSize="28"
-								   FontWeight="Bold"
-								   Foreground="{DynamicResource Brush.Foreground}" />
-						<TextBlock Text="Insights into your progress"
-								   FontSize="14"
-								   Foreground="{DynamicResource Brush.Foreground}"
-								   Opacity="0.7" />
+				<Grid ColumnDefinitions="*,Auto" Margin="4,0">
+					<StackPanel Spacing="2">
+						<TextBlock Text="Stats" FontSize="26" FontWeight="Bold" />
+						<TextBlock Text="Weekly and daily usage" Opacity="0.6" FontSize="13" />
 					</StackPanel>
-					<!-- Today button -->
-					<Button Grid.Column="1" 
-							Command="{Binding GoToTodayCommand}"
-							Classes="Ghost"
-							VerticalAlignment="Top"
-							Padding="8,6">
-						<TextBlock Text="Today" FontSize="13" FontWeight="SemiBold" />
+					<Button Grid.Column="1" Command="{Binding GoToTodayCommand}" Classes="Ghost" Padding="10,6">
+						<TextBlock Text="Today" FontWeight="Medium" />
 					</Button>
 				</Grid>
 
-				<!-- Content -->
-				<StackPanel Grid.Row="1" Margin="0,24,0,80" Spacing="20">
+				<!-- Today summary cards -->
+				<Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+					<shadui:Card Grid.Column="0" HasShadow="True" Padding="16">
+						<StackPanel HorizontalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding ScreenTimeToday}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="SCREEN TIME" FontSize="10" Opacity="0.5" HorizontalAlignment="Center" />
+						</StackPanel>
+					</shadui:Card>
+					<shadui:Card Grid.Column="1" HasShadow="True" Padding="16">
+						<StackPanel HorizontalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding Pickups}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="PICKUPS" FontSize="10" Opacity="0.5" HorizontalAlignment="Center" />
+						</StackPanel>
+					</shadui:Card>
+				</Grid>
 
-					<!-- Streak + Screen Time Summary -->
-					<Grid ColumnDefinitions="*,*" HorizontalAlignment="Stretch">
-						<shadui:Card Grid.Column="0" HasShadow="True" Margin="0,0,6,0">
-							<StackPanel Spacing="4" HorizontalAlignment="Center">
-								<TextBlock Text="{Binding ScreenTimeToday}"
-										   FontSize="28"
-										   FontWeight="SemiBold"
-										   HorizontalAlignment="Center"
-										   Foreground="{DynamicResource Brush.Foreground}" />
-								<TextBlock Text="SCREEN TIME"
-										   FontSize="11"
-										   HorizontalAlignment="Center"
-										   Foreground="{DynamicResource Brush.Foreground}"
-										   Opacity="0.5" />
-							</StackPanel>
-						</shadui:Card>
-						<shadui:Card Grid.Column="1" HasShadow="True" Margin="6,0,0,0">
-							<StackPanel Spacing="4" HorizontalAlignment="Center">
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-									<TextBlock Text="🔥" FontSize="22" VerticalAlignment="Center" />
-									<TextBlock Text="{Binding CurrentStreak}"
-											   FontSize="28"
-											   FontWeight="SemiBold"
-											   Foreground="{DynamicResource Brush.Foreground}" />
-								</StackPanel>
-								<TextBlock Text="DAY STREAK"
-										   FontSize="11"
-										   HorizontalAlignment="Center"
-										   Foreground="{DynamicResource Brush.Foreground}"
-										   Opacity="0.5" />
-							</StackPanel>
-						</shadui:Card>
-					</Grid>
-
-					<!-- Most Used + Pickups row -->
-					<shadui:Card HasShadow="True">
+				<!-- Apps quick card -->
+				<shadui:Card HasShadow="True" Padding="14">
+					<Button Padding="0"
+							Background="Transparent"
+							BorderThickness="0"
+							HorizontalContentAlignment="Stretch"
+							Command="{Binding ShowMostUsedPopupCommand}">
 						<Grid ColumnDefinitions="*,Auto">
-							<Button Grid.Column="0"
-									Padding="0"
-									Background="Transparent"
-									BorderThickness="0"
-									HorizontalContentAlignment="Left"
-									Command="{Binding ShowMostUsedPopupCommand}">
-								<Button.Styles>
-									<Style Selector="Button:pointerover /template/ ContentPresenter">
-										<Setter Property="Background" Value="Transparent" />
-									</Style>
-								</Button.Styles>
-								<StackPanel Spacing="8" HorizontalAlignment="Left">
-									<TextBlock Text="MOST USED"
-											   FontSize="11"
-											   Foreground="{DynamicResource Brush.Foreground}"
-											   Opacity="0.6" />
-									<ItemsControl ItemsSource="{Binding MostUsedApps}">
+							<StackPanel Spacing="8">
+								<TextBlock Text="APPS" FontSize="11" FontWeight="SemiBold" Opacity="0.5" />
+								<ItemsControl ItemsSource="{Binding MostUsedApps}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal" Spacing="6" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<shadui:Avatar Width="30" Height="30" Fallback="{Binding Icon}" />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+							<TextBlock Grid.Column="1" Text=">" VerticalAlignment="Center" FontSize="18" Opacity="0.4" />
+						</Grid>
+					</Button>
+				</shadui:Card>
+
+				<!-- Streak info -->
+				<shadui:Card HasShadow="True" Padding="16,14">
+					<Grid ColumnDefinitions="*,Auto,*">
+						<StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding CurrentStreak}" FontSize="26" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="CURRENT STREAK" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
+						</StackPanel>
+						<Border Grid.Column="1" Width="1" Background="{DynamicResource Brush.Ghost}" Margin="0,4" />
+						<StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding LongestStreak}" FontSize="26" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="BEST STREAK" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
+						</StackPanel>
+					</Grid>
+				</shadui:Card>
+
+				<!-- Calendar -->
+				<shadui:Card HasShadow="True" Padding="10,12">
+					<StackPanel Spacing="6">
+						<!-- Month navigation -->
+						<Grid ColumnDefinitions="Auto,*,Auto">
+							<Button Grid.Column="0" Command="{Binding GoToPreviousMonthCommand}" Classes="Ghost" Padding="8,4">
+								<PathIcon Data="{StaticResource arrow_left_regular}" Width="14" Height="14" />
+							</Button>
+							<TextBlock Grid.Column="1" Text="{Binding CurrentMonthTitle}" HorizontalAlignment="Center"
+									   VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold" />
+							<Button Grid.Column="2" Command="{Binding GoToNextMonthCommand}" Classes="Ghost" Padding="8,4">
+								<PathIcon Data="{StaticResource arrow_left_regular}" Width="14" Height="14"
+										  RenderTransform="scaleX(-1)" RenderTransformOrigin="50%,50%" />
+							</Button>
+						</Grid>
+
+						<!-- Day-of-week headers (same UniformGrid layout as day rows) -->
+						<UniformGrid Rows="1" Columns="7">
+							<TextBlock Text="Mo" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.5" />
+							<TextBlock Text="Tu" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.5" />
+							<TextBlock Text="We" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.5" />
+							<TextBlock Text="Th" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.5" />
+							<TextBlock Text="Fr" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.5" />
+							<TextBlock Text="Sa" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.4" />
+							<TextBlock Text="Su" HorizontalAlignment="Center" FontSize="11" FontWeight="Medium" Opacity="0.4" />
+						</UniformGrid>
+
+						<!-- Calendar weeks -->
+						<ItemsControl ItemsSource="{Binding Weeks}" Margin="0" Padding="0">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<ItemsControl ItemsSource="{Binding Days}" Margin="0" Padding="0">
 										<ItemsControl.ItemsPanel>
 											<ItemsPanelTemplate>
-												<StackPanel Orientation="Horizontal" Spacing="8" />
+												<UniformGrid Rows="1" Columns="7" />
 											</ItemsPanelTemplate>
 										</ItemsControl.ItemsPanel>
 										<ItemsControl.ItemTemplate>
-											<DataTemplate>
-												<shadui:Avatar Width="32" Height="32" Fallback="{Binding Icon}" />
+											<DataTemplate x:DataType="items:DayStatViewModel">
+												<Panel>
+													<!-- Streak band background: fills cell edge-to-edge for continuous look -->
+													<Border Height="32" VerticalAlignment="Center"
+															HorizontalAlignment="Stretch"
+															Background="{Binding IsStreakDay, Converter={StaticResource StreakBrushConverter}}">
+														<Border.CornerRadius>
+															<MultiBinding Converter="{StaticResource StreakCornerRadiusConverter}">
+																<Binding Path="IsStreakDay" />
+																<Binding Path="IsStreakStart" />
+																<Binding Path="IsStreakEnd" />
+															</MultiBinding>
+														</Border.CornerRadius>
+														<Border.Margin>
+															<MultiBinding Converter="{StaticResource StreakMarginConverter}">
+																<Binding Path="IsStreakDay" />
+																<Binding Path="IsStreakStart" />
+																<Binding Path="IsStreakEnd" />
+															</MultiBinding>
+														</Border.Margin>
+													</Border>
+
+													<!-- Clickable overlay with day content -->
+													<Button Command="{Binding $parent[UserControl].((mainComponents1:StatsViewModel)DataContext).SelectDayCommand}"
+															CommandParameter="{Binding}"
+															Padding="0" Margin="0"
+															Background="Transparent"
+															BorderThickness="0"
+															HorizontalAlignment="Stretch"
+															VerticalAlignment="Stretch"
+															HorizontalContentAlignment="Center"
+															VerticalContentAlignment="Center">
+														<StackPanel HorizontalAlignment="Center" Spacing="2" Margin="0,4">
+															<Border CornerRadius="14"
+																	Width="28" Height="28"
+																	BorderThickness="2"
+																	BorderBrush="{Binding IsSelected, Converter={StaticResource SelectedDayBorderConverter}}">
+																<TextBlock Text="{Binding DayNumber}"
+																		   HorizontalAlignment="Center"
+																		   VerticalAlignment="Center"
+																		   FontSize="13"
+																		   FontWeight="{Binding IsToday, Converter={x:Static converters:BoolConverters.TodayFontWeight}}"
+																		   Opacity="{Binding IsCurrentMonth, Converter={StaticResource BoolToOpacityConverter}}" />
+															</Border>
+															<!-- Today dot -->
+															<Ellipse Width="4" Height="4"
+																	 HorizontalAlignment="Center"
+																	 Fill="{Binding IsToday, Converter={StaticResource StreakDotBrushConverter}}" />
+														</StackPanel>
+													</Button>
+												</Panel>
 											</DataTemplate>
 										</ItemsControl.ItemTemplate>
 									</ItemsControl>
-								</StackPanel>
-							</Button>
-
-							<StackPanel Grid.Column="1" Spacing="8" HorizontalAlignment="Right">
-								<TextBlock Text="PICKUPS"
-										   FontSize="11"
-										   HorizontalAlignment="Right"
-										   Foreground="{DynamicResource Brush.Foreground}"
-										   Opacity="0.6" />
-								<Grid Height="32">
-									<TextBlock Text="{Binding Pickups}"
-											   FontSize="20"
-											   FontWeight="SemiBold"
-											   HorizontalAlignment="Right"
-											   VerticalAlignment="Center"
-											   Foreground="{DynamicResource Brush.Foreground}" />
-								</Grid>
-							</StackPanel>
-						</Grid>
-					</shadui:Card>
-
-					<!-- Calendar -->
-					<StackPanel Spacing="16">
-						<!-- Month navigation -->
-						<Grid HorizontalAlignment="Center" ColumnDefinitions="Auto,Auto,Auto">
-							<Button Grid.Column="0" 
-									Command="{Binding GoToPreviousMonthCommand}" 
-									Classes="Ghost" 
-									Padding="12,8"
-									Margin="0,0,16,0">
-								<TextBlock Text="&lt;" FontSize="16" />
-							</Button>
-
-							<TextBlock Grid.Column="1" 
-									   Text="{Binding CurrentMonthTitle}"
-									   FontSize="18"
-									   FontWeight="SemiBold"
-									   VerticalAlignment="Center"
-									   Foreground="{DynamicResource Brush.Foreground}"
-									   MinWidth="200"
-									   TextAlignment="Center" />
-
-							<Button Grid.Column="2" 
-									Command="{Binding GoToNextMonthCommand}" 
-									Classes="Ghost" 
-									Padding="12,8"
-									Margin="16,0,0,0">
-								<TextBlock Text=">" FontSize="16" />
-							</Button>
-						</Grid>
-
-						<!-- Calendar Grid -->
-						<StackPanel Spacing="4">
-							<!-- Week day headers -->
-							<Grid ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,0,0,4">
-								<TextBlock Grid.Column="0" Text="Mon" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.7" />
-								<TextBlock Grid.Column="1" Text="Tue" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.7" />
-								<TextBlock Grid.Column="2" Text="Wed" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.7" />
-								<TextBlock Grid.Column="3" Text="Thu" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.7" />
-								<TextBlock Grid.Column="4" Text="Fri" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.7" />
-								<TextBlock Grid.Column="5" Text="Sat" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.5" />
-								<TextBlock Grid.Column="6" Text="Sun" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
-										   Foreground="{DynamicResource Brush.Foreground}" Opacity="0.5" />
-							</Grid>
-
-							<!-- Weeks -->
-							<ItemsControl ItemsSource="{Binding Weeks}">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<ItemsControl ItemsSource="{Binding Days}" Margin="0,2">
-											<ItemsControl.ItemsPanel>
-												<ItemsPanelTemplate>
-													<UniformGrid Rows="1" Columns="7" />
-												</ItemsPanelTemplate>
-											</ItemsControl.ItemsPanel>
-											<ItemsControl.ItemTemplate>
-												<DataTemplate x:DataType="items:DayStatViewModel">
-													<Button Command="{Binding $parent[ItemsControl].((mainComponents1:StatsViewModel)DataContext).SelectDayCommand}"
-															CommandParameter="{Binding}"
-															Background="Transparent"
-															BorderThickness="0"
-															Padding="0"
-															HorizontalContentAlignment="Stretch"
-															VerticalContentAlignment="Stretch"
-															Cursor="Hand">
-														<Button.Styles>
-															<Style Selector="Button:pointerover /template/ ContentPresenter">
-																<Setter Property="Background" Value="Transparent" />
-															</Style>
-														</Button.Styles>
-														<!-- Streak background strip -->
-														<Border Margin="0,2"
-																Background="{Binding IsStreakDay, Converter={StaticResource StreakBrushConverter}}"
-																CornerRadius="8"
-																Padding="2">
-															<!-- Day cell -->
-															<Border CornerRadius="8"
-																	BorderThickness="2"
-																	BorderBrush="{Binding IsSelected, Converter={StaticResource SelectedDayBorderConverter}}">
-																<Border CornerRadius="6"
-																		BorderThickness="{Binding IsToday, Converter={StaticResource BoolToThicknessConverter}}"
-																		BorderBrush="{Binding IsToday, Converter={StaticResource BoolToBrushConverter}}">
-																	<Panel>
-																		<StackPanel Spacing="2" 
-																					HorizontalAlignment="Center" 
-																					VerticalAlignment="Center"
-																					Margin="4,8">
-																			<TextBlock Text="{Binding DayNumber}"
-																					   FontSize="14"
-																					   FontWeight="Medium"
-																					   HorizontalAlignment="Center"
-																					   Opacity="{Binding IsCurrentMonth, Converter={StaticResource BoolToOpacityConverter}}" />
-																			<!-- Streak indicator dot -->
-																			<Ellipse Width="6" Height="6" 
-																					 HorizontalAlignment="Center"
-																					 IsVisible="{Binding IsStreakDay}">
-																				<Ellipse.Fill>
-																					<SolidColorBrush Color="#4CAF50" />
-																				</Ellipse.Fill>
-																			</Ellipse>
-																			<Ellipse Width="6" Height="6" 
-																					 HorizontalAlignment="Center"
-																					 IsVisible="{Binding !IsStreakDay}"
-																					 Opacity="0">
-																			</Ellipse>
-																		</StackPanel>
-																	</Panel>
-																</Border>
-															</Border>
-														</Border>
-													</Button>
-												</DataTemplate>
-											</ItemsControl.ItemTemplate>
-										</ItemsControl>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
 					</StackPanel>
+				</shadui:Card>
 
-					<!-- Selected Day Detail Panel -->
-					<shadui:Card HasShadow="True" IsVisible="{Binding IsSelectedDayDetailVisible}">
-						<StackPanel Spacing="12">
-							<Grid ColumnDefinitions="*,Auto">
-								<StackPanel Spacing="2">
-									<TextBlock Text="{Binding SelectedDay.Date, StringFormat='{}{0:dddd, MMMM d}'}"
-											   FontSize="16" FontWeight="SemiBold"
-											   Foreground="{DynamicResource Brush.Foreground}" />
-									<StackPanel Orientation="Horizontal" Spacing="8">
-										<TextBlock Text="{Binding SelectedDayScreenTime}"
-												   FontSize="14" Opacity="0.8" />
-										<TextBlock Text="·" Opacity="0.5" />
-										<TextBlock Opacity="0.8" FontSize="14">
-											<TextBlock.Text>
-												<MultiBinding StringFormat="{}{0} pickups">
-													<Binding Path="SelectedDayPickups" />
-												</MultiBinding>
-											</TextBlock.Text>
-										</TextBlock>
-									</StackPanel>
-								</StackPanel>
-								<Button Grid.Column="1" 
-										Command="{Binding CloseSelectedDayDetailCommand}"
-										Classes="Ghost" Padding="4">
-									<PathIcon Data="{StaticResource dismiss_regular}" Width="12" Height="12" 
-											  Foreground="{DynamicResource Brush.Foreground}" />
-								</Button>
-							</Grid>
+				<!-- Weekly Chart -->
+				<shadui:Card HasShadow="True" Padding="14">
+					<StackPanel Spacing="10">
+						<!-- Week navigation -->
+						<Grid ColumnDefinitions="Auto,*,Auto">
+							<Button Grid.Column="0" Command="{Binding GoToPreviousWeekCommand}" Classes="Ghost" Padding="8,4">
+								<PathIcon Data="{StaticResource arrow_left_regular}" Width="14" Height="14" />
+							</Button>
+							<TextBlock Grid.Column="1" Text="{Binding WeekRangeTitle}" HorizontalAlignment="Center"
+									   VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" />
+							<Button Grid.Column="2" Command="{Binding GoToNextWeekCommand}" Classes="Ghost" Padding="8,4">
+								<PathIcon Data="{StaticResource arrow_left_regular}" Width="14" Height="14"
+										  RenderTransform="scaleX(-1)" RenderTransformOrigin="50%,50%" />
+							</Button>
+						</Grid>
 
-							<!-- Goal status -->
-							<Border Background="{DynamicResource Brush.Ghost}" CornerRadius="8" Padding="12,8" IsVisible="{Binding SelectedDayGoalMet}">
-								<StackPanel Orientation="Horizontal" Spacing="8">
-									<TextBlock Text="✅" FontSize="14" />
-									<TextBlock Text="Goal met!" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" />
-								</StackPanel>
-							</Border>
+						<!-- Trend badge -->
+						<Border IsVisible="{Binding HasComparison}"
+								CornerRadius="10"
+								Padding="10,6"
+								HorizontalAlignment="Center"
+								Background="{Binding IsImproving, Converter={StaticResource ImprovingBackgroundConverter}}">
+							<TextBlock Text="{Binding ComparisonText}"
+									   FontSize="12" FontWeight="Medium"
+									   Foreground="{Binding IsImproving, Converter={StaticResource ImprovingBrushConverter}}" />
+						</Border>
 
-							<!-- Apps for selected day -->
-							<ItemsControl ItemsSource="{Binding SelectedDayApps}">
+						<!-- Bar chart -->
+						<Border Height="160" Margin="0,4">
+							<ItemsControl ItemsSource="{Binding WeeklyChartData}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<UniformGrid Columns="7" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Grid ColumnDefinitions="Auto,*,Auto" Margin="0,4">
-											<shadui:Avatar Grid.Column="0" Width="28" Height="28" Fallback="{Binding Icon}" Margin="0,0,10,0" />
-											<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" FontSize="13" />
-											<TextBlock Grid.Column="2" Text="{Binding Duration}" VerticalAlignment="Center" Opacity="0.6" FontSize="13" />
-										</Grid>
+									<DataTemplate x:DataType="items:DayChartBarViewModel">
+										<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Spacing="3">
+											<!-- Time label above bar -->
+											<TextBlock Text="{Binding FormattedTime}"
+													   FontSize="8" HorizontalAlignment="Center" Opacity="0.6"
+													   IsVisible="{Binding HasData}" />
+											<!-- Bar -->
+											<Border Width="28"
+													CornerRadius="6,6,2,2"
+													HorizontalAlignment="Center"
+													Height="{Binding BarHeightPercent, Converter={StaticResource BarHeightConverter}, ConverterParameter=130}"
+													MinHeight="4">
+												<Border.Background>
+													<MultiBinding Converter="{StaticResource GoalMetBarBrushConverter}">
+														<Binding Path="IsToday" />
+														<Binding Path="GoalMet" />
+													</MultiBinding>
+												</Border.Background>
+											</Border>
+											<!-- Day label -->
+											<TextBlock Text="{Binding DayLabel}"
+													   FontSize="10" FontWeight="Medium"
+													   HorizontalAlignment="Center" Opacity="0.6" />
+										</StackPanel>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
+						</Border>
+
+						<!-- Weekly summary -->
+						<Border CornerRadius="10" Background="{DynamicResource Brush.Ghost}" Padding="12,8" Margin="0,2,0,0">
+							<Grid ColumnDefinitions="*,Auto,*">
+								<StackPanel Grid.Column="0" HorizontalAlignment="Center" Spacing="2">
+									<TextBlock Text="{Binding WeeklyTotalTime}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+									<TextBlock Text="TOTAL" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
+								</StackPanel>
+								<Border Grid.Column="1" Width="1" Background="{DynamicResource Brush.Background}" Margin="8,2" />
+								<StackPanel Grid.Column="2" HorizontalAlignment="Center" Spacing="2">
+									<TextBlock Text="{Binding WeeklyAverageTime}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+									<TextBlock Text="AVG / DAY" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Grid>
+						</Border>
+					</StackPanel>
+				</shadui:Card>
+
+				<!-- Weekly Top Apps -->
+				<shadui:Card HasShadow="True" Padding="14">
+					<StackPanel Spacing="10">
+						<TextBlock Text="TOP APPS THIS WEEK" FontSize="11" FontWeight="SemiBold" Opacity="0.5" />
+						<ItemsControl ItemsSource="{Binding WeeklyTopApps}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="items:MostUsedAppViewModel">
+									<Grid ColumnDefinitions="Auto,*,Auto" Margin="0,5">
+										<shadui:Avatar Grid.Column="0" Width="30" Height="30" Fallback="{Binding Icon}" Margin="0,0,10,0" />
+										<StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+											<TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Medium" />
+											<!-- Usage bar -->
+											<Grid Height="5">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="{Binding UsagePercent, Converter={StaticResource PercentToWidthConverter}}" />
+													<ColumnDefinition Width="{Binding UsagePercent, Converter={StaticResource PercentToRemainingWidthConverter}}" />
+												</Grid.ColumnDefinitions>
+												<Border Grid.Column="0" CornerRadius="3"
+														Background="{Binding Name, Converter={StaticResource AppColorConverter}}" />
+												<Border Grid.Column="1" CornerRadius="0,3,3,0"
+														Background="{DynamicResource Brush.Ghost}" />
+											</Grid>
+										</StackPanel>
+										<TextBlock Grid.Column="2" Text="{Binding Duration}" VerticalAlignment="Center"
+												   Opacity="0.6" FontSize="12" Margin="8,0,0,0" />
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</shadui:Card>
+
+				<!-- Weekly pickups summary -->
+				<Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+					<shadui:Card Grid.Column="0" HasShadow="True" Padding="14">
+						<StackPanel HorizontalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding WeeklyTotalPickups}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="WEEKLY PICKUPS" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
 						</StackPanel>
 					</shadui:Card>
+					<shadui:Card Grid.Column="1" HasShadow="True" Padding="14">
+						<StackPanel HorizontalAlignment="Center" Spacing="4">
+							<TextBlock Text="{Binding WeeklyAveragePickups}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" />
+							<TextBlock Text="AVG PICKUPS / DAY" FontSize="9" Opacity="0.5" HorizontalAlignment="Center" />
+						</StackPanel>
+					</shadui:Card>
+				</Grid>
 
-				</StackPanel>
-			</Grid>
+			</StackPanel>
 		</ScrollViewer>
 
-		<!-- Most Used Popup Overlay -->
-		<Grid IsVisible="{Binding IsMostUsedPopupVisible}" Background="#80000000">
-			<Button Background="Transparent" 
-					HorizontalAlignment="Stretch" 
-					VerticalAlignment="Stretch" 
-					Command="{Binding HideMostUsedPopupCommand}" />
-			<shadui:Card HorizontalAlignment="Center" VerticalAlignment="Center" Width="300" MaxHeight="500" Padding="24">
-				<Grid RowDefinitions="Auto,*">
-					<Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
-						<TextBlock Text="Most Used Apps" FontSize="18" FontWeight="Bold" />
-						<Button Grid.Column="1" Command="{Binding HideMostUsedPopupCommand}" 
-								Background="Transparent" BorderThickness="0" Padding="4">
-							<PathIcon Data="{StaticResource dismiss_regular}" Width="12" Height="12" Foreground="{DynamicResource Brush.Foreground}" />
+		<!-- Day details modal -->
+		<Grid IsVisible="{Binding IsSelectedDayDetailVisible}" Background="#99000000">
+			<Button Background="Transparent"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Command="{Binding CloseSelectedDayDetailCommand}" />
+
+			<shadui:Card HorizontalAlignment="Center" VerticalAlignment="Center" Width="340" MaxHeight="560" Padding="20">
+				<StackPanel Spacing="14">
+					<Grid ColumnDefinitions="*,Auto">
+						<StackPanel Spacing="4">
+							<TextBlock Text="{Binding SelectedDay.Date, StringFormat='{}{0:dddd, MMM d}'}" FontSize="18" FontWeight="Bold" />
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<TextBlock Text="{Binding SelectedDayScreenTime}" FontSize="13" Opacity="0.8" />
+								<TextBlock Text="|" Opacity="0.4" />
+								<TextBlock Text="{Binding SelectedDayPickups, StringFormat='{}{0} pickups'}" FontSize="13" Opacity="0.8" />
+							</StackPanel>
+						</StackPanel>
+						<Button Grid.Column="1" Command="{Binding CloseSelectedDayDetailCommand}" Classes="Ghost" Padding="6" VerticalAlignment="Top">
+							<PathIcon Data="{StaticResource dismiss_regular}" Width="12" Height="12" />
 						</Button>
 					</Grid>
 
-					<ScrollViewer Grid.Row="1">
-						<ItemsControl ItemsSource="{Binding AllAppsUsage}">
+					<Border IsVisible="{Binding SelectedDayGoalMet}"
+							Background="#1A4CAF50" CornerRadius="10" Padding="12,8">
+						<TextBlock Text="Goal met — Great job!" FontWeight="Medium" />
+					</Border>
+
+					<TextBlock Text="App Usage" FontWeight="SemiBold" FontSize="13" Opacity="0.6" />
+					<ScrollViewer MaxHeight="340">
+						<ItemsControl ItemsSource="{Binding SelectedDayApps}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<Grid ColumnDefinitions="Auto,*,Auto" Margin="0,8">
-										<shadui:Avatar Grid.Column="0" Width="32" Height="32" Fallback="{Binding Icon}" Margin="0,0,12,0" />
-										<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Medium" />
-										<TextBlock Grid.Column="2" Text="{Binding Duration}" VerticalAlignment="Center" Opacity="0.7" />
+									<Grid ColumnDefinitions="Auto,*,Auto" Margin="0,5">
+										<shadui:Avatar Grid.Column="0" Width="30" Height="30" Fallback="{Binding Icon}" Margin="0,0,10,0" />
+										<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" FontSize="13" />
+										<TextBlock Grid.Column="2" Text="{Binding Duration}" VerticalAlignment="Center" Opacity="0.6" FontSize="13" />
 									</Grid>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 					</ScrollViewer>
-				</Grid>
+				</StackPanel>
+			</shadui:Card>
+		</Grid>
+
+		<!-- Most used apps popup -->
+		<Grid IsVisible="{Binding IsMostUsedPopupVisible}" Background="#80000000">
+			<Button Background="Transparent"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Command="{Binding HideMostUsedPopupCommand}" />
+
+			<shadui:Card HorizontalAlignment="Center" VerticalAlignment="Center" Width="320" MaxHeight="520" Padding="20">
+				<StackPanel Spacing="12">
+					<Grid ColumnDefinitions="*,Auto">
+						<TextBlock Text="Most Used Apps" FontSize="18" FontWeight="Bold" />
+						<Button Grid.Column="1" Command="{Binding HideMostUsedPopupCommand}" Classes="Ghost" Padding="6" VerticalAlignment="Top">
+							<PathIcon Data="{StaticResource dismiss_regular}" Width="12" Height="12" />
+						</Button>
+					</Grid>
+
+					<ScrollViewer MaxHeight="400">
+						<ItemsControl ItemsSource="{Binding AllAppsUsage}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid ColumnDefinitions="Auto,*,Auto" Margin="0,6">
+										<shadui:Avatar Grid.Column="0" Width="30" Height="30" Fallback="{Binding Icon}" Margin="0,0,10,0" />
+										<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Medium" FontSize="13" />
+										<TextBlock Grid.Column="2" Text="{Binding Duration}" VerticalAlignment="Center" Opacity="0.6" FontSize="13" />
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</StackPanel>
 			</shadui:Card>
 		</Grid>
 	</Grid>
