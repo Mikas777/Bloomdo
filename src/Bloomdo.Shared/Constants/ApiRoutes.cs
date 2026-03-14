@@ -34,6 +34,18 @@ public static class ApiRoutes
         public const string ById = $"{BaseRoute}/{{id}}";
     }
 
+    public static class Activities
+    {
+        private const string BaseRoute = $"{Base}/activities";
+
+        public const string Daily = $"{BaseRoute}/daily";
+        public const string Groups = $"{BaseRoute}/groups";
+        public const string GroupById = $"{BaseRoute}/groups/{{id}}";
+        public const string Items = $"{BaseRoute}/items";
+        public const string ItemById = $"{BaseRoute}/items/{{id}}";
+        public const string Toggle = $"{BaseRoute}/toggle";
+    }
+
     public static class Achievements
     {
         private const string BaseRoute = $"{Base}/achievements";

@@ -1,0 +1,11 @@
+namespace Bloomdo.Shared.DTOs.Activities;
+
+public class CreateActivityItemRequest
+{
+    public Guid ActivityGroupId { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int? DurationMinutes { get; set; }
+    public string Icon { get; set; } = "✨";
+    public string Color { get; set; } = "#7E57C2";
+}

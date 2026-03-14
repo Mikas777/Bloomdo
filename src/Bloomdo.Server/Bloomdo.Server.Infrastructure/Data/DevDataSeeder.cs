@@ -151,7 +151,59 @@ public static class DevDataSeeder
             }
         }
 
+        // 5. Seed Activity Groups with Items and some completions
+        var studyGroupId = Guid.NewGuid();
+        var sportGroupId = Guid.NewGuid();
+        var selfCareGroupId = Guid.NewGuid();
+
+        context.ActivityGroups.AddRange(
+            new ActivityGroup { Id = studyGroupId, AccountId = SeedAccountId, Title = "Study", Icon = "📚", Color = "#42A5F5", SortOrder = 1, CreatedAt = now },
+            new ActivityGroup { Id = sportGroupId, AccountId = SeedAccountId, Title = "Sport", Icon = "🏃", Color = "#66BB6A", SortOrder = 2, CreatedAt = now },
+            new ActivityGroup { Id = selfCareGroupId, AccountId = SeedAccountId, Title = "Self-Care", Icon = "🧘", Color = "#FF9800", SortOrder = 3, CreatedAt = now }
+        );
+
+        var englishItemId = Guid.NewGuid();
+        var readItemId = Guid.NewGuid();
+        var mathItemId = Guid.NewGuid();
+        var runItemId = Guid.NewGuid();
+        var stretchItemId = Guid.NewGuid();
+        var meditateItemId = Guid.NewGuid();
+        var journalItemId = Guid.NewGuid();
+
+        context.ActivityItems.AddRange(
+            new ActivityItem { Id = englishItemId, ActivityGroupId = studyGroupId, Title = "English lesson", DurationMinutes = 60, Icon = "🇬🇧", Color = "#42A5F5", SortOrder = 1, CreatedAt = now },
+            new ActivityItem { Id = readItemId, ActivityGroupId = studyGroupId, Title = "Read 30 pages", Description = "Any non-fiction book", Icon = "📖", Color = "#7E57C2", SortOrder = 2, CreatedAt = now },
+            new ActivityItem { Id = mathItemId, ActivityGroupId = studyGroupId, Title = "Practice math", DurationMinutes = 45, Icon = "🧮", Color = "#5C6BC0", SortOrder = 3, CreatedAt = now },
+            new ActivityItem { Id = runItemId, ActivityGroupId = sportGroupId, Title = "Morning run", DurationMinutes = 30, Description = "5 km minimum", Icon = "🏃", Color = "#66BB6A", SortOrder = 1, CreatedAt = now },
+            new ActivityItem { Id = stretchItemId, ActivityGroupId = sportGroupId, Title = "Evening stretching", DurationMinutes = 15, Icon = "🤸", Color = "#26C6DA", SortOrder = 2, CreatedAt = now },
+            new ActivityItem { Id = meditateItemId, ActivityGroupId = selfCareGroupId, Title = "Meditate", DurationMinutes = 10, Icon = "🧘", Color = "#AB47BC", SortOrder = 1, CreatedAt = now },
+            new ActivityItem { Id = journalItemId, ActivityGroupId = selfCareGroupId, Title = "Write journal", Description = "Reflect on the day", Icon = "✍️", Color = "#FF9800", SortOrder = 2, CreatedAt = now }
+        );
+
+        // Seed completions for last 5 days to build streaks
+        var allItemIds = new[] { englishItemId, readItemId, mathItemId, runItemId, stretchItemId, meditateItemId, journalItemId };
+        for (var dayOffset = 1; dayOffset <= 5; dayOffset++)
+        {
+            var completionDate = today.AddDays(-dayOffset);
+            foreach (var itemId in allItemIds)
+            {
+                // ~70% chance each item was completed
+                if (random.NextDouble() < 0.7)
+                {
+                    context.ActivityCompletions.Add(new ActivityCompletion
+                    {
+                        Id = Guid.NewGuid(),
+                        ActivityItemId = itemId,
+                        AccountId = SeedAccountId,
+                        Date = completionDate,
+                        CompletedAtUtc = completionDate.ToDateTime(new TimeOnly(random.Next(8, 22), random.Next(0, 60)), DateTimeKind.Utc),
+                        CreatedAt = now
+                    });
+                }
+            }
+        }
+
         await context.SaveChangesAsync();
-        logger?.LogInformation("Seed complete: test@bloomdo.dev / Test123! (35 days of stats)");
+        logger?.LogInformation("Seed complete: test@bloomdo.dev / Test123! (35 days of stats, activity groups)");
     }
 }

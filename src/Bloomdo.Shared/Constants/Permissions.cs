@@ -18,6 +18,9 @@ public static class Permissions
     // Blocks
     public const string BlocksManage = "blocks:manage";
 
+    // Activities
+    public const string ActivitiesManage = "activities:manage";
+
     // Stats
     public const string StatsView = "stats:view";
     public const string StatsExport = "stats:export";
@@ -41,7 +44,7 @@ public static class Permissions
     [
         ProfileView, ProfileEdit,
         GoalsCreate, GoalsEdit, GoalsDelete,
-        BlocksManage,
+        BlocksManage, ActivitiesManage,
         StatsView, StatsExport,
         PremiumAccess,
         UsersView, UsersManage,

@@ -146,6 +146,21 @@ public static class DependencyContainer
 #endif
             return handler;
         });
+
+        services.AddHttpClient<IDailyActivityApiService, DailyActivityApiService>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .AddHttpMessageHandler<AuthHeaderHandler>()
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+#endif
+            return handler;
+        });
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -171,7 +186,8 @@ public static class DependencyContainer
         
         // Main view and tabs
         services.AddTransient<MainViewModel>();
-        services.AddTransient<HomeViewModel>();
+        services.AddTransient<HomeViewModel>(sp => new HomeViewModel(
+            sp.GetRequiredService<IDailyActivityApiService>()));
         services.AddTransient<BlocksViewModel>(sp => new BlocksViewModel(
             sp.GetRequiredService<IBlockApiService>(),
             sp.GetService<IInstalledAppsService>(),

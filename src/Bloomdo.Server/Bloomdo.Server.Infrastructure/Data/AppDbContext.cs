@@ -21,6 +21,9 @@ public class AppDbContext : DbContext
     public DbSet<BlockRule> BlockRules { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<AccountAchievement> AccountAchievements { get; set; }
+    public DbSet<ActivityGroup> ActivityGroups { get; set; }
+    public DbSet<ActivityItem> ActivityItems { get; set; }
+    public DbSet<ActivityCompletion> ActivityCompletions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -242,6 +245,75 @@ public class AppDbContext : DbContext
             entity.HasQueryFilter(e => !e.IsDeleted);
         });
 
+        // ActivityGroup configuration
+        modelBuilder.Entity<ActivityGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(128);
+            entity.Property(e => e.Icon).HasMaxLength(16);
+            entity.Property(e => e.Color).HasMaxLength(16);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Items)
+                .WithOne(i => i.Group)
+                .HasForeignKey(i => i.ActivityGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // ActivityItem configuration
+        modelBuilder.Entity<ActivityItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(256);
+            entity.Property(e => e.Description).HasMaxLength(512);
+            entity.Property(e => e.Icon).HasMaxLength(16).HasDefaultValue("✨");
+            entity.Property(e => e.Color).HasMaxLength(16).HasDefaultValue("#7E57C2");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasMany(e => e.Completions)
+                .WithOne(c => c.ActivityItem)
+                .HasForeignKey(c => c.ActivityItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // ActivityCompletion configuration
+        modelBuilder.Entity<ActivityCompletion>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.Note).HasMaxLength(512);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasIndex(e => new { e.ActivityItemId, e.AccountId, e.Date }).IsUnique()
+                .HasFilter("\"IsDeleted\" = false");
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
         SeedData(modelBuilder);
     }
 
@@ -289,6 +361,7 @@ public class AppDbContext : DbContext
             Permissions.ProfileView, Permissions.ProfileEdit,
             Permissions.GoalsCreate, Permissions.GoalsEdit, Permissions.GoalsDelete,
             Permissions.BlocksManage,
+            Permissions.ActivitiesManage,
             Permissions.StatsView
         ];
 

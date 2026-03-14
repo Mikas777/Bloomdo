@@ -95,6 +95,7 @@ public static class ServiceCollectionExtensions
             serviceCollection.AddScoped<IStatsService, StatsService>();
             serviceCollection.AddScoped<IBlockService, BlockService>();
             serviceCollection.AddScoped<IAchievementService, AchievementService>();
+            serviceCollection.AddScoped<IDailyActivityService, DailyActivityService>();
         }
 
         public void RegisterRepositories()
