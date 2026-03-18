@@ -32,6 +32,54 @@
 	  <Compile Update="Views\OnbordingComponents\WelcomeView.axaml.cs">
 		<DependentUpon>WelcomeView.axaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\ProfileEditorView.axaml.cs">
+		<DependentUpon>ProfileEditorView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\LoginView.axaml.cs">
+		<DependentUpon>LoginView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\RegisterView.axaml.cs">
+		<DependentUpon>RegisterView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\OnboardingView.axaml.cs">
+		<DependentUpon>OnboardingView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ShellView.axaml.cs">
+		<DependentUpon>ShellView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainWindow.axaml.cs">
+		<DependentUpon>MainWindow.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\NoConnectionView.axaml.cs">
+		<DependentUpon>NoConnectionView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\AccessDeniedView.axaml.cs">
+		<DependentUpon>AccessDeniedView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\MainView.axaml.cs">
+		<DependentUpon>MainView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\HomeView.axaml.cs">
+		<DependentUpon>HomeView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\ProfileView.axaml.cs">
+		<DependentUpon>ProfileView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\BlocksView.axaml.cs">
+		<DependentUpon>BlocksView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\StatsView.axaml.cs">
+		<DependentUpon>StatsView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MainComponents\BlockEditorView.axaml.cs">
+		<DependentUpon>BlockEditorView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\OnbordingComponents\SetGoalsView.axaml.cs">
+		<DependentUpon>SetGoalsView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\OnbordingComponents\AskNameView.axaml.cs">
+		<DependentUpon>AskNameView.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

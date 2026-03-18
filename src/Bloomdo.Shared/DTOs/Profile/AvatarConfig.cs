@@ -10,4 +10,5 @@ public class AvatarConfig
     public int ClothingStyle { get; set; }
     public int ClothingColor { get; set; }
     public int BackgroundColor { get; set; }
+    public int BodyType { get; set; }
 }

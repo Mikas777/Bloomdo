@@ -31,6 +31,23 @@ public class NavigationService(
         shellViewModel.SetViewModel(viewModel);
     }
 
+    public void NavigateTo<TViewModel>(Action<TViewModel> configure) where TViewModel : IPage
+    {
+        var viewModelType = typeof(TViewModel);
+
+        var authResult = authorizationService.CheckAccess(viewModelType);
+
+        if (!authResult.IsAuthorized)
+        {
+            HandleUnauthorizedAccess(authResult);
+            return;
+        }
+
+        var viewModel = serviceProvider.GetRequiredService<TViewModel>();
+        configure(viewModel);
+        shellViewModel.SetViewModel(viewModel);
+    }
+
     public void OnboardingComplete()
     {
         Debug.WriteLine("OnboardingComplete called - saving flag and navigating to LoginViewModel");

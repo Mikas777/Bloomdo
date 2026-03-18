@@ -63,6 +63,24 @@ public partial class ProfileViewModel : PageViewModel
     private bool _hasAvatar;
 
     [ObservableProperty]
+    private int _avatarBodyType;
+
+    [ObservableProperty]
+    private int _avatarHairStyle;
+
+    [ObservableProperty]
+    private int _avatarEyeStyle;
+
+    [ObservableProperty]
+    private int _avatarClothingStyle;
+
+    [ObservableProperty]
+    private int _avatarAccessory;
+
+    [ObservableProperty]
+    private string _avatarEyeHex = "#5D4037";
+
+    [ObservableProperty]
     private int _totalBlocksCreated;
 
     [ObservableProperty]
@@ -122,11 +140,11 @@ public partial class ProfileViewModel : PageViewModel
 
                 Level = stats.StreakDays switch
                 {
-                    >= 100 => "🏆 Legend",
-                    >= 50 => "⭐ Expert",
-                    >= 30 => "🔥 Dedicated",
-                    >= 7 => "💪 Committed",
-                    _ => "🌱 Beginner"
+                    >= 100 => "Legend",
+                    >= 50 => "Expert",
+                    >= 30 => "Dedicated",
+                    >= 7 => "Committed",
+                    _ => "Beginner"
                 };
             }
         }
@@ -170,6 +188,12 @@ public partial class ProfileViewModel : PageViewModel
             AvatarSkinHex = GetSkinColor(avatar.SkinTone);
             AvatarHairHex = GetHairColor(avatar.HairColor);
             AvatarClothingHex = GetClothingColor(avatar.ClothingColor);
+            AvatarEyeHex = GetEyeColor(avatar.EyeStyle);
+            AvatarBodyType = avatar.BodyType;
+            AvatarHairStyle = avatar.HairStyle;
+            AvatarEyeStyle = avatar.EyeStyle;
+            AvatarClothingStyle = avatar.ClothingStyle;
+            AvatarAccessory = avatar.Accessory;
         }
         else
         {
@@ -177,6 +201,12 @@ public partial class ProfileViewModel : PageViewModel
             AvatarSkinHex = "#FDDBB4";
             AvatarHairHex = "#2C2C2C";
             AvatarClothingHex = "#66BB6A";
+            AvatarEyeHex = "#5D4037";
+            AvatarBodyType = 0;
+            AvatarHairStyle = 0;
+            AvatarEyeStyle = 0;
+            AvatarClothingStyle = 0;
+            AvatarAccessory = 0;
         }
     }
 
@@ -222,6 +252,15 @@ public partial class ProfileViewModel : PageViewModel
         4 => "#FFA726",
         5 => "#37474F",
         _ => "#66BB6A"
+    };
+
+    private static string GetEyeColor(int id) => id switch
+    {
+        0 => "#5D4037",
+        1 => "#66BB6A",
+        2 => "#42A5F5",
+        3 => "#FFA726",
+        _ => "#5D4037"
     };
 
     [RelayCommand]

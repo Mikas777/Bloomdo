@@ -106,7 +106,7 @@ public partial class ProfileEditorViewModel : PageViewModel
             if (result != null)
             {
                 _onSaved?.Invoke();
-                _navigationService.NavigateTo<MainViewModel>();
+                _navigationService.NavigateTo<MainViewModel>(vm => vm.SelectedTabIndex = 3);
             }
             else
             {
@@ -127,6 +127,6 @@ public partial class ProfileEditorViewModel : PageViewModel
     [RelayCommand]
     private void Cancel()
     {
-        _navigationService.NavigateTo<MainViewModel>();
+        _navigationService.NavigateTo<MainViewModel>(vm => vm.SelectedTabIndex = 3);
     }
 }

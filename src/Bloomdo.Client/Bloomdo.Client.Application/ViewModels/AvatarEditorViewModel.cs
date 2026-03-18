@@ -22,6 +22,7 @@ public partial class AvatarEditorViewModel : PageViewModel
     [ObservableProperty] private int _selectedClothingStyle;
     [ObservableProperty] private int _selectedClothingColor;
     [ObservableProperty] private int _selectedBackgroundColor;
+    [ObservableProperty] private int _selectedBodyType;
     [ObservableProperty] private bool _isSaving;
 
     [ObservableProperty] private string _previewBackgroundHex = "#7E57C2";
@@ -30,6 +31,7 @@ public partial class AvatarEditorViewModel : PageViewModel
     [ObservableProperty] private string _previewClothingHex = "#66BB6A";
     [ObservableProperty] private string _previewHairStyleLabel = "Short";
     [ObservableProperty] private string _previewAccessoryLabel = "None";
+    [ObservableProperty] private string _previewEyeHex = "#5D4037";
 
     public ObservableCollection<AvatarPartOption> SkinTones { get; } = [];
     public ObservableCollection<AvatarPartOption> HairStyles { get; } = [];
@@ -39,6 +41,7 @@ public partial class AvatarEditorViewModel : PageViewModel
     public ObservableCollection<AvatarPartOption> ClothingStyles { get; } = [];
     public ObservableCollection<AvatarPartOption> ClothingColors { get; } = [];
     public ObservableCollection<AvatarPartOption> BackgroundColors { get; } = [];
+    public ObservableCollection<AvatarPartOption> BodyTypes { get; } = [];
 
     public AvatarEditorViewModel(
         INavigationService navigationService,
@@ -66,6 +69,7 @@ public partial class AvatarEditorViewModel : PageViewModel
             SelectedClothingStyle = currentAvatar.ClothingStyle;
             SelectedClothingColor = currentAvatar.ClothingColor;
             SelectedBackgroundColor = currentAvatar.BackgroundColor;
+            SelectedBodyType = currentAvatar.BodyType;
         }
 
         UpdateSelections();
@@ -124,6 +128,11 @@ public partial class AvatarEditorViewModel : PageViewModel
         BackgroundColors.Add(new AvatarPartOption { Id = 3, Label = "Orange", ColorHex = "#FFA726" });
         BackgroundColors.Add(new AvatarPartOption { Id = 4, Label = "Pink", ColorHex = "#EC407A" });
         BackgroundColors.Add(new AvatarPartOption { Id = 5, Label = "Teal", ColorHex = "#26A69A" });
+
+        BodyTypes.Add(new AvatarPartOption { Id = 0, Label = "Slim", ColorHex = "#78909C" });
+        BodyTypes.Add(new AvatarPartOption { Id = 1, Label = "Average", ColorHex = "#78909C" });
+        BodyTypes.Add(new AvatarPartOption { Id = 2, Label = "Athletic", ColorHex = "#78909C" });
+        BodyTypes.Add(new AvatarPartOption { Id = 3, Label = "Muscular", ColorHex = "#78909C" });
     }
 
     private void UpdateSelections()
@@ -136,6 +145,7 @@ public partial class AvatarEditorViewModel : PageViewModel
         SelectInCollection(ClothingStyles, SelectedClothingStyle);
         SelectInCollection(ClothingColors, SelectedClothingColor);
         SelectInCollection(BackgroundColors, SelectedBackgroundColor);
+        SelectInCollection(BodyTypes, SelectedBodyType);
     }
 
     private void UpdatePreview()
@@ -144,6 +154,7 @@ public partial class AvatarEditorViewModel : PageViewModel
         PreviewSkinHex = GetSkinColorHex();
         PreviewHairHex = GetHairColorHex();
         PreviewClothingHex = GetClothingColorHex();
+        PreviewEyeHex = GetEyeColorHex();
 
         var hair = HairStyles.FirstOrDefault(h => h.Id == SelectedHairStyle);
         PreviewHairStyleLabel = hair?.Label ?? "Short";
@@ -222,6 +233,14 @@ public partial class AvatarEditorViewModel : PageViewModel
         UpdatePreview();
     }
 
+    [RelayCommand]
+    private void SelectBodyType(AvatarPartOption option)
+    {
+        SelectedBodyType = option.Id;
+        SelectInCollection(BodyTypes, option.Id);
+        UpdatePreview();
+    }
+
     public AvatarConfig BuildAvatarConfig()
     {
         return new AvatarConfig
@@ -233,7 +252,8 @@ public partial class AvatarEditorViewModel : PageViewModel
             Accessory = SelectedAccessory,
             ClothingStyle = SelectedClothingStyle,
             ClothingColor = SelectedClothingColor,
-            BackgroundColor = SelectedBackgroundColor
+            BackgroundColor = SelectedBackgroundColor,
+            BodyType = SelectedBodyType
         };
     }
 
@@ -259,6 +279,12 @@ public partial class AvatarEditorViewModel : PageViewModel
     {
         var clothing = ClothingColors.FirstOrDefault(c => c.Id == SelectedClothingColor);
         return clothing?.ColorHex ?? "#66BB6A";
+    }
+
+    public string GetEyeColorHex()
+    {
+        var eye = EyeStyles.FirstOrDefault(e => e.Id == SelectedEyeStyle);
+        return eye?.ColorHex ?? "#5D4037";
     }
 
     [RelayCommand]
