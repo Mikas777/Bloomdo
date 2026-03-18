@@ -235,5 +235,10 @@ public static class DependencyContainer
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<IProfileApiService>(),
             sp.GetRequiredService<AvatarEditorViewModel>()));
+
+        services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(
+            sp.GetRequiredService<INavigationService>(),
+            sp.GetRequiredService<IAccessTokenManager>(),
+            sp.GetRequiredService<IProfileApiService>()));
     }
 }

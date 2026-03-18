@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Assets\" />
+	  <AvaloniaResource Include="Assets\Fonts\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -79,6 +79,9 @@
 	  </Compile>
 	  <Compile Update="Views\OnbordingComponents\AskNameView.axaml.cs">
 		<DependentUpon>AskNameView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\SettingsView.axaml.cs">
+		<DependentUpon>SettingsView.axaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 

@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shad="clr-namespace:ShadUI;assembly=ShadUI"
+             xmlns:vm="clr-namespace:Bloomdo.Client.Application.ViewModels;assembly=Bloomdo.Client.Application"
+             xmlns:converters="clr-namespace:Bloomdo.Client.UI.Converters"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
+             x:DataType="vm:SettingsViewModel"
+             x:Class="Bloomdo.Client.UI.SettingsView">
+
+    <UserControl.Resources>
+        <converters:IntEqualConverter x:Key="IntEquals"/>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource GhostColor}">
+
+        <!-- Header -->
+        <Grid Margin="8,8,8,0" ColumnDefinitions="Auto,*,Auto">
+            <Button Grid.Column="0" Command="{Binding CancelCommand}" Background="Transparent"
+                    BorderThickness="0" Padding="8" Cursor="Hand">
+                <PathIcon Data="{StaticResource arrow_left_regular}" Width="20" Height="20"
+                          Foreground="{DynamicResource ForegroundColor}"/>
+            </Button>
+            <TextBlock Grid.Column="1" Text="Settings" FontSize="20" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{DynamicResource ForegroundColor}"/>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20,16,20,24" Spacing="16">
+
+                <!-- Account Information -->
+                <shad:Card Padding="0">
+                    <StackPanel Margin="16" Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{x:Static shad:Icons.Settings}" Width="18" Height="18"
+                                      Foreground="{DynamicResource ForegroundColor}"/>
+                            <TextBlock Text="Account Information" FontWeight="SemiBold" FontSize="16"
+                                       Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Border Height="1" Background="{DynamicResource OutlineColor}" Margin="0,4,0,4"/>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="First Name" FontSize="12" Opacity="0.6"
+                                       Foreground="{DynamicResource ForegroundColor}"/>
+                            <TextBox Text="{Binding FirstName, Mode=TwoWay}" Watermark="First name"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Last Name" FontSize="12" Opacity="0.6"
+                                       Foreground="{DynamicResource ForegroundColor}"/>
+                            <TextBox Text="{Binding LastName, Mode=TwoWay}" Watermark="Last name"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Username" FontSize="12" Opacity="0.6"
+                                       Foreground="{DynamicResource ForegroundColor}"/>
+                            <TextBox Text="{Binding Username, Mode=TwoWay}" Watermark="username"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Bio" FontSize="12" Opacity="0.6"
+                                       Foreground="{DynamicResource ForegroundColor}"/>
+                            <TextBox Text="{Binding Bio, Mode=TwoWay}"
+                                     Watermark="Tell us about yourself..."
+                                     AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"/>
+                        </StackPanel>
+                    </StackPanel>
+                </shad:Card>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Save/Error -->
+        <StackPanel Grid.Row="2" Margin="20,8,20,12" Spacing="8">
+            <TextBlock Text="{Binding ErrorMessage}"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Foreground="#EF5350" FontSize="13" HorizontalAlignment="Center"/>
+            <Button Content="Save Changes" Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding !IsSaving}"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                    Padding="0,14" Background="#2E7D32" Foreground="White"
+                    FontWeight="SemiBold" FontSize="16" CornerRadius="12"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

@@ -6,27 +6,28 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Bloomdo.Client.Application.ViewModels;
 
-public partial class ProfileEditorViewModel : PageViewModel
+public partial class SettingsViewModel : PageViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly IAccessTokenManager _tokenManager;
     private readonly IProfileApiService _profileApiService;
 
+    [ObservableProperty] private int _selectedTab;
+    [ObservableProperty] private string _firstName = string.Empty;
+    [ObservableProperty] private string _lastName = string.Empty;
+    [ObservableProperty] private string _username = string.Empty;
+    [ObservableProperty] private string _bio = string.Empty;
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _isSaving;
 
-    public AvatarEditorViewModel AvatarEditor { get; }
-
-    public ProfileEditorViewModel(
+    public SettingsViewModel(
         INavigationService navigationService,
         IAccessTokenManager tokenManager,
-        IProfileApiService profileApiService,
-        AvatarEditorViewModel avatarEditor)
+        IProfileApiService profileApiService)
     {
         _navigationService = navigationService;
         _tokenManager = tokenManager;
         _profileApiService = profileApiService;
-        AvatarEditor = avatarEditor;
     }
 
     public override void OnAppearing()
@@ -35,12 +36,15 @@ public partial class ProfileEditorViewModel : PageViewModel
         Initialize();
     }
 
-    public void Initialize()
+    private void Initialize()
     {
         var user = _tokenManager.CurrentUser;
         if (user != null)
         {
-            AvatarEditor.Initialize(user.Avatar, _ => { });
+            FirstName = user.FirstName ?? string.Empty;
+            LastName = user.LastName ?? string.Empty;
+            Username = user.Username ?? string.Empty;
+            Bio = user.Bio ?? string.Empty;
         }
     }
 
@@ -50,13 +54,23 @@ public partial class ProfileEditorViewModel : PageViewModel
         if (IsSaving) return;
 
         ErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(FirstName))
+        {
+            ErrorMessage = "First name is required.";
+            return;
+        }
+
         IsSaving = true;
 
         try
         {
             var request = new UpdateProfileRequest
             {
-                Avatar = AvatarEditor.BuildAvatarConfig()
+                FirstName = FirstName.Trim(),
+                LastName = LastName.Trim(),
+                Username = Username.Trim(),
+                Bio = Bio.Trim()
             };
 
             var result = await _profileApiService.UpdateProfileAsync(request);
@@ -67,12 +81,12 @@ public partial class ProfileEditorViewModel : PageViewModel
             }
             else
             {
-                ErrorMessage = "Failed to save avatar. Please try again.";
+                ErrorMessage = "Failed to update profile. Please try again.";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Save avatar failed: {ex.Message}");
+            Console.WriteLine($"Save settings failed: {ex.Message}");
             ErrorMessage = "An error occurred while saving.";
         }
         finally
