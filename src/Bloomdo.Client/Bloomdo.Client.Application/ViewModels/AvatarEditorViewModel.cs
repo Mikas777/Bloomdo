@@ -30,6 +30,8 @@ public partial class AvatarEditorViewModel : PageViewModel
     [ObservableProperty] private int _selectedClothingStyle;
     [ObservableProperty] private int _selectedClothingColor;
     [ObservableProperty] private int _selectedBackgroundColor;
+    [ObservableProperty] private int _selectedMouthStyle;
+    [ObservableProperty] private int _selectedFaceExtra;
     [ObservableProperty] private bool _isSaving;
 
     [ObservableProperty] private string _previewBackgroundHex = "#7E57C2";
@@ -56,6 +58,8 @@ public partial class AvatarEditorViewModel : PageViewModel
     public ObservableCollection<AvatarPartOption> ClothingStyles { get; } = [];
     public ObservableCollection<AvatarPartOption> ClothingColors { get; } = [];
     public ObservableCollection<AvatarPartOption> BackgroundColors { get; } = [];
+    public ObservableCollection<AvatarPartOption> MouthStyles { get; } = [];
+    public ObservableCollection<AvatarPartOption> FaceExtras { get; } = [];
 
     public AvatarEditorViewModel(
         INavigationService navigationService,
@@ -90,6 +94,8 @@ public partial class AvatarEditorViewModel : PageViewModel
             SelectedClothingStyle = currentAvatar.ClothingStyle;
             SelectedClothingColor = currentAvatar.ClothingColor;
             SelectedBackgroundColor = currentAvatar.BackgroundColor;
+            SelectedMouthStyle = currentAvatar.MouthStyle;
+            SelectedFaceExtra = currentAvatar.FaceExtra;
         }
 
         UpdateSelections();
@@ -235,6 +241,19 @@ public partial class AvatarEditorViewModel : PageViewModel
         BackgroundColors.Add(new AvatarPartOption { Id = 9, Label = "Coral", ColorHex = "#FF7043" });
         BackgroundColors.Add(new AvatarPartOption { Id = 10, Label = "Mint", ColorHex = "#80CBC4" });
         BackgroundColors.Add(new AvatarPartOption { Id = 11, Label = "Lavender", ColorHex = "#B39DDB" });
+
+        MouthStyles.Add(new AvatarPartOption { Id = 0, Label = "Smile", ColorHex = "#78909C" });
+        MouthStyles.Add(new AvatarPartOption { Id = 1, Label = "Wide Grin", ColorHex = "#78909C" });
+        MouthStyles.Add(new AvatarPartOption { Id = 2, Label = "Neutral", ColorHex = "#78909C" });
+        MouthStyles.Add(new AvatarPartOption { Id = 3, Label = "Sad", ColorHex = "#78909C" });
+        MouthStyles.Add(new AvatarPartOption { Id = 4, Label = "Open", ColorHex = "#78909C" });
+        MouthStyles.Add(new AvatarPartOption { Id = 5, Label = "Smirk", ColorHex = "#78909C" });
+
+        FaceExtras.Add(new AvatarPartOption { Id = 0, Label = "None", ColorHex = "#B0BEC5" });
+        FaceExtras.Add(new AvatarPartOption { Id = 1, Label = "Freckles", ColorHex = "#78909C" });
+        FaceExtras.Add(new AvatarPartOption { Id = 2, Label = "Blush", ColorHex = "#78909C" });
+        FaceExtras.Add(new AvatarPartOption { Id = 3, Label = "Eyeliner", ColorHex = "#78909C" });
+        FaceExtras.Add(new AvatarPartOption { Id = 4, Label = "Makeup", ColorHex = "#78909C" });
     }
 
     private void UpdateSelections()
@@ -254,6 +273,8 @@ public partial class AvatarEditorViewModel : PageViewModel
         SelectInCollection(ClothingStyles, SelectedClothingStyle);
         SelectInCollection(ClothingColors, SelectedClothingColor);
         SelectInCollection(BackgroundColors, SelectedBackgroundColor);
+        SelectInCollection(MouthStyles, SelectedMouthStyle);
+        SelectInCollection(FaceExtras, SelectedFaceExtra);
     }
 
     private void UpdatePreview()
@@ -332,6 +353,12 @@ public partial class AvatarEditorViewModel : PageViewModel
     [RelayCommand]
     private void SelectBackgroundColor(AvatarPartOption option) { SelectedBackgroundColor = option.Id; SelectInCollection(BackgroundColors, option.Id); UpdatePreview(); }
 
+    [RelayCommand]
+    private void SelectMouthStyle(AvatarPartOption option) { SelectedMouthStyle = option.Id; SelectInCollection(MouthStyles, option.Id); }
+
+    [RelayCommand]
+    private void SelectFaceExtra(AvatarPartOption option) { SelectedFaceExtra = option.Id; SelectInCollection(FaceExtras, option.Id); }
+
     public AvatarConfig BuildAvatarConfig()
     {
         return new AvatarConfig
@@ -350,7 +377,9 @@ public partial class AvatarEditorViewModel : PageViewModel
             HeadwearColor = SelectedHeadwearColor,
             ClothingStyle = SelectedClothingStyle,
             ClothingColor = SelectedClothingColor,
-            BackgroundColor = SelectedBackgroundColor
+            BackgroundColor = SelectedBackgroundColor,
+            MouthStyle = SelectedMouthStyle,
+            FaceExtra = SelectedFaceExtra
         };
     }
 

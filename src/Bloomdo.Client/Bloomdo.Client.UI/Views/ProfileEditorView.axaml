@@ -31,7 +31,7 @@
                            VerticalAlignment="Top" HorizontalAlignment="Center"
                            Margin="0,14,0,0" Foreground="White"/>
                 <Viewbox Width="190" Height="190" Stretch="Uniform"
-                         VerticalAlignment="Bottom" Margin="0,0,0,8"
+                         VerticalAlignment="Bottom" Margin="0,0,0,0"
                          HorizontalAlignment="Center">
                     <Canvas Width="120" Height="120">
                         <!-- Body by type -->
@@ -56,23 +56,23 @@
                                 Background="{Binding AvatarEditor.PreviewClothingHex, Converter={StaticResource StringToBrush}}"
                                 IsVisible="{Binding AvatarEditor.SelectedBodyType, Converter={StaticResource IntEquals}, ConverterParameter=4}"/>
                         <!-- Clothing details -->
-                        <Border Canvas.Left="52" Canvas.Top="72" Width="16" Height="6"
+                        <Border Canvas.Left="52" Canvas.Top="76" Width="16" Height="6"
                                 CornerRadius="0,0,8,8" Background="White" Opacity="0.15"
                                 IsVisible="{Binding AvatarEditor.SelectedClothingStyle, Converter={StaticResource IntEquals}, ConverterParameter=0}"/>
-                        <Border Canvas.Left="48" Canvas.Top="70" Width="24" Height="8"
+                        <Border Canvas.Left="48" Canvas.Top="76" Width="24" Height="8"
                                 CornerRadius="12,12,0,0" Background="White" Opacity="0.1"
                                 IsVisible="{Binding AvatarEditor.SelectedClothingStyle, Converter={StaticResource IntEquals}, ConverterParameter=1}"/>
-                        <Border Canvas.Left="54" Canvas.Top="72" Width="12" Height="10"
+                        <Border Canvas.Left="54" Canvas.Top="76" Width="12" Height="10"
                                 CornerRadius="0,0,6,6" Background="White" Opacity="0.18"
                                 IsVisible="{Binding AvatarEditor.SelectedClothingStyle, Converter={StaticResource IntEquals}, ConverterParameter=2}"/>
                         <Canvas Width="120" Height="120"
                                 IsVisible="{Binding AvatarEditor.SelectedClothingStyle, Converter={StaticResource IntEquals}, ConverterParameter=3}">
-                            <Border Canvas.Left="44" Canvas.Top="72" Width="5" Height="8"
+                            <Border Canvas.Left="44" Canvas.Top="76" Width="5" Height="8"
                                     Background="White" Opacity="0.15"/>
-                            <Border Canvas.Left="71" Canvas.Top="72" Width="5" Height="8"
+                            <Border Canvas.Left="71" Canvas.Top="76" Width="5" Height="8"
                                     Background="White" Opacity="0.15"/>
                         </Canvas>
-                        <Border Canvas.Left="46" Canvas.Top="70" Width="28" Height="6"
+                        <Border Canvas.Left="46" Canvas.Top="76" Width="28" Height="6"
                                 CornerRadius="3" Background="White" Opacity="0.12"
                                 IsVisible="{Binding AvatarEditor.SelectedClothingStyle, Converter={StaticResource IntEquals}, ConverterParameter=4}"/>
                         <!-- Long hair back strands -->
@@ -134,7 +134,7 @@
                         </Canvas>
                         <!-- Hair Style 4: Buzz -->
                         <Border Canvas.Left="36" Canvas.Top="20" Width="48" Height="12"
-                                CornerRadius="24,24,0,0" Opacity="0.6"
+                                CornerRadius="24,24,0,0"
                                 Background="{Binding AvatarEditor.PreviewHairHex, Converter={StaticResource StringToBrush}}"
                                 IsVisible="{Binding AvatarEditor.SelectedHairStyle, Converter={StaticResource IntEquals}, ConverterParameter=4}"/>
                         <!-- Hair Style 5: Mohawk -->
@@ -161,13 +161,25 @@
                                 <Border Canvas.Left="7" Canvas.Top="2" Width="4" Height="4" CornerRadius="2" Background="White" Opacity="0.9"/>
                             </Canvas>
                         </Canvas>
-                        <!-- Eye Style 1: Happy -->
+                        <!-- Eye Style 1: Happy (squinting) -->
                         <Canvas Width="120" Height="120"
                                 IsVisible="{Binding AvatarEditor.SelectedEyeStyle, Converter={StaticResource IntEquals}, ConverterParameter=1}">
-                            <Border Canvas.Left="41" Canvas.Top="42" Width="14" Height="7"
-                                    CornerRadius="7,7,0,0" Background="#37474F"/>
-                            <Border Canvas.Left="65" Canvas.Top="42" Width="14" Height="7"
-                                    CornerRadius="7,7,0,0" Background="#37474F"/>
+                            <!-- Left eye -->
+                            <Border Canvas.Left="41" Canvas.Top="39" Width="14" Height="13" CornerRadius="7" Background="White"/>
+                            <Border Canvas.Left="43" Canvas.Top="42" Width="10" Height="10" CornerRadius="5"
+                                    Background="{Binding AvatarEditor.PreviewEyeHex, Converter={StaticResource StringToBrush}}"/>
+                            <Border Canvas.Left="45" Canvas.Top="44" Width="6" Height="6" CornerRadius="3" Background="#1A1A1A"/>
+                            <Border Canvas.Left="49" Canvas.Top="41" Width="3" Height="3" CornerRadius="1.5" Background="White" Opacity="0.9"/>
+                            <Border Canvas.Left="39" Canvas.Top="37" Width="18" Height="10" CornerRadius="9,9,0,0"
+                                    Background="{Binding AvatarEditor.PreviewSkinHex, Converter={StaticResource StringToBrush}}"/>
+                            <!-- Right eye -->
+                            <Border Canvas.Left="65" Canvas.Top="39" Width="14" Height="13" CornerRadius="7" Background="White"/>
+                            <Border Canvas.Left="67" Canvas.Top="42" Width="10" Height="10" CornerRadius="5"
+                                    Background="{Binding AvatarEditor.PreviewEyeHex, Converter={StaticResource StringToBrush}}"/>
+                            <Border Canvas.Left="69" Canvas.Top="44" Width="6" Height="6" CornerRadius="3" Background="#1A1A1A"/>
+                            <Border Canvas.Left="73" Canvas.Top="41" Width="3" Height="3" CornerRadius="1.5" Background="White" Opacity="0.9"/>
+                            <Border Canvas.Left="63" Canvas.Top="37" Width="18" Height="10" CornerRadius="9,9,0,0"
+                                    Background="{Binding AvatarEditor.PreviewSkinHex, Converter={StaticResource StringToBrush}}"/>
                         </Canvas>
                         <!-- Eye Style 2: Cool -->
                         <Canvas Width="120" Height="120"
@@ -226,10 +238,34 @@
                             <Border Canvas.Left="65" Canvas.Top="44" Width="14" Height="4"
                                     CornerRadius="2" Background="#37474F"/>
                         </Canvas>
-                        <!-- Mouth -->
-                        <Border Canvas.Left="54" Canvas.Top="57" Width="12" Height="5"
-                                CornerRadius="0,0,6,6" Background="#E8927F" Opacity="0.75"/>
-                        <!-- Facial Hair -->
+                        <!-- Face Extras (between eyes and facial hair) -->
+                        <Canvas Width="120" Height="120"
+                                IsVisible="{Binding AvatarEditor.SelectedFaceExtra, Converter={StaticResource IntEquals}, ConverterParameter=1}">
+                            <Border Canvas.Left="42" Canvas.Top="52" Width="3" Height="3" CornerRadius="1.5" Background="#C0897A" Opacity="0.4"/>
+                            <Border Canvas.Left="46" Canvas.Top="54" Width="2" Height="2" CornerRadius="1" Background="#C0897A" Opacity="0.4"/>
+                            <Border Canvas.Left="44" Canvas.Top="56" Width="2" Height="2" CornerRadius="1" Background="#C0897A" Opacity="0.4"/>
+                            <Border Canvas.Left="74" Canvas.Top="52" Width="3" Height="3" CornerRadius="1.5" Background="#C0897A" Opacity="0.4"/>
+                            <Border Canvas.Left="72" Canvas.Top="55" Width="2" Height="2" CornerRadius="1" Background="#C0897A" Opacity="0.4"/>
+                            <Border Canvas.Left="76" Canvas.Top="54" Width="2" Height="2" CornerRadius="1" Background="#C0897A" Opacity="0.4"/>
+                        </Canvas>
+                        <Canvas Width="120" Height="120"
+                                IsVisible="{Binding AvatarEditor.SelectedFaceExtra, Converter={StaticResource IntEquals}, ConverterParameter=2}">
+                            <Border Canvas.Left="38" Canvas.Top="50" Width="14" Height="8" CornerRadius="4" Background="#F48FB1" Opacity="0.25"/>
+                            <Border Canvas.Left="68" Canvas.Top="50" Width="14" Height="8" CornerRadius="4" Background="#F48FB1" Opacity="0.25"/>
+                        </Canvas>
+                        <Canvas Width="120" Height="120"
+                                IsVisible="{Binding AvatarEditor.SelectedFaceExtra, Converter={StaticResource IntEquals}, ConverterParameter=3}">
+                            <Border Canvas.Left="40" Canvas.Top="37" Width="16" Height="2" CornerRadius="1" Background="#37474F"/>
+                            <Border Canvas.Left="64" Canvas.Top="37" Width="16" Height="2" CornerRadius="1" Background="#37474F"/>
+                        </Canvas>
+                        <Canvas Width="120" Height="120"
+                                IsVisible="{Binding AvatarEditor.SelectedFaceExtra, Converter={StaticResource IntEquals}, ConverterParameter=4}">
+                            <Border Canvas.Left="38" Canvas.Top="50" Width="14" Height="8" CornerRadius="4" Background="#F48FB1" Opacity="0.2"/>
+                            <Border Canvas.Left="68" Canvas.Top="50" Width="14" Height="8" CornerRadius="4" Background="#F48FB1" Opacity="0.2"/>
+                            <Border Canvas.Left="40" Canvas.Top="37" Width="16" Height="1.5" CornerRadius="0.75" Background="#37474F" Opacity="0.6"/>
+                            <Border Canvas.Left="64" Canvas.Top="37" Width="16" Height="1.5" CornerRadius="0.75" Background="#37474F" Opacity="0.6"/>
+                        </Canvas>
+                        <!-- Facial Hair (below mouth in z-order) -->
                         <Border Canvas.Left="42" Canvas.Top="58" Width="36" Height="12"
                                 CornerRadius="0,0,12,12" Opacity="0.25"
                                 Background="{Binding AvatarEditor.PreviewFacialHairHex, Converter={StaticResource StringToBrush}}"
@@ -250,6 +286,25 @@
                                 CornerRadius="0,0,4,4"
                                 Background="{Binding AvatarEditor.PreviewFacialHairHex, Converter={StaticResource StringToBrush}}"
                                 IsVisible="{Binding AvatarEditor.SelectedFacialHair, Converter={StaticResource IntEquals}, ConverterParameter=5}"/>
+                        <!-- Mouth (always on top of beard) -->
+                        <Border Canvas.Left="54" Canvas.Top="57" Width="12" Height="5"
+                                CornerRadius="0,0,6,6" Background="#E8927F" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=0}"/>
+                        <Border Canvas.Left="50" Canvas.Top="57" Width="20" Height="6"
+                                CornerRadius="0,0,10,10" Background="#E8927F" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=1}"/>
+                        <Border Canvas.Left="54" Canvas.Top="58" Width="12" Height="2"
+                                CornerRadius="1" Background="#C0897A" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=2}"/>
+                        <Border Canvas.Left="54" Canvas.Top="57" Width="12" Height="5"
+                                CornerRadius="6,6,0,0" Background="#C0897A" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=3}"/>
+                        <Border Canvas.Left="55" Canvas.Top="56" Width="10" Height="8"
+                                CornerRadius="5" Background="#C0897A" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=4}"/>
+                        <Border Canvas.Left="54" Canvas.Top="57" Width="10" Height="4"
+                                CornerRadius="0,0,5,1" Background="#E8927F" Opacity="0.75"
+                                IsVisible="{Binding AvatarEditor.SelectedMouthStyle, Converter={StaticResource IntEquals}, ConverterParameter=5}"/>
                         <!-- Glasses 1: Round -->
                         <Canvas Width="120" Height="120"
                                 IsVisible="{Binding AvatarEditor.SelectedGlassesStyle, Converter={StaticResource IntEquals}, ConverterParameter=1}">
@@ -302,10 +357,10 @@
                         <Canvas Width="120" Height="120"
                                 IsVisible="{Binding AvatarEditor.SelectedGlassesStyle, Converter={StaticResource IntEquals}, ConverterParameter=5}">
                             <Border Canvas.Left="38" Canvas.Top="36" Width="18" Height="18" CornerRadius="4"
-                                    Background="#1A1A1A" BorderThickness="1"
+                                    Background="#1A1A1A" Opacity="0.8" BorderThickness="1"
                                     BorderBrush="{Binding AvatarEditor.PreviewGlassesHex, Converter={StaticResource StringToBrush}}"/>
                             <Border Canvas.Left="64" Canvas.Top="36" Width="18" Height="18" CornerRadius="4"
-                                    Background="#1A1A1A" BorderThickness="1"
+                                    Background="#1A1A1A" Opacity="0.8" BorderThickness="1"
                                     BorderBrush="{Binding AvatarEditor.PreviewGlassesHex, Converter={StaticResource StringToBrush}}"/>
                             <Border Canvas.Left="56" Canvas.Top="42" Width="8" Height="2"
                                     Background="{Binding AvatarEditor.PreviewGlassesHex, Converter={StaticResource StringToBrush}}"/>
@@ -345,11 +400,11 @@
                         <!-- Headwear 5: Bow -->
                         <Canvas Width="120" Height="120"
                                 IsVisible="{Binding AvatarEditor.SelectedHeadwearStyle, Converter={StaticResource IntEquals}, ConverterParameter=5}">
-                            <Border Canvas.Left="72" Canvas.Top="14" Width="10" Height="8" CornerRadius="5"
+                            <Border Canvas.Left="72" Canvas.Top="20" Width="10" Height="8" CornerRadius="5"
                                     Background="{Binding AvatarEditor.PreviewHeadwearHex, Converter={StaticResource StringToBrush}}"/>
-                            <Border Canvas.Left="78" Canvas.Top="16" Width="4" Height="4" CornerRadius="2"
+                            <Border Canvas.Left="78" Canvas.Top="22" Width="4" Height="4" CornerRadius="2"
                                     Background="{Binding AvatarEditor.PreviewHeadwearHex, Converter={StaticResource StringToBrush}}" Opacity="0.7"/>
-                            <Border Canvas.Left="78" Canvas.Top="14" Width="10" Height="8" CornerRadius="5"
+                            <Border Canvas.Left="78" Canvas.Top="20" Width="10" Height="8" CornerRadius="5"
                                     Background="{Binding AvatarEditor.PreviewHeadwearHex, Converter={StaticResource StringToBrush}}"/>
                         </Canvas>
                     </Canvas>
@@ -459,7 +514,21 @@
                         </Border>
                     </Panel>
                 </Button>
-                <Button Command="{Binding AvatarEditor.SelectTabCommand}" CommandParameter="7"
+                <Button Command="{Binding AvatarEditor.SelectTabCommand}" CommandParameter="8"
+                        Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                    <Panel>
+                        <Border CornerRadius="16" Padding="14,10"
+                                Background="{DynamicResource SecondaryColor}"
+                                BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}">
+                            <TextBlock Text="💄" FontSize="18" FontFamily="{StaticResource EmojiFont}"/>
+                        </Border>
+                        <Border CornerRadius="16" Padding="14,10" Background="#2E7D32"
+                                IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=8}">
+                            <TextBlock Text="💄" FontSize="18" FontFamily="{StaticResource EmojiFont}"/>
+                        </Border>
+                    </Panel>
+                </Button>
+                <Button Command="{Binding AvatarEditor.SelectTabCommand}" CommandParameter="9"
                         Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand">
                     <Panel>
                         <Border CornerRadius="16" Padding="14,10"
@@ -468,7 +537,7 @@
                             <TextBlock Text="🖼" FontSize="18" FontFamily="{StaticResource EmojiFont}"/>
                         </Border>
                         <Border CornerRadius="16" Padding="14,10" Background="#2E7D32"
-                                IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=7}">
+                                IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=9}">
                             <TextBlock Text="🖼" FontSize="18" FontFamily="{StaticResource EmojiFont}"/>
                         </Border>
                     </Panel>
@@ -816,23 +885,24 @@
                     </shad:Card>
                 </StackPanel>
 
-                <!-- Tab 7: Background Color -->
+                <!-- Tab 8: Mouth & Face Extras -->
                 <StackPanel Spacing="16"
-                            IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=7}">
+                            IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=8}">
                     <shad:Card Padding="0">
                         <StackPanel Margin="16" Spacing="10">
-                            <TextBlock Text="Background Color" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}"/>
-                            <ItemsControl ItemsSource="{Binding AvatarEditor.BackgroundColors}">
+                            <TextBlock Text="Mouth" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}"/>
+                            <ItemsControl ItemsSource="{Binding AvatarEditor.MouthStyles}">
                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="items:AvatarPartOption">
-                                        <Button Margin="4" Padding="0" Width="48" Height="48" Background="Transparent" BorderThickness="0" Cursor="Hand"
-                                                Command="{Binding ((vm:ProfileEditorViewModel)DataContext).AvatarEditor.SelectBackgroundColorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        <Button Margin="4" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                                Command="{Binding ((vm:ProfileEditorViewModel)DataContext).AvatarEditor.SelectMouthStyleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}">
-                                            <Panel Width="48" Height="48">
-                                                <Border CornerRadius="24" BorderThickness="3" BorderBrush="#4CAF50" IsVisible="{Binding IsSelected}"/>
-                                                <Border Width="38" Height="38" CornerRadius="19" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                        Background="{Binding ColorHex, Converter={StaticResource StringToBrush}}"/>
+                                            <Panel>
+                                                <Border CornerRadius="10" Padding="14,8" Background="{DynamicResource SecondaryColor}" BorderThickness="1.5" BorderBrush="{DynamicResource OutlineColor}" IsVisible="{Binding !IsSelected}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="13" Foreground="{DynamicResource ForegroundColor}"/></Border>
+                                                <Border CornerRadius="10" Padding="14,8" Background="#E8F5E9" BorderThickness="1.5" BorderBrush="#4CAF50" IsVisible="{Binding IsSelected}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="13" Foreground="#2E7D32" FontWeight="SemiBold"/></Border>
                                             </Panel>
                                         </Button>
                                     </DataTemplate>
@@ -840,10 +910,58 @@
                             </ItemsControl>
                         </StackPanel>
                     </shad:Card>
-                </StackPanel>
+                    <shad:Card Padding="0">
+                        <StackPanel Margin="16" Spacing="10">
+                            <TextBlock Text="Face Extras" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}"/>
+                            <ItemsControl ItemsSource="{Binding AvatarEditor.FaceExtras}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="items:AvatarPartOption">
+                                        <Button Margin="4" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                                Command="{Binding ((vm:ProfileEditorViewModel)DataContext).AvatarEditor.SelectFaceExtraCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <Panel>
+                                                <Border CornerRadius="10" Padding="14,8" Background="{DynamicResource SecondaryColor}" BorderThickness="1.5" BorderBrush="{DynamicResource OutlineColor}" IsVisible="{Binding !IsSelected}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="13" Foreground="{DynamicResource ForegroundColor}"/></Border>
+                                                <Border CornerRadius="10" Padding="14,8" Background="#E8F5E9" BorderThickness="1.5" BorderBrush="#4CAF50" IsVisible="{Binding IsSelected}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="13" Foreground="#2E7D32" FontWeight="SemiBold"/></Border>
+                                            </Panel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </shad:Card>
+                            </StackPanel>
 
-            </StackPanel>
-        </ScrollViewer>
+                            <!-- Tab 9: Background -->
+                            <StackPanel Spacing="16"
+                                        IsVisible="{Binding AvatarEditor.SelectedTab, Converter={StaticResource IntEquals}, ConverterParameter=9}">
+                                <shad:Card Padding="0">
+                                    <StackPanel Margin="16" Spacing="10">
+                                        <TextBlock Text="Background Color" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}"/>
+                                        <ItemsControl ItemsSource="{Binding AvatarEditor.BackgroundColors}">
+                                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="items:AvatarPartOption">
+                                                    <Button Margin="4" Padding="0" Width="48" Height="48" Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                                            Command="{Binding ((vm:ProfileEditorViewModel)DataContext).AvatarEditor.SelectBackgroundColorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}">
+                                                        <Panel Width="48" Height="48">
+                                                            <Border CornerRadius="24" BorderThickness="3" BorderBrush="#4CAF50" IsVisible="{Binding IsSelected}"/>
+                                                            <Border Width="38" Height="38" CornerRadius="19" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                    Background="{Binding ColorHex, Converter={StaticResource StringToBrush}}"/>
+                                                        </Panel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </shad:Card>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </ScrollViewer>
 
         <!-- Row 3: Save/Error -->
         <StackPanel Grid.Row="3" Margin="20,8,20,12" Spacing="8">

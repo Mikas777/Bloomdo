@@ -96,6 +96,12 @@ public partial class ProfileViewModel : PageViewModel
     private string _avatarEyeHex = "#5D4037";
 
     [ObservableProperty]
+    private int _avatarMouthStyle;
+
+    [ObservableProperty]
+    private int _avatarFaceExtra;
+
+    [ObservableProperty]
     private int _totalBlocksCreated;
 
     [ObservableProperty]
@@ -214,6 +220,8 @@ public partial class ProfileViewModel : PageViewModel
             AvatarFacialHairHex = GetFacialHairColor(avatar.FacialHairColor);
             AvatarHeadwearStyle = avatar.HeadwearStyle;
             AvatarHeadwearHex = GetHeadwearColor(avatar.HeadwearColor);
+            AvatarMouthStyle = avatar.MouthStyle;
+            AvatarFaceExtra = avatar.FaceExtra;
         }
         else
         {
@@ -232,6 +240,8 @@ public partial class ProfileViewModel : PageViewModel
             AvatarFacialHairHex = "#2C2C2C";
             AvatarHeadwearStyle = 0;
             AvatarHeadwearHex = "#EF5350";
+            AvatarMouthStyle = 0;
+            AvatarFaceExtra = 0;
         }
     }
 
