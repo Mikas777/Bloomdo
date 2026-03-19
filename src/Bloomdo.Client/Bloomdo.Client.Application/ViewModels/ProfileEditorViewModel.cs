@@ -32,7 +32,24 @@ public partial class ProfileEditorViewModel : PageViewModel
     public override void OnAppearing()
     {
         base.OnAppearing();
-        Initialize();
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        var user = _tokenManager.CurrentUser;
+        if (user != null)
+        {
+            AvatarEditor.Initialize(user.Avatar, _ => { });
+            return;
+        }
+
+        var profile = await _profileApiService.GetProfileAsync();
+        if (profile != null)
+        {
+            _tokenManager.UpdateCurrentUser(profile);
+            AvatarEditor.Initialize(profile.Avatar, _ => { });
+        }
     }
 
     public void Initialize()
