@@ -210,6 +210,11 @@ public class AccessTokenManager : IAccessTokenManager
         return permissions.Any(HasPermission);
     }
 
+    public void UpdateCurrentUser(AccountProfileResponse profile)
+    {
+        _currentUser = profile;
+    }
+
     private void ApplyAuthResponse(AuthResponse response)
     {
         _accessToken = response.AccessToken;

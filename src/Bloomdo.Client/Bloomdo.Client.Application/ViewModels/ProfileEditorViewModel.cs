@@ -63,6 +63,7 @@ public partial class ProfileEditorViewModel : PageViewModel
 
             if (result != null)
             {
+                _tokenManager.UpdateCurrentUser(result);
                 _navigationService.NavigateTo<MainViewModel>(vm => vm.SelectedTabIndex = 3);
             }
             else

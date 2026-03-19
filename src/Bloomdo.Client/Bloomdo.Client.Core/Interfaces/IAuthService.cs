@@ -26,4 +26,5 @@ public interface IAccessTokenManager
     bool HasRole(UserRole role);
     bool HasPermission(string permission);
     bool HasAnyPermission(params string[] permissions);
+    void UpdateCurrentUser(AccountProfileResponse profile);
 }
