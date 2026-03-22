@@ -25,6 +25,9 @@ public static class Permissions
     public const string StatsView = "stats:view";
     public const string StatsExport = "stats:export";
 
+    // AI Chat
+    public const string ChatAccess = "chat:access";
+
     // Premium features
     public const string PremiumAccess = "premium:access";
 
@@ -46,6 +49,7 @@ public static class Permissions
         GoalsCreate, GoalsEdit, GoalsDelete,
         BlocksManage, ActivitiesManage,
         StatsView, StatsExport,
+        ChatAccess,
         PremiumAccess,
         UsersView, UsersManage,
         RolesManage, SettingsManage, AnalyticsView

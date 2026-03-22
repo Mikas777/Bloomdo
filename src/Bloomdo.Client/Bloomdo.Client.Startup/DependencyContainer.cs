@@ -193,6 +193,21 @@ public static class DependencyContainer
 #endif
             return handler;
         });
+
+        services.AddHttpClient<IChatApiService, ChatApiService>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(120);
+        })
+        .AddHttpMessageHandler<AuthHeaderHandler>()
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+#endif
+            return handler;
+        });
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -239,6 +254,8 @@ public static class DependencyContainer
             var appIconProvider = sp.GetService<IAppIconProvider>();
             return new StatsViewModel(appUsageService, statsApiService, appIconProvider);
         });
+        services.AddTransient<AiChatViewModel>(sp => new AiChatViewModel(
+            sp.GetRequiredService<IChatApiService>()));
         services.AddTransient<ProfileViewModel>(sp => new ProfileViewModel(
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<INavigationService>(),

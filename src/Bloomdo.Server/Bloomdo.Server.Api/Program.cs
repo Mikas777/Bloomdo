@@ -1,5 +1,6 @@
 using Bloomdo.Server.Api.Extensions;
 using Bloomdo.Server.Api.Middleware;
+using Bloomdo.Server.Application.Settings;
 using Bloomdo.Server.Infrastructure.Data;
 using Bloomdo.Server.Infrastructure.Settings;
 using Microsoft.OpenApi;
@@ -31,6 +32,14 @@ public class Program
         // Configure JWT Settings
         var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+        // Configure Gemini AI Settings
+        var geminiApiKeys = Enumerable.Range(1, 6)
+            .Select(i => builder.Configuration[$"API:Gemini-API-Key-{i}"] ?? string.Empty)
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .ToList();
+        var geminiSettings = new GeminiSettings { ApiKeys = geminiApiKeys };
+        builder.Services.AddSingleton<IGeminiSettings>(geminiSettings);
 
         // JWT Authentication & authorization
         builder.Services.AddJwtAuthentication(jwtSettings);

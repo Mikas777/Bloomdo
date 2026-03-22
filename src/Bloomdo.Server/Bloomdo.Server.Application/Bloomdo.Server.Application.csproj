@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" />
+    <PackageReference Include="Google.GenAI" />
   </ItemGroup>
 
   <ItemGroup>

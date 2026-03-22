@@ -1,0 +1,197 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mainComponents1="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
+             xmlns:items="clr-namespace:Bloomdo.Client.Application.ViewModels.Items;assembly=Bloomdo.Client.Application"
+             xmlns:helpers="clr-namespace:Bloomdo.Client.UI.Helpers"
+             mc:Ignorable="d"
+             d:DesignWidth="400"
+             d:DesignHeight="800"
+             x:DataType="mainComponents1:AiChatViewModel"
+             x:Class="Bloomdo.Client.UI.MainComponents.AiChatView">
+    <UserControl.Styles>
+        <Style Selector="Border.UserBubble">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="CornerRadius" Value="16,16,4,16"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="MaxWidth" Value="280"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="50,2,0,2"/>
+        </Style>
+        <Style Selector="Border.AssistantBubble">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="16,16,16,4"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Border.ConversationItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="14,14"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        <Style Selector="Border.ConversationItem:pointerover">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource Brush.Background}">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- Header -->
+            <Border Grid.Row="0" BorderBrush="{DynamicResource OutlineColor}" BorderThickness="0,0,0,1" Padding="16,12">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Button Grid.Column="0" Classes="Ghost" Padding="8" Command="{Binding ToggleHistoryCommand}">
+                        <PathIcon Data="{StaticResource chat_regular}" Width="20" Height="20" Foreground="{DynamicResource ButtonForeground}"/>
+                    </Button>
+                    <TextBlock Grid.Column="1" Text="{Binding CurrentTitle}" FontSize="16" FontWeight="SemiBold"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" MaxWidth="200"/>
+                    <Button Grid.Column="2" Classes="Ghost" Padding="8" Command="{Binding NewChatCommand}">
+                        <TextBlock Text="+" FontSize="22" FontWeight="Light" Foreground="{DynamicResource ButtonForeground}"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Messages -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Name="MessageScrollViewer">
+                <Panel>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                                IsVisible="{Binding !Messages.Count}">
+                        <PathIcon Data="{StaticResource chat_regular}" Width="48" Height="48" Opacity="0.3" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Bloomdo AI" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Opacity="0.6"/>
+                        <TextBlock Text="Ask me anything about your habits,&#x0a;screen time, or productivity!"
+                                   FontSize="13" Opacity="0.4" TextAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ItemsControl ItemsSource="{Binding Messages}" Margin="16,12" IsVisible="{Binding Messages.Count}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="items:ChatMessageItemViewModel">
+                                <Panel Margin="0,3">
+                                    <!-- User message -->
+                                    <Border Classes="UserBubble" IsVisible="{Binding IsUser}">
+                                        <SelectableTextBlock Text="{Binding Content}" FontSize="14"
+                                                             Foreground="{DynamicResource ButtonForeground}" TextWrapping="Wrap"/>
+                                    </Border>
+
+                                    <!-- Assistant message with copy button -->
+                                    <StackPanel IsVisible="{Binding IsAssistant}" HorizontalAlignment="Left"
+                                                MaxWidth="280" Margin="0,2,50,2">
+                                        <Border Classes="AssistantBubble">
+                                            <TextBlock helpers:MarkdownHelper.MarkdownText="{Binding Content}"
+                                                       FontSize="14" TextWrapping="Wrap"/>
+                                        </Border>
+                                        <Button Classes="Ghost" Padding="4" Margin="4,2,0,0" HorizontalAlignment="Left" Opacity="0.5"
+                                                Command="{Binding $parent[ItemsControl].((mainComponents1:AiChatViewModel)DataContext).CopyMessageCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <Panel>
+                                                    <PathIcon Data="{StaticResource copy_regular}" Width="14" Height="14"
+                                                              IsVisible="{Binding !IsCopied}"/>
+                                                    <PathIcon Data="{StaticResource checkmark_regular}" Width="14" Height="14"
+                                                              IsVisible="{Binding IsCopied}"/>
+                                                </Panel>
+                                                <Panel>
+                                                    <TextBlock Text="Copy" FontSize="11" VerticalAlignment="Center"
+                                                               IsVisible="{Binding !IsCopied}"/>
+                                                    <TextBlock Text="Copied" FontSize="11" VerticalAlignment="Center"
+                                                               IsVisible="{Binding IsCopied}"/>
+                                                </Panel>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Panel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Panel>
+            </ScrollViewer>
+
+            <!-- Typing indicator -->
+            <Border Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="16,0,16,8"
+                    IsVisible="{Binding IsSending}" Background="{DynamicResource CardBackground}"
+                    CornerRadius="16,16,16,4" Padding="16,10">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Ellipse Width="6" Height="6" Fill="{DynamicResource ForegroundLeadColor}" Opacity="0.5"/>
+                    <Ellipse Width="6" Height="6" Fill="{DynamicResource ForegroundLeadColor}" Opacity="0.35"/>
+                    <Ellipse Width="6" Height="6" Fill="{DynamicResource ForegroundLeadColor}" Opacity="0.2"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Input bar -->
+            <Border Grid.Row="2" BorderBrush="{DynamicResource OutlineColor}" BorderThickness="0,1,0,0" Padding="12,10">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBox Grid.Column="0" Text="{Binding MessageText, Mode=TwoWay}"
+                             Watermark="Type a message..." AcceptsReturn="False" TextWrapping="Wrap"
+                             MaxHeight="120" CornerRadius="20" Padding="16,10"/>
+                    <Button Grid.Column="1" Command="{Binding SendMessageCommand}" CornerRadius="20"
+                            Width="40" Height="40" Padding="0"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            IsEnabled="{Binding !IsSending}">
+                        <PathIcon Data="M5.694,12 L2.299,3.272 C1.867,2.208 2.974,1.198 3.994,1.726 L3.994,1.726 L21.324,10.891 C22.226,11.362 22.226,12.638 21.324,13.109 L21.324,13.109 L3.994,22.274 C2.974,22.802 1.867,21.792 2.299,20.728 L2.299,20.728 L5.694,12 L13,12"
+                               Width="18" Height="18"/>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- History overlay -->
+        <Panel IsVisible="{Binding IsHistoryVisible}">
+            <!-- Dark backdrop — tap to close -->
+            <Button Background="#B0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    BorderThickness="0" CornerRadius="0" Opacity="1"
+                    Command="{Binding ToggleHistoryCommand}"/>
+
+            <!-- Sidebar panel -->
+            <Border Background="{DynamicResource Brush.Background}" HorizontalAlignment="Left"
+                    Width="300" CornerRadius="0,16,16,0">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Padding="16,14" BorderBrush="{DynamicResource OutlineColor}" BorderThickness="0,0,0,1">
+                        <TextBlock Text="Chat History" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </Border>
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel Margin="8,8" Spacing="6">
+                            <TextBlock Text="No conversations yet" Opacity="0.4" FontSize="13"
+                                       HorizontalAlignment="Center" Margin="0,20"
+                                       IsVisible="{Binding !Conversations.Count}"/>
+                            <ItemsControl ItemsSource="{Binding Conversations}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="items:ChatConversationItemViewModel">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Button Grid.Column="0" Classes="Ghost" Padding="0"
+                                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                                    Command="{Binding $parent[ItemsControl].((mainComponents1:AiChatViewModel)DataContext).SelectConversationCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <Border Classes="ConversationItem" Cursor="Hand">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="Medium"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding LastMessagePreview}" FontSize="12"
+                                                                   Opacity="0.5" TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Button>
+                                            <Button Grid.Column="1" Classes="Ghost" Padding="10"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding $parent[ItemsControl].((mainComponents1:AiChatViewModel)DataContext).DeleteConversationCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <PathIcon Data="{StaticResource dismiss_regular}" Width="16" Height="16" Opacity="0.7"/>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Panel>
+
+        <!-- Loading overlay -->
+        <Border Background="#20000000" IsVisible="{Binding IsLoading}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                <TextBlock Text="Loading..." FontSize="14" Opacity="0.6" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

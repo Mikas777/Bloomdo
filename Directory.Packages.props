@@ -45,5 +45,6 @@
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.9.2.1" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState.Android" Version="2.9.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+    <PackageVersion Include="Google.GenAI" Version="1.5.0" />
   </ItemGroup>
 </Project>

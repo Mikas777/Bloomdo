@@ -96,6 +96,7 @@ public static class ServiceCollectionExtensions
             serviceCollection.AddScoped<IBlockService, BlockService>();
             serviceCollection.AddScoped<IAchievementService, AchievementService>();
             serviceCollection.AddScoped<IDailyActivityService, DailyActivityService>();
+            serviceCollection.AddScoped<IChatService, ChatService>();
         }
 
         public void RegisterRepositories()
@@ -104,6 +105,7 @@ public static class ServiceCollectionExtensions
             serviceCollection.AddScoped<IAccountRepository, AccountRepository>();
             serviceCollection.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             serviceCollection.AddScoped<IStatsRepository, StatsRepository>();
+            serviceCollection.AddScoped<IChatRepository, ChatRepository>();
         }
     }
 }

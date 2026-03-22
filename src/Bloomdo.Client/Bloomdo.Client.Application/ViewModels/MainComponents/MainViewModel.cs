@@ -14,13 +14,15 @@ public partial class MainViewModel : PageViewModel
     [NotifyPropertyChangedFor(nameof(IsHomeSelected))]
     [NotifyPropertyChangedFor(nameof(IsBlocksSelected))]
     [NotifyPropertyChangedFor(nameof(IsStatsSelected))]
+    [NotifyPropertyChangedFor(nameof(IsAiChatSelected))]
     [NotifyPropertyChangedFor(nameof(IsProfileSelected))]
     private int _selectedTabIndex = 0;
 
     public bool IsHomeSelected => SelectedTabIndex == 0;
     public bool IsBlocksSelected => SelectedTabIndex == 1;
     public bool IsStatsSelected => SelectedTabIndex == 2;
-    public bool IsProfileSelected => SelectedTabIndex == 3;
+    public bool IsAiChatSelected => SelectedTabIndex == 3;
+    public bool IsProfileSelected => SelectedTabIndex == 4;
 
     public ObservableCollection<TabItemViewModel> Tabs { get; }
 
@@ -28,6 +30,7 @@ public partial class MainViewModel : PageViewModel
         HomeViewModel homeViewModel,
         BlocksViewModel blocksViewModel,
         StatsViewModel statsViewModel,
+        AiChatViewModel aiChatViewModel,
         ProfileViewModel profileViewModel)
     {
         Tabs = new ObservableCollection<TabItemViewModel>
@@ -35,6 +38,7 @@ public partial class MainViewModel : PageViewModel
             new("Home", homeViewModel),
             new("Blocks", blocksViewModel),
             new("Stats", statsViewModel),
+            new("AI", aiChatViewModel),
             new("Profile", profileViewModel)
         };
 

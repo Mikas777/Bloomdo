@@ -60,4 +60,13 @@ public static class ApiRoutes
 
         public const string List = BaseRoute;
     }
+
+    public static class Chat
+    {
+        private const string BaseRoute = $"{Base}/chat";
+
+        public const string Conversations = $"{BaseRoute}/conversations";
+        public const string ConversationById = $"{BaseRoute}/conversations/{{id}}";
+        public const string Messages = $"{BaseRoute}/conversations/{{id}}/messages";
+    }
 }

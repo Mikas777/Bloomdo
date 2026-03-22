@@ -24,6 +24,8 @@ public class AppDbContext : DbContext
     public DbSet<ActivityGroup> ActivityGroups { get; set; }
     public DbSet<ActivityItem> ActivityItems { get; set; }
     public DbSet<ActivityCompletion> ActivityCompletions { get; set; }
+    public DbSet<ChatConversation> ChatConversations { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -320,6 +322,43 @@ public class AppDbContext : DbContext
             entity.HasQueryFilter(e => !e.IsDeleted);
         });
 
+        // ChatConversation configuration
+        modelBuilder.Entity<ChatConversation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(256);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Messages)
+                .WithOne(m => m.Conversation)
+                .HasForeignKey(m => m.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // ChatMessage configuration
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.Role).IsRequired().HasMaxLength(16);
+            entity.Property(e => e.Content).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
         SeedData(modelBuilder);
     }
 
@@ -368,7 +407,8 @@ public class AppDbContext : DbContext
             Permissions.GoalsCreate, Permissions.GoalsEdit, Permissions.GoalsDelete,
             Permissions.BlocksManage,
             Permissions.ActivitiesManage,
-            Permissions.StatsView
+            Permissions.StatsView,
+            Permissions.ChatAccess
         ];
 
         string[] premiumPermissions =
