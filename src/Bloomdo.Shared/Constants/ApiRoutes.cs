@@ -69,4 +69,16 @@ public static class ApiRoutes
         public const string ConversationById = $"{BaseRoute}/conversations/{{id}}";
         public const string Messages = $"{BaseRoute}/conversations/{{id}}/messages";
     }
+
+    public static class Subscription
+    {
+        private const string BaseRoute = $"{Base}/subscription";
+
+        public const string Status = BaseRoute;
+        public const string Checkout = $"{BaseRoute}/checkout";
+        public const string Cancel = $"{BaseRoute}/cancel";
+        public const string Webhook = $"{BaseRoute}/webhook";
+        public const string CheckoutSuccess = $"{BaseRoute}/checkout/success";
+        public const string CheckoutCancel = $"{BaseRoute}/checkout/cancel";
+    }
 }

@@ -26,6 +26,7 @@ public class AppDbContext : DbContext
     public DbSet<ActivityCompletion> ActivityCompletions { get; set; }
     public DbSet<ChatConversation> ChatConversations { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -355,6 +356,35 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Content).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // Subscription configuration
+        modelBuilder.Entity<Subscription>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.Property(e => e.StripeCustomerId).HasMaxLength(256);
+            entity.Property(e => e.StripeSubscriptionId).HasMaxLength(256);
+            entity.Property(e => e.Plan).IsRequired();
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.CurrentPeriodStart).IsRequired();
+            entity.Property(e => e.CurrentPeriodEnd).IsRequired();
+            entity.Property(e => e.CancelAtPeriodEnd).HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasIndex(e => e.AccountId).IsUnique()
+                .HasFilter("\"IsDeleted\" = false");
+            entity.HasIndex(e => e.StripeCustomerId);
+            entity.HasIndex(e => e.StripeSubscriptionId);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasQueryFilter(e => !e.IsDeleted);
         });

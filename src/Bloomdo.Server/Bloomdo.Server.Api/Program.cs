@@ -41,6 +41,17 @@ public class Program
         var geminiSettings = new GeminiSettings { ApiKeys = geminiApiKeys };
         builder.Services.AddSingleton<IGeminiSettings>(geminiSettings);
 
+        // Configure Stripe Settings
+        var stripeSettings = new StripeSettings
+        {
+            PublishableKey = builder.Configuration["Stripe:Stripe_pk"] ?? string.Empty,
+            SecretKey = builder.Configuration["Stripe:Stripe_sk"] ?? string.Empty,
+            WebhookSecret = builder.Configuration["Stripe:WebhookSecret"],
+            MonthlyPriceId = builder.Configuration["Stripe:MonthlyPriceId"] ?? string.Empty,
+            YearlyPriceId = builder.Configuration["Stripe:YearlyPriceId"] ?? string.Empty
+        };
+        builder.Services.AddSingleton<IStripeSettings>(stripeSettings);
+
         // JWT Authentication & authorization
         builder.Services.AddJwtAuthentication(jwtSettings);
 

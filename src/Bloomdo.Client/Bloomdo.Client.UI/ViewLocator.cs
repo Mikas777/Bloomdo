@@ -61,6 +61,9 @@ public class ViewLocator : IDataTemplate
             case AiChatViewModel:
                 return new AiChatView();
 
+            case SubscriptionViewModel:
+                return new SubscriptionView();
+
             case ProfileViewModel:
                 return new ProfileView();
 

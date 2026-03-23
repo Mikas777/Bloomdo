@@ -2,6 +2,7 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:shad="clr-namespace:ShadUI;assembly=ShadUI"
 			 xmlns:mainComponents1="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="mainComponents1:MainViewModel"
@@ -63,7 +64,7 @@
 				BorderBrush="{DynamicResource OutlineColor}"
 				BorderThickness="0,1,0,0"
 				Padding="0,12,0,8">
-			<Grid ColumnDefinitions="*,*,*,*,*">
+			<Grid ColumnDefinitions="*,*,*,*,*,*">
 				<!-- Home Tab -->
 				<Button Grid.Column="0" 
 						Classes="TabButton"
@@ -78,7 +79,7 @@
 								   Classes.Active="{Binding IsHomeSelected}"/>
 					</StackPanel>
 				</Button>
-				
+
 				<!-- Blocks Tab -->
 				<Button Grid.Column="1" 
 						Classes="TabButton"
@@ -93,7 +94,7 @@
 								   Classes.Active="{Binding IsBlocksSelected}"/>
 					</StackPanel>
 				</Button>
-				
+
 				<!-- Stats Tab -->
 				<Button Grid.Column="2" 
 						Classes="TabButton"
@@ -124,11 +125,26 @@
 					</StackPanel>
 				</Button>
 
-				<!-- Profile Tab -->
+				<!-- Plus Tab -->
 				<Button Grid.Column="4" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
 						CommandParameter="4">
+					<StackPanel Spacing="4" HorizontalAlignment="Center">
+						<PathIcon Data="{x:Static shad:Icons.Marker}"
+								  Classes.Active="{Binding IsSubscriptionSelected}"
+								  Classes="TabIcon"/>
+						<TextBlock Text="Plus" 
+								   Classes="TabText"
+								   Classes.Active="{Binding IsSubscriptionSelected}"/>
+					</StackPanel>
+				</Button>
+
+				<!-- Profile Tab -->
+				<Button Grid.Column="5" 
+						Classes="TabButton"
+						Command="{Binding SelectTabCommand}"
+						CommandParameter="5">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource profile_regular}"
 								  Classes.Active="{Binding IsProfileSelected}"

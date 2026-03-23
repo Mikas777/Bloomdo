@@ -103,6 +103,9 @@ public static class DependencyContainer
 
         // Group completion local store
         services.AddSingleton<IGroupCompletionStore, GroupCompletionStore>();
+
+        // Browser service
+        services.AddSingleton<IBrowserService, BrowserService>();
     }
 
     private static void RegisterRepositories(IServiceCollection services)
@@ -208,6 +211,21 @@ public static class DependencyContainer
 #endif
             return handler;
         });
+
+        services.AddHttpClient<ISubscriptionApiService, SubscriptionApiService>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .AddHttpMessageHandler<AuthHeaderHandler>()
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+#endif
+            return handler;
+        });
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -256,6 +274,10 @@ public static class DependencyContainer
         });
         services.AddTransient<AiChatViewModel>(sp => new AiChatViewModel(
             sp.GetRequiredService<IChatApiService>()));
+        services.AddTransient<SubscriptionViewModel>(sp => new SubscriptionViewModel(
+            sp.GetRequiredService<ISubscriptionApiService>(),
+            sp.GetRequiredService<IToastService>(),
+            sp.GetRequiredService<IBrowserService>()));
         services.AddTransient<ProfileViewModel>(sp => new ProfileViewModel(
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<INavigationService>(),

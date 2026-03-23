@@ -15,6 +15,7 @@ public partial class MainViewModel : PageViewModel
     [NotifyPropertyChangedFor(nameof(IsBlocksSelected))]
     [NotifyPropertyChangedFor(nameof(IsStatsSelected))]
     [NotifyPropertyChangedFor(nameof(IsAiChatSelected))]
+    [NotifyPropertyChangedFor(nameof(IsSubscriptionSelected))]
     [NotifyPropertyChangedFor(nameof(IsProfileSelected))]
     private int _selectedTabIndex = 0;
 
@@ -22,7 +23,8 @@ public partial class MainViewModel : PageViewModel
     public bool IsBlocksSelected => SelectedTabIndex == 1;
     public bool IsStatsSelected => SelectedTabIndex == 2;
     public bool IsAiChatSelected => SelectedTabIndex == 3;
-    public bool IsProfileSelected => SelectedTabIndex == 4;
+    public bool IsSubscriptionSelected => SelectedTabIndex == 4;
+    public bool IsProfileSelected => SelectedTabIndex == 5;
 
     public ObservableCollection<TabItemViewModel> Tabs { get; }
 
@@ -31,6 +33,7 @@ public partial class MainViewModel : PageViewModel
         BlocksViewModel blocksViewModel,
         StatsViewModel statsViewModel,
         AiChatViewModel aiChatViewModel,
+        SubscriptionViewModel subscriptionViewModel,
         ProfileViewModel profileViewModel)
     {
         Tabs = new ObservableCollection<TabItemViewModel>
@@ -39,6 +42,7 @@ public partial class MainViewModel : PageViewModel
             new("Blocks", blocksViewModel),
             new("Stats", statsViewModel),
             new("AI", aiChatViewModel),
+            new("Plus", subscriptionViewModel),
             new("Profile", profileViewModel)
         };
 

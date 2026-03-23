@@ -1,0 +1,310 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
+             x:DataType="vm:SubscriptionViewModel"
+             x:Class="Bloomdo.Client.UI.MainComponents.SubscriptionView">
+
+    <UserControl.Styles>
+        <Style Selector="Button.PlanCard">
+            <Setter Property="Background" Value="#1AFFFFFF"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.PlanCard:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#26FFFFFF"/>
+        </Style>
+        <Style Selector="Button.PlanCard:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1AFFFFFF"/>
+        </Style>
+        <Style Selector="Button.PlanCard.Selected">
+            <Setter Property="BorderBrush" Value="#66BB6A"/>
+            <Setter Property="Background" Value="#1A66BB6A"/>
+        </Style>
+        <Style Selector="Button.PlanCard.Selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2666BB6A"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource Brush.Background}">
+        <ScrollViewer>
+            <StackPanel Spacing="0">
+
+                <!-- Hero Header -->
+                <Border Height="220" ClipToBounds="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#7E57C2" Offset="0"/>
+                            <GradientStop Color="#5C6BC0" Offset="0.5"/>
+                            <GradientStop Color="#42A5F5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+                        <Border Width="64" Height="64" CornerRadius="32"
+                                Background="#33FFFFFF" HorizontalAlignment="Center">
+                            <TextBlock Text="&#x1F451;" FontSize="28"
+                                       FontFamily="{StaticResource EmojiFont}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Bloomdo Plus" FontSize="28" FontWeight="Bold"
+                                   Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Unlock your full potential"
+                                   FontSize="14" Foreground="White" Opacity="0.85"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Margin="20,24,20,40" Spacing="20">
+
+                    <!-- Active subscription status -->
+                    <Border IsVisible="{Binding IsPremium}"
+                            Background="#1A66BB6A" CornerRadius="12" Padding="16">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Border Width="8" Height="8" CornerRadius="4"
+                                        Background="#66BB6A" VerticalAlignment="Center"
+                                        Margin="0,0,8,0"/>
+                                <TextBlock Grid.Column="1" Text="{Binding CurrentPlanText}"
+                                           FontSize="15" FontWeight="SemiBold"
+                                           Foreground="#EFEFEF" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="{Binding StatusText}"
+                                           FontSize="13" Foreground="#66BB6A"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Text="{Binding ExpiryText}"
+                                       FontSize="12" Foreground="#EFEFEF" Opacity="0.6"/>
+                            <Button HorizontalAlignment="Left" Padding="12,6"
+                                    CornerRadius="8" Margin="0,4,0,0"
+                                    Background="#33EF5350"
+                                    Command="{Binding CancelSubscriptionCommand}"
+                                    IsVisible="{Binding !WillCancel}">
+                                <TextBlock Text="Cancel Subscription" FontSize="12"
+                                           Foreground="#EF5350"/>
+                            </Button>
+                            <TextBlock IsVisible="{Binding WillCancel}"
+                                       Text="Your subscription will not renew"
+                                       FontSize="12" Foreground="#FF9800" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Features List -->
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="What you get with Plus" FontSize="18" FontWeight="Bold"
+                                   Foreground="#EFEFEF"/>
+                        <StackPanel Spacing="10">
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1A66BB6A" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F916;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Unlimited AI Chat" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Get personalized productivity advice"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1A42A5F5" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F4CA;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Advanced Analytics" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Deep insights into your habits"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1AFF9800" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F525;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Streak Freeze" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Protect your streak on off days"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1AEF5350" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F6AB;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Unlimited App Blocks" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Block as many distracting apps as you need"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1A7E57C2" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F3AF;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Custom Goals &amp; Themes" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Personalize your experience fully"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Width="36" Height="36" CornerRadius="18"
+                                        Background="#1A26A69A" Margin="0,0,12,0">
+                                    <TextBlock Text="&#x1F48E;" FontSize="16"
+                                               FontFamily="{StaticResource EmojiFont}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                                    <TextBlock Text="No Ads, Ever" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Enjoy a clean, distraction-free experience"
+                                               FontSize="12" Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Plan Selection (hidden when premium) -->
+                    <StackPanel IsVisible="{Binding !IsPremium}" Spacing="16">
+                        <TextBlock Text="Choose your plan" FontSize="18" FontWeight="Bold"
+                                   Foreground="#EFEFEF"/>
+
+                        <!-- Monthly -->
+                        <Button Classes="PlanCard"
+                                Classes.Selected="{Binding IsMonthlySelected}"
+                                Command="{Binding SelectMonthlyCommand}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="Monthly" FontSize="16" FontWeight="SemiBold"
+                                               Foreground="#EFEFEF"/>
+                                    <TextBlock Text="Billed every month" FontSize="12"
+                                               Foreground="#EFEFEF" Opacity="0.5"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="2"
+                                                HorizontalAlignment="Right">
+                                        <TextBlock Text="$1.99" FontSize="22" FontWeight="Bold"
+                                                   Foreground="#EFEFEF"/>
+                                        <TextBlock Text="/mo" FontSize="13" Foreground="#EFEFEF"
+                                                   Opacity="0.5" VerticalAlignment="Bottom"
+                                                   Margin="0,0,0,3"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+
+                        <!-- Yearly with savings badge -->
+                        <Grid>
+                            <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    ZIndex="1" Margin="0,-8,12,0"
+                                    Background="#66BB6A" CornerRadius="8"
+                                    Padding="10,4">
+                                <TextBlock Text="SAVE 16%" FontSize="11" FontWeight="Bold"
+                                           Foreground="White"/>
+                            </Border>
+                            <Button Classes="PlanCard"
+                                    Classes.Selected="{Binding IsYearlySelected}"
+                                    Command="{Binding SelectYearlyCommand}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Yearly" FontSize="16" FontWeight="SemiBold"
+                                                   Foreground="#EFEFEF"/>
+                                        <TextBlock Text="Billed annually" FontSize="12"
+                                                   Foreground="#EFEFEF" Opacity="0.5"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right"
+                                                VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Spacing="2"
+                                                    HorizontalAlignment="Right">
+                                            <TextBlock Text="$19.99" FontSize="22" FontWeight="Bold"
+                                                       Foreground="#EFEFEF"/>
+                                            <TextBlock Text="/yr" FontSize="13" Foreground="#EFEFEF"
+                                                       Opacity="0.5" VerticalAlignment="Bottom"
+                                                       Margin="0,0,0,3"/>
+                                        </StackPanel>
+                                        <TextBlock Text="$1.67/mo" FontSize="12" Foreground="#66BB6A"
+                                                   HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+                        </Grid>
+
+                        <!-- Subscribe CTA -->
+                        <Button HorizontalAlignment="Stretch" Height="52" CornerRadius="14"
+                                Margin="0,4,0,0"
+                                Command="{Binding SubscribeCommand}"
+                                IsEnabled="{Binding !IsCheckoutLoading}"
+                                Cursor="Hand">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                    <GradientStop Color="#66BB6A" Offset="0"/>
+                                    <GradientStop Color="#42A5F5" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <Panel>
+                                <TextBlock Text="Subscribe Now" FontSize="17" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           IsVisible="{Binding !IsCheckoutLoading}"/>
+                                <TextBlock Text="Loading..." FontSize="17" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           Opacity="0.7"
+                                           IsVisible="{Binding IsCheckoutLoading}"/>
+                            </Panel>
+                        </Button>
+
+                        <TextBlock Text="Cancel anytime. No hidden fees. Secure payment via Stripe."
+                                   FontSize="11" Foreground="#EFEFEF" Opacity="0.4"
+                                   HorizontalAlignment="Center" TextAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Refresh -->
+                    <Button HorizontalAlignment="Center" Padding="16,8"
+                            Background="Transparent" BorderThickness="0"
+                            Command="{Binding RefreshStatusCommand}"
+                            Cursor="Hand" Margin="0,8,0,0">
+                        <TextBlock Text="&#x21BB; Refresh status" FontSize="12"
+                                   Foreground="#EFEFEF" Opacity="0.4"/>
+                    </Button>
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Loading overlay -->
+        <Border IsVisible="{Binding IsLoading}" Background="#88000000">
+            <TextBlock Text="Loading..." FontSize="16"
+                       Foreground="White" Opacity="0.7"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</UserControl>
