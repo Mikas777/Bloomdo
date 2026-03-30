@@ -8,14 +8,14 @@
              x:DataType="vm:ConfirmDialogViewModel"
              x:Class="Bloomdo.Client.UI.Dialogs.ConfirmDialogView">
 
-    <Border Background="#1A1A2E"
+    <Border Background="{DynamicResource DialogBackgroundColor}"
             CornerRadius="24" Padding="24,24,24,24" MinWidth="280" MaxWidth="340">
         <StackPanel Spacing="16" HorizontalAlignment="Center">
 
             <!-- Title -->
             <TextBlock Text="{Binding Title}"
                        FontSize="20" FontWeight="Bold"
-                       Foreground="White"
+                       Foreground="{DynamicResource ForegroundColor}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        TextWrapping="Wrap" />
@@ -23,7 +23,7 @@
             <!-- Message -->
             <TextBlock Text="{Binding Message}"
                        FontSize="14" Opacity="0.7"
-                       Foreground="White"
+                       Foreground="{DynamicResource ForegroundColor}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        TextWrapping="Wrap" />
@@ -37,11 +37,11 @@
                         VerticalContentAlignment="Center"
                         Command="{Binding CancelCommand}">
                     <Border CornerRadius="12" Padding="0,12" Height="44"
-                            Background="#33FFFFFF"
+                            Background="{DynamicResource BorderColor30}"
                             HorizontalAlignment="Stretch">
                         <TextBlock Text="{Binding CancelText}"
                                    FontSize="15" FontWeight="SemiBold"
-                                   Foreground="White"
+                                   Foreground="{DynamicResource ForegroundColor}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </Button>

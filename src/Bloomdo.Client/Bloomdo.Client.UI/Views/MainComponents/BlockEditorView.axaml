@@ -103,7 +103,7 @@
                                             </Border>
                                             <TextBlock Grid.Column="1" Text="{Binding Title}"
                                                        VerticalAlignment="Center" FontSize="14"
-                                                       Foreground="#EFEFEF"/>
+                                                       Foreground="{DynamicResource ForegroundColor}"/>
                                             <Border Grid.Column="2" Width="22" Height="22" CornerRadius="11"
                                                     BorderBrush="#66BB6A" BorderThickness="2"
                                                     VerticalAlignment="Center" Margin="16,0,0,0">

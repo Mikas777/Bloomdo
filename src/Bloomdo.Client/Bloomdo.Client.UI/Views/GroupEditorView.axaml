@@ -66,7 +66,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Group Icon" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
 
                         <Button Command="{Binding ToggleEmojiPickerCommand}"
                                 Background="#15FFFFFF" CornerRadius="12"
@@ -79,9 +79,9 @@
                                            FontSize="24" VerticalAlignment="Center"/>
                                 <TextBlock Text="Change icon"
                                            FontSize="12" Opacity="0.6"
-                                           Foreground="#EFEFEF" VerticalAlignment="Center"/>
+                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 <PathIcon Data="{x:Static shad:Icons.ChevronDown}" Width="12" Height="12"
-                                          Foreground="#EFEFEF" Opacity="0.4"/>
+                                          Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"/>
                             </StackPanel>
                         </Button>
 
@@ -129,7 +129,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Group Name" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBox Text="{Binding GroupTitle}"
                                  Watermark="e.g. Morning Routine, Study, Workout..."
                                  FontSize="14"/>
@@ -140,7 +140,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Description" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBox Text="{Binding GroupDescription}"
                                  Watermark="What is this group for? (optional)"
                                  FontSize="13" AcceptsReturn="True"
@@ -153,7 +153,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Color" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <ItemsControl ItemsSource="{x:Static vm:GroupEditorViewModel.AvailableColors}"
                                       IsEnabled="{Binding CanCustomizeColors}">
                             <ItemsControl.ItemsPanel>
@@ -192,7 +192,7 @@
                     <StackPanel Spacing="10">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Text="Tasks" FontSize="16" FontWeight="Bold"
-                                       Foreground="#EFEFEF" VerticalAlignment="Center"/>
+                                       Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                             <Button Grid.Column="1" Padding="0"
                                     Width="34" Height="34"
                                     HorizontalContentAlignment="Center"
@@ -214,10 +214,10 @@
                         <StackPanel IsVisible="{Binding !HasTasks}" Spacing="6"
                                     HorizontalAlignment="Center" Margin="0,12">
                             <TextBlock Text="No tasks yet" FontSize="13" Opacity="0.4"
-                                       Foreground="#EFEFEF" HorizontalAlignment="Center"/>
+                                       Foreground="{DynamicResource ForegroundColor}" HorizontalAlignment="Center"/>
                             <TextBlock Text="Add tasks to track your daily activities"
                                        FontSize="11" Opacity="0.3"
-                                       Foreground="#EFEFEF" HorizontalAlignment="Center"/>
+                                       Foreground="{DynamicResource ForegroundColor}" HorizontalAlignment="Center"/>
                         </StackPanel>
 
                         <!-- Task list -->
@@ -269,7 +269,7 @@
                                 BorderBrush="#22FFFFFF" BorderThickness="1">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="New Task" FontSize="14" FontWeight="SemiBold"
-                                           Foreground="#EFEFEF"/>
+                                           Foreground="{DynamicResource ForegroundColor}"/>
 
                                 <!-- Task emoji -->
                                 <Panel>
@@ -284,9 +284,9 @@
                                                    FontFamily="{StaticResource EmojiFont}"
                                                    FontSize="20" VerticalAlignment="Center"/>
                                         <TextBlock Text="Icon" FontSize="11" Opacity="0.5"
-                                                   Foreground="#EFEFEF" VerticalAlignment="Center"/>
+                                                   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                         <PathIcon Data="{x:Static shad:Icons.ChevronDown}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF" Opacity="0.4"/>
+                                                  Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"/>
                                     </StackPanel>
                                 </Button>
 
@@ -340,8 +340,8 @@
                                 <!-- Task Type -->
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="Type" FontSize="11" Opacity="0.5"
-                                               Foreground="#EFEFEF"/>
-                                    <Grid ColumnDefinitions="*,6,*" RowDefinitions="Auto,6,Auto">
+                                               Foreground="{DynamicResource ForegroundColor}"/>
+                                    <Grid ColumnDefinitions="*,6,*" RowDefinitions="Auto,6,Auto,6,Auto">
                                         <Button Grid.Column="0" Grid.Row="0" Padding="6"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Center"
@@ -351,7 +351,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
                                                 <TextBlock Text="⏱️" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Timer" FontSize="11" FontWeight="SemiBold"
-                                                           Foreground="White" VerticalAlignment="Center"/>
+                                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Grid.Column="2" Grid.Row="0" Padding="6"
@@ -363,7 +363,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
                                                 <TextBlock Text="🔢" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Count" FontSize="11" FontWeight="SemiBold"
-                                                           Foreground="White" VerticalAlignment="Center"/>
+                                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Grid.Column="0" Grid.Row="2" Padding="6"
@@ -375,7 +375,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
                                                 <TextBlock Text="🚶" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Steps" FontSize="11" FontWeight="SemiBold"
-                                                           Foreground="White" VerticalAlignment="Center"/>
+                                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Grid.Column="2" Grid.Row="2" Padding="6"
@@ -387,7 +387,19 @@
                                             <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
                                                 <TextBlock Text="✅" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Checkbox" FontSize="11" FontWeight="SemiBold"
-                                                           Foreground="White" VerticalAlignment="Center"/>
+                                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Padding="6"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Center"
+                                                CornerRadius="8"
+                                                Command="{Binding SelectNewTaskTypeCommand}"
+                                                CommandParameter="Photo">
+                                            <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+                                                <TextBlock Text="📷" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Photo Verification" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                     </Grid>
@@ -398,7 +410,7 @@
                                       IsVisible="{Binding IsNewTaskTimer}">
                                     <TextBlock Text="Duration:" FontSize="12"
                                                VerticalAlignment="Center"
-                                               Foreground="#EFEFEF" Opacity="0.6"
+                                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.6"
                                                Margin="0,0,8,0"/>
                                     <Button Grid.Column="1" Classes="Ghost" Padding="6"
                                             Width="32" Height="32"
@@ -406,14 +418,14 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding DecrementDurationCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF"/>
+                                                  Foreground="{DynamicResource ForegroundColor}"/>
                                     </Button>
                                     <Border Grid.Column="2" CornerRadius="6" Padding="10,4"
                                             Background="#15FFFFFF" MinWidth="60"
                                             HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding NewTaskDurationMinutes, StringFormat='{}{0} min'}"
                                                    FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="#EFEFEF"
+                                                   Foreground="{DynamicResource ForegroundColor}"
                                                    HorizontalAlignment="Center"/>
                                     </Border>
                                     <Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -422,7 +434,7 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding IncrementDurationCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF">
+                                                  Foreground="{DynamicResource ForegroundColor}">
                                             <PathIcon.RenderTransform>
                                                 <RotateTransform Angle="45"/>
                                             </PathIcon.RenderTransform>
@@ -435,7 +447,7 @@
                                       IsVisible="{Binding IsNewTaskCount}">
                                     <TextBlock Text="Target:" FontSize="12"
                                                VerticalAlignment="Center"
-                                               Foreground="#EFEFEF" Opacity="0.6"
+                                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.6"
                                                Margin="0,0,8,0"/>
                                     <Button Grid.Column="1" Classes="Ghost" Padding="6"
                                             Width="32" Height="32"
@@ -443,14 +455,14 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding DecrementTargetCountCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF"/>
+                                                  Foreground="{DynamicResource ForegroundColor}"/>
                                     </Button>
                                     <Border Grid.Column="2" CornerRadius="6" Padding="10,4"
                                             Background="#15FFFFFF" MinWidth="60"
                                             HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding NewTaskTargetCount}"
                                                    FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="#EFEFEF"
+                                                   Foreground="{DynamicResource ForegroundColor}"
                                                    HorizontalAlignment="Center"/>
                                     </Border>
                                     <Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -459,7 +471,7 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding IncrementTargetCountCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF">
+                                                  Foreground="{DynamicResource ForegroundColor}">
                                             <PathIcon.RenderTransform>
                                                 <RotateTransform Angle="45"/>
                                             </PathIcon.RenderTransform>
@@ -472,7 +484,7 @@
                                       IsVisible="{Binding IsNewTaskSteps}">
                                     <TextBlock Text="Goal:" FontSize="12"
                                                VerticalAlignment="Center"
-                                               Foreground="#EFEFEF" Opacity="0.6"
+                                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.6"
                                                Margin="0,0,8,0"/>
                                     <Button Grid.Column="1" Classes="Ghost" Padding="6"
                                             Width="32" Height="32"
@@ -480,14 +492,14 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding DecrementTargetStepsCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF"/>
+                                                  Foreground="{DynamicResource ForegroundColor}"/>
                                     </Button>
                                     <Border Grid.Column="2" CornerRadius="6" Padding="10,4"
                                             Background="#15FFFFFF" MinWidth="70"
                                             HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding NewTaskTargetCount, StringFormat='{}{0} steps'}"
                                                    FontSize="11" FontWeight="SemiBold"
-                                                   Foreground="#EFEFEF"
+                                                   Foreground="{DynamicResource ForegroundColor}"
                                                    HorizontalAlignment="Center"/>
                                     </Border>
                                     <Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -496,7 +508,7 @@
                                             VerticalContentAlignment="Center"
                                             Command="{Binding IncrementTargetStepsCommand}">
                                         <PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-                                                  Foreground="#EFEFEF">
+                                                  Foreground="{DynamicResource ForegroundColor}">
                                             <PathIcon.RenderTransform>
                                                 <RotateTransform Angle="45"/>
                                             </PathIcon.RenderTransform>
@@ -508,7 +520,7 @@
                                 <Panel>
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="Color" FontSize="11" Opacity="0.5"
-                                               Foreground="#EFEFEF"/>
+                                               Foreground="{DynamicResource ForegroundColor}"/>
                                     <ItemsControl ItemsSource="{x:Static vm:GroupEditorViewModel.AvailableColors}"
                                                   IsEnabled="{Binding CanCustomizeColors}">
                                         <ItemsControl.ItemsPanel>
@@ -569,7 +581,7 @@
                                             HorizontalContentAlignment="Center"
                                             Command="{Binding CancelAddTaskCommand}">
                                         <TextBlock Text="Cancel" FontSize="13"
-                                                   Foreground="#EFEFEF" Opacity="0.5"/>
+                                                   Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
                                     </Button>
                                     <Button Grid.Column="1" Padding="8"
                                             HorizontalAlignment="Stretch"
@@ -600,7 +612,7 @@
                         Background="#15FFFFFF" CornerRadius="12"
                         Command="{Binding CancelCommand}">
                     <TextBlock Text="Cancel" FontSize="15" FontWeight="SemiBold"
-                               Foreground="#EFEFEF" Opacity="0.7"/>
+                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.7"/>
                 </Button>
                 <Button Grid.Column="2" Padding="12"
                         HorizontalAlignment="Stretch"

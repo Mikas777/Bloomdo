@@ -59,6 +59,7 @@ public partial class ActivityGroupItemViewModel : ObservableObject
     public bool IsNewItemCountType => NewItemTaskType == ActivityItemType.Count;
     public bool IsNewItemStepsType => NewItemTaskType == ActivityItemType.Steps;
     public bool IsNewItemCheckboxType => NewItemTaskType == ActivityItemType.Checkbox;
+    public bool IsNewItemPhotoType => NewItemTaskType == ActivityItemType.PhotoVerification;
 
     public ObservableCollection<ActivityTaskItemViewModel> Tasks { get; } = [];
 
@@ -99,6 +100,7 @@ public partial class ActivityGroupItemViewModel : ObservableObject
         OnPropertyChanged(nameof(IsNewItemCountType));
         OnPropertyChanged(nameof(IsNewItemStepsType));
         OnPropertyChanged(nameof(IsNewItemCheckboxType));
+        OnPropertyChanged(nameof(IsNewItemPhotoType));
 
         // Set sensible defaults when switching types
         if (value == ActivityItemType.Steps && NewItemTargetCount < 1000)

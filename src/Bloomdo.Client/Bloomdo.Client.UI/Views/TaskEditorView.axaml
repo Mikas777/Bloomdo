@@ -62,7 +62,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Task Icon" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
 
                         <Button Command="{Binding ToggleEmojiPickerCommand}"
                                 Background="#15FFFFFF" CornerRadius="12"
@@ -75,9 +75,9 @@
                                            FontSize="24" VerticalAlignment="Center"/>
                                 <TextBlock Text="Change icon"
                                            FontSize="12" Opacity="0.6"
-                                           Foreground="#EFEFEF" VerticalAlignment="Center"/>
+                                           Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 <PathIcon Data="{x:Static shad:Icons.ChevronDown}" Width="12" Height="12"
-                                          Foreground="#EFEFEF" Opacity="0.4"/>
+                                          Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"/>
                             </StackPanel>
                         </Button>
 
@@ -125,7 +125,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Task Name" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBox Text="{Binding TaskTitle}"
                                  Watermark="e.g. Read 30 min, Meditate, Exercise..."
                                  FontSize="14"/>
@@ -136,7 +136,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Description" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBox Text="{Binding TaskDescription}"
                                  Watermark="Add details (optional)"
                                  FontSize="13" AcceptsReturn="True"
@@ -148,7 +148,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Task Type" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,8,Auto,8,Auto">
                             <Button Grid.Column="0" Grid.Row="0" Padding="10"
                                     HorizontalAlignment="Stretch"
@@ -159,7 +159,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                     <TextBlock Text="⏱" FontFamily="{StaticResource EmojiFont}" FontSize="16" VerticalAlignment="Center"/>
                                     <TextBlock Text="Timer" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="White" VerticalAlignment="Center"/>
+                                               Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Grid.Column="2" Grid.Row="0" Padding="10"
@@ -171,7 +171,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                     <TextBlock Text="📊" FontFamily="{StaticResource EmojiFont}" FontSize="16" VerticalAlignment="Center"/>
                                     <TextBlock Text="Count" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="White" VerticalAlignment="Center"/>
+                                               Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Grid.Column="0" Grid.Row="2" Padding="10"
@@ -183,7 +183,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                     <TextBlock Text="🚶" FontFamily="{StaticResource EmojiFont}" FontSize="16" VerticalAlignment="Center"/>
                                     <TextBlock Text="Steps" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="White" VerticalAlignment="Center"/>
+                                               Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Grid.Column="2" Grid.Row="2" Padding="10"
@@ -195,7 +195,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                     <TextBlock Text="✅" FontFamily="{StaticResource EmojiFont}" FontSize="16" VerticalAlignment="Center"/>
                                     <TextBlock Text="Checkbox" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="White" VerticalAlignment="Center"/>
+                                               Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Padding="10"
@@ -207,7 +207,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                     <TextBlock Text="📷" FontFamily="{StaticResource EmojiFont}" FontSize="16" VerticalAlignment="Center"/>
                                     <TextBlock Text="Photo Verification" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="White" VerticalAlignment="Center"/>
+                                               Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -219,7 +219,7 @@
                            IsVisible="{Binding IsTimerType}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Duration" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Center">
                             <Button Grid.Column="0" Classes="Ghost" Padding="8"
                                     Width="44" Height="44" CornerRadius="22"
@@ -228,14 +228,14 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding DecrementDurationCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Minus}" Width="14" Height="14"
-                                          Foreground="#EFEFEF"/>
+                                          Foreground="{DynamicResource ForegroundColor}"/>
                             </Button>
                             <Border Grid.Column="1" CornerRadius="12" Padding="20,8"
                                     Background="#0AFFFFFF" MinWidth="100" Margin="16,0"
                                     HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding TaskDurationMinutes, StringFormat='{}{0} min'}"
                                            FontSize="20" FontWeight="Bold"
-                                           Foreground="#EFEFEF"
+                                           Foreground="{DynamicResource ForegroundColor}"
                                            HorizontalAlignment="Center"/>
                             </Border>
                             <Button Grid.Column="2" Classes="Ghost" Padding="8"
@@ -245,7 +245,7 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding IncrementDurationCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Cross}" Width="14" Height="14"
-                                          Foreground="#EFEFEF">
+                                          Foreground="{DynamicResource ForegroundColor}">
                                     <PathIcon.RenderTransform>
                                         <RotateTransform Angle="45"/>
                                     </PathIcon.RenderTransform>
@@ -260,9 +260,9 @@
                            IsVisible="{Binding IsCountType}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Target Count" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBlock Text="How many times do you want to complete this?"
-                                   FontSize="12" Opacity="0.5" Foreground="#EFEFEF"/>
+                                   FontSize="12" Opacity="0.5" Foreground="{DynamicResource ForegroundColor}"/>
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Center">
                             <Button Grid.Column="0" Classes="Ghost" Padding="8"
                                     Width="44" Height="44" CornerRadius="22"
@@ -271,14 +271,14 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding DecrementTargetCountCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Minus}" Width="14" Height="14"
-                                          Foreground="#EFEFEF"/>
+                                          Foreground="{DynamicResource ForegroundColor}"/>
                             </Button>
                             <Border Grid.Column="1" CornerRadius="12" Padding="20,8"
                                     Background="#0AFFFFFF" MinWidth="100" Margin="16,0"
                                     HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding TaskTargetCount}"
                                            FontSize="20" FontWeight="Bold"
-                                           Foreground="#EFEFEF"
+                                           Foreground="{DynamicResource ForegroundColor}"
                                            HorizontalAlignment="Center"/>
                             </Border>
                             <Button Grid.Column="2" Classes="Ghost" Padding="8"
@@ -288,7 +288,7 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding IncrementTargetCountCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Cross}" Width="14" Height="14"
-                                          Foreground="#EFEFEF">
+                                          Foreground="{DynamicResource ForegroundColor}">
                                     <PathIcon.RenderTransform>
                                         <RotateTransform Angle="45"/>
                                     </PathIcon.RenderTransform>
@@ -303,9 +303,9 @@
                            IsVisible="{Binding IsStepsType}">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Step Goal" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBlock Text="How many steps is your daily goal?"
-                                   FontSize="12" Opacity="0.5" Foreground="#EFEFEF"/>
+                                   FontSize="12" Opacity="0.5" Foreground="{DynamicResource ForegroundColor}"/>
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Center">
                             <Button Grid.Column="0" Classes="Ghost" Padding="8"
                                     Width="44" Height="44" CornerRadius="22"
@@ -314,14 +314,14 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding DecrementTargetStepsCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Minus}" Width="14" Height="14"
-                                          Foreground="#EFEFEF"/>
+                                          Foreground="{DynamicResource ForegroundColor}"/>
                             </Button>
                             <Border Grid.Column="1" CornerRadius="12" Padding="20,8"
                                     Background="#0AFFFFFF" MinWidth="120" Margin="16,0"
                                     HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding TaskTargetCount, StringFormat='{}{0} steps'}"
                                            FontSize="18" FontWeight="Bold"
-                                           Foreground="#EFEFEF"
+                                           Foreground="{DynamicResource ForegroundColor}"
                                            HorizontalAlignment="Center"/>
                             </Border>
                             <Button Grid.Column="2" Classes="Ghost" Padding="8"
@@ -331,7 +331,7 @@
                                     Background="#15FFFFFF"
                                     Command="{Binding IncrementTargetStepsCommand}">
                                 <PathIcon Data="{x:Static shad:Icons.Cross}" Width="14" Height="14"
-                                          Foreground="#EFEFEF">
+                                          Foreground="{DynamicResource ForegroundColor}">
                                     <PathIcon.RenderTransform>
                                         <RotateTransform Angle="45"/>
                                     </PathIcon.RenderTransform>
@@ -346,9 +346,9 @@
                            IsVisible="{Binding IsPhotoVerificationType}">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Verification Template" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <TextBlock Text="AI will check the photo against this criteria"
-                                   FontSize="12" Opacity="0.5" Foreground="#EFEFEF"/>
+                                   FontSize="12" Opacity="0.5" Foreground="{DynamicResource ForegroundColor}"/>
 
                         <WrapPanel>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -356,7 +356,7 @@
                                     CommandParameter="Workout">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="💪" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Workout" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Workout" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -364,7 +364,7 @@
                                     CommandParameter="Meal">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="🍽️" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Meal" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Meal" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -372,7 +372,7 @@
                                     CommandParameter="Workspace">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="💼" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Workspace" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Workspace" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -380,7 +380,7 @@
                                     CommandParameter="Reading">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="📖" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Reading" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Reading" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -388,7 +388,7 @@
                                     CommandParameter="Outdoors">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="🌿" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Outdoors" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Outdoors" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -396,7 +396,7 @@
                                     CommandParameter="Sleep">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="😴" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Sleep" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Sleep" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -404,7 +404,7 @@
                                     CommandParameter="Meditation">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="🧘" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Meditation" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Meditation" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -412,7 +412,7 @@
                                     CommandParameter="Cleaning">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="🧹" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Cleaning" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Cleaning" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -420,7 +420,7 @@
                                     CommandParameter="Water">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="💧" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Water" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Water" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -428,7 +428,7 @@
                                     CommandParameter="ColdShower">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="🚿" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Cold Shower" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Cold Shower" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -436,7 +436,7 @@
                                     CommandParameter="Study">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="📚" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Study" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Study" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Margin="0,0,8,8" Padding="10,8" CornerRadius="12"
@@ -444,14 +444,14 @@
                                     CommandParameter="Custom">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="✏️" FontFamily="{StaticResource EmojiFont}" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Custom" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Custom" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                         </WrapPanel>
 
                         <!-- Selected template indicator -->
                         <Border Background="#15FFFFFF" CornerRadius="8" Padding="10,6">
-                            <TextBlock FontSize="12" Foreground="#EFEFEF" Opacity="0.8">
+                            <TextBlock FontSize="12" Foreground="{DynamicResource ForegroundColor}" Opacity="0.8">
                                 <Run Text="Selected: "/>
                                 <Run Text="{Binding SelectedVerificationTemplate}" FontWeight="SemiBold"/>
                             </TextBlock>
@@ -460,7 +460,7 @@
                         <!-- Custom criteria input -->
                         <StackPanel IsVisible="{Binding IsCustomVerification}" Spacing="6">
                             <TextBlock Text="Custom Criteria" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="#EFEFEF"/>
+                                       Foreground="{DynamicResource ForegroundColor}"/>
                             <TextBox Text="{Binding CustomVerificationCriteria}"
                                      Watermark="Describe what the photo should show..."
                                      FontSize="13" AcceptsReturn="True" MaxHeight="100"/>
@@ -473,7 +473,7 @@
                 <shad:Card Padding="14" Background="{DynamicResource Brush.Card}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Color" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#EFEFEF"/>
+                                   Foreground="{DynamicResource ForegroundColor}"/>
                         <ItemsControl ItemsSource="{x:Static vm:TaskEditorViewModel.AvailableColors}"
                                       IsEnabled="{Binding CanCustomizeColors}">
                             <ItemsControl.ItemsPanel>
@@ -522,7 +522,7 @@
                         Background="#15FFFFFF" CornerRadius="12"
                         Command="{Binding CancelCommand}">
                     <TextBlock Text="Cancel" FontSize="15" FontWeight="SemiBold"
-                               Foreground="#EFEFEF" Opacity="0.7"/>
+                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.7"/>
                 </Button>
                 <Button Grid.Column="2" Padding="12"
                         HorizontalAlignment="Stretch"

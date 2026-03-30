@@ -54,7 +54,7 @@ public partial class TimerDialogViewModel : ObservableObject
         $"Every day, {_originalDurationMinutes} minutes";
 
     public string StatusText => IsRunning
-        ? (IsPaused ? "⏸ Paused" : "▶ Running")
+        ? (IsPaused ? "⏸️ Paused" : "▶️ Running")
         : (RemainingSeconds <= 0 ? "✅ Complete!" : "Ready to start");
 
     public bool HasStarted => IsRunning || IsPaused;
@@ -63,9 +63,15 @@ public partial class TimerDialogViewModel : ObservableObject
     public bool HasStreak => CurrentStreak > 0;
     public string StreakText => $"🔥{CurrentStreak}";
 
-    public string StartButtonText => IsRunning
-        ? (IsPaused ? "▶ Resume" : "⏸ Pause")
-        : (RemainingSeconds <= 0 ? "↻ Restart" : "▶ Start timer");
+    public string StartButtonIcon => IsRunning
+        ? (IsPaused ? "▶️" : "⏸️")
+        : (RemainingSeconds <= 0 ? "↻" : "▶️");
+
+    public string StartButtonLabel => IsRunning
+        ? (IsPaused ? "Resume" : "Pause")
+        : (RemainingSeconds <= 0 ? "Restart" : "Start timer");
+
+    public string StartButtonText => $"{StartButtonIcon} {StartButtonLabel}";
 
     public void Configure(string title, string icon, string color, int durationMinutes, int streak = 0)
     {
@@ -208,6 +214,8 @@ public partial class TimerDialogViewModel : ObservableObject
         OnPropertyChanged(nameof(HasStreak));
         OnPropertyChanged(nameof(StreakText));
         OnPropertyChanged(nameof(StartButtonText));
+        OnPropertyChanged(nameof(StartButtonIcon));
+        OnPropertyChanged(nameof(StartButtonLabel));
     }
 
     partial void OnRemainingSecondsChanged(int value) => RefreshComputedProperties();

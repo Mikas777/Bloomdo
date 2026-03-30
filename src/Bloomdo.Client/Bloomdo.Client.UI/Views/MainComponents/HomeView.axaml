@@ -26,10 +26,10 @@
 					<StackPanel Spacing="2">
 						<TextBlock Text="{Binding WelcomeMessage}"
 								   FontSize="26" FontWeight="Bold"
-								   Foreground="#EFEFEF"/>
+								   Foreground="{DynamicResource ForegroundColor}"/>
 						<TextBlock Text="{Binding TodayDateText}"
 								   FontSize="13"
-								   Foreground="#EFEFEF"
+								   Foreground="{DynamicResource ForegroundColor}"
 								   Opacity="0.5"/>
 					</StackPanel>
 					<Button Grid.Column="1" Padding="0"
@@ -55,21 +55,19 @@
 						<Grid ColumnDefinitions="*,Auto">
 							<TextBlock Text="Daily Progress"
 									   FontSize="15" FontWeight="SemiBold"
-									   Foreground="#EFEFEF"/>
+									   Foreground="{DynamicResource ForegroundColor}"/>
 							<TextBlock Grid.Column="1"
 									   Text="{Binding ProgressText}"
 									   FontSize="15" FontWeight="Bold"
-									   Foreground="#EFEFEF"/>
+									   Foreground="{DynamicResource ForegroundColor}"/>
 						</Grid>
-						<Border Background="#22FFFFFF" CornerRadius="5" Height="10" ClipToBounds="True">
-							<Border Background="#66BB6A" Height="10"
-									HorizontalAlignment="Stretch"
-									RenderTransformOrigin="0%,50%">
-								<Border.RenderTransform>
-									<ScaleTransform ScaleX="{Binding ProgressFraction}"/>
-								</Border.RenderTransform>
-							</Border>
-						</Border>
+						<ProgressBar Maximum="100" Value="{Binding ProgressPercent}"
+									 Height="12" CornerRadius="5"
+									 Background="{DynamicResource BorderColor30}"
+									 Foreground="#66BB6A"
+									 BorderBrush="{DynamicResource BorderColor30}" 
+									 BorderThickness="1"
+									 ShowProgressText="False"/>
 					</StackPanel>
 				</shad:Card>
 
@@ -77,7 +75,7 @@
 				<StackPanel IsVisible="{Binding IsLoading}" HorizontalAlignment="Center" Margin="0,20">
 					<TextBlock Text="Loading activities..."
 							   FontSize="14" Opacity="0.5"
-							   Foreground="#EFEFEF"
+							   Foreground="{DynamicResource ForegroundColor}"
 							   HorizontalAlignment="Center"/>
 				</StackPanel>
 
@@ -87,15 +85,15 @@
 					<Border Width="64" Height="64" CornerRadius="32"
 							Background="#22FFFFFF" HorizontalAlignment="Center">
 						<PathIcon Data="{x:Static shad:Icons.Check}" Width="28" Height="28"
-								  Foreground="#EFEFEF" Opacity="0.4"/>
+								  Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"/>
 					</Border>
 					<TextBlock Text="No activities yet"
 							   FontSize="17" FontWeight="SemiBold"
 							   HorizontalAlignment="Center"
-							   Foreground="#EFEFEF" Opacity="0.5"/>
+							   Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
 					<TextBlock Text="Tap + to create your first group"
 							   FontSize="13" HorizontalAlignment="Center"
-							   Foreground="#EFEFEF" Opacity="0.35"/>
+							   Foreground="{DynamicResource ForegroundColor}" Opacity="0.35"/>
 				</StackPanel>
 
 				<!-- Activity Groups -->
@@ -122,11 +120,11 @@
 											<StackPanel IsVisible="{Binding !IsEditing}" Spacing="1">
 												<TextBlock Text="{Binding Title}"
 														   FontSize="17" FontWeight="SemiBold"
-														   Foreground="#EFEFEF"/>
+														   Foreground="{DynamicResource ForegroundColor}"/>
 												<StackPanel Orientation="Horizontal" Spacing="6">
 													<TextBlock Text="{Binding ProgressText}"
 															   FontSize="11" Opacity="0.5"
-															   Foreground="#EFEFEF"/>
+															   Foreground="{DynamicResource ForegroundColor}"/>
 													<StackPanel Orientation="Horizontal" Spacing="2"
 																	IsVisible="{Binding HasStreak}">
 														<TextBlock Text="🔥"
@@ -153,7 +151,7 @@
 														Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).CancelEditGroupCommand}"
 														CommandParameter="{Binding}">
 													<PathIcon Data="{x:Static shad:Icons.Cross}" Width="16" Height="16"
-															  Foreground="#EFEFEF" Opacity="0.5"/>
+															  Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
 												</Button>
 											</StackPanel>
 										</Panel>
@@ -164,7 +162,7 @@
 												Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).StartEditGroupCommand}"
 												CommandParameter="{Binding}">
 											<PathIcon Data="{x:Static shad:Icons.Marker}" Width="14" Height="14"
-													  Foreground="#EFEFEF" Opacity="0.4"/>
+													  Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"/>
 										</Button>
 
 										<!-- Delete group -->
@@ -181,7 +179,7 @@
 												Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).ToggleGroupExpandedCommand}"
 												CommandParameter="{Binding}">
 											<PathIcon Data="{x:Static shad:Icons.ChevronDown}" Width="14" Height="14"
-													  Foreground="#EFEFEF" Opacity="0.4">
+													  Foreground="{DynamicResource ForegroundColor}" Opacity="0.4">
 												<PathIcon.RenderTransform>
 													<RotateTransform/>
 												</PathIcon.RenderTransform>
@@ -395,14 +393,14 @@
 													CommandParameter="{Binding}">
 												<StackPanel Orientation="Horizontal" Spacing="6">
 													<PathIcon Data="{x:Static shad:Icons.Cross}" Width="11" Height="11"
-															  Foreground="#EFEFEF" Opacity="0.35">
+															  Foreground="{DynamicResource ForegroundColor}" Opacity="0.35">
 														<PathIcon.RenderTransform>
 															<RotateTransform Angle="45"/>
 														</PathIcon.RenderTransform>
 													</PathIcon>
 													<TextBlock Text="Add activity"
 															   FontSize="12" Opacity="0.4"
-															   Foreground="#EFEFEF"/>
+															   Foreground="{DynamicResource ForegroundColor}"/>
 												</StackPanel>
 											</Button>
 
@@ -410,11 +408,11 @@
 											<Border IsVisible="{Binding IsAddingItem}"
 													Background="{DynamicResource Brush.Card}"
 													CornerRadius="12" Padding="12" Margin="0,4"
-													BorderBrush="#33FFFFFF" BorderThickness="1">
+													BorderBrush="{DynamicResource BorderColor30}" BorderThickness="1">
 												<StackPanel Spacing="10">
 													<TextBlock Text="New Activity"
 															   FontSize="14" FontWeight="SemiBold"
-															   Foreground="#EFEFEF"/>
+															   Foreground="{DynamicResource ForegroundColor}"/>
 
 													<TextBox Text="{Binding NewItemTitle}"
 															 Watermark="Activity name..."
@@ -427,8 +425,8 @@
 														<!-- Task type selector -->
 														<StackPanel Spacing="4">
 															<TextBlock Text="Type" FontSize="11" Opacity="0.5"
-																	   Foreground="#EFEFEF"/>
-															<Grid ColumnDefinitions="*,4,*" RowDefinitions="Auto,4,Auto">
+																	   Foreground="{DynamicResource ForegroundColor}"/>
+															<Grid ColumnDefinitions="*,4,*" RowDefinitions="Auto,4,Auto,4,Auto">
 																<Button Grid.Column="0" Grid.Row="0" Padding="8,6"
 																		HorizontalAlignment="Stretch"
 																		HorizontalContentAlignment="Center"
@@ -438,7 +436,7 @@
 																	<StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
 																		<TextBlock Text="⏱" FontFamily="{StaticResource EmojiFont}" FontSize="13" VerticalAlignment="Center"/>
 																		<TextBlock Text="Timer" FontSize="11" FontWeight="SemiBold"
-																				   Foreground="White" VerticalAlignment="Center"/>
+																				   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 																	</StackPanel>
 																</Button>
 																<Button Grid.Column="2" Grid.Row="0" Padding="8,6"
@@ -450,7 +448,7 @@
 																	<StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
 																		<TextBlock Text="📊" FontFamily="{StaticResource EmojiFont}" FontSize="13" VerticalAlignment="Center"/>
 																		<TextBlock Text="Count" FontSize="11" FontWeight="SemiBold"
-																				   Foreground="White" VerticalAlignment="Center"/>
+																				   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 																	</StackPanel>
 																</Button>
 																<Button Grid.Column="0" Grid.Row="2" Padding="8,6"
@@ -462,7 +460,7 @@
 																	<StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
 																		<TextBlock Text="🚶" FontFamily="{StaticResource EmojiFont}" FontSize="13" VerticalAlignment="Center"/>
 																		<TextBlock Text="Steps" FontSize="11" FontWeight="SemiBold"
-																				   Foreground="White" VerticalAlignment="Center"/>
+																				   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 																	</StackPanel>
 																</Button>
 																<Button Grid.Column="2" Grid.Row="2" Padding="8,6"
@@ -474,7 +472,20 @@
 																	<StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
 																		<TextBlock Text="✅" FontFamily="{StaticResource EmojiFont}" FontSize="13" VerticalAlignment="Center"/>
 																		<TextBlock Text="Checkbox" FontSize="11" FontWeight="SemiBold"
-																				   Foreground="White" VerticalAlignment="Center"/>
+																				   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
+																	</StackPanel>
+																</Button>
+																<Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Padding="8,6"
+																		HorizontalAlignment="Stretch"
+																		HorizontalContentAlignment="Center"
+																		CornerRadius="8"
+																		Background="{DynamicResource BorderColor30}"
+																		Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).SelectNewItemTaskTypeCommand}"
+																		CommandParameter="Photo">
+																	<StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+																		<TextBlock Text="📷" FontFamily="{StaticResource EmojiFont}" FontSize="13" VerticalAlignment="Center"/>
+																		<TextBlock Text="Photo Verification" FontSize="11" FontWeight="SemiBold"
+																				   Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 																	</StackPanel>
 																</Button>
 															</Grid>
@@ -485,7 +496,7 @@
 															  IsVisible="{Binding IsNewItemTimerType}">
 															<TextBlock Text="Duration:"
 																	   FontSize="12" VerticalAlignment="Center"
-																	   Foreground="#EFEFEF"
+																	   Foreground="{DynamicResource ForegroundColor}"
 																	   Opacity="0.6" Margin="0,0,8,0"/>
 															<Button Grid.Column="1" Classes="Ghost" Padding="6"
 																	Width="32" Height="32"
@@ -494,14 +505,14 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).DecrementNewItemDurationCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-																		  Foreground="#EFEFEF"/>
+																		  Foreground="{DynamicResource ForegroundColor}"/>
 															</Button>
 															<Border Grid.Column="2" CornerRadius="6" Padding="10,4"
 																	Background="#15FFFFFF" MinWidth="50"
 																	HorizontalAlignment="Center">
 																<TextBlock Text="{Binding NewItemDurationMinutes, StringFormat='{}{0} min'}"
 																		   FontSize="13" FontWeight="SemiBold"
-																		   Foreground="#EFEFEF"
+																		   Foreground="{DynamicResource ForegroundColor}"
 																		   HorizontalAlignment="Center"/>
 															</Border>
 															<Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -511,7 +522,7 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).IncrementNewItemDurationCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-																		  Foreground="#EFEFEF">
+																		  Foreground="{DynamicResource ForegroundColor}">
 																	<PathIcon.RenderTransform>
 																		<RotateTransform Angle="45"/>
 																	</PathIcon.RenderTransform>
@@ -524,7 +535,7 @@
 															  IsVisible="{Binding IsNewItemCountType}">
 															<TextBlock Text="Target:"
 																	   FontSize="12" VerticalAlignment="Center"
-																	   Foreground="#EFEFEF"
+																	   Foreground="{DynamicResource ForegroundColor}"
 																	   Opacity="0.6" Margin="0,0,8,0"/>
 															<Button Grid.Column="1" Classes="Ghost" Padding="6"
 																	Width="32" Height="32"
@@ -533,14 +544,14 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).DecrementNewItemTargetCountCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-																		  Foreground="#EFEFEF"/>
+																		  Foreground="{DynamicResource ForegroundColor}"/>
 															</Button>
 															<Border Grid.Column="2" CornerRadius="6" Padding="10,4"
 																	Background="#15FFFFFF" MinWidth="50"
 																	HorizontalAlignment="Center">
 																<TextBlock Text="{Binding NewItemTargetCount}"
 																		   FontSize="13" FontWeight="SemiBold"
-																		   Foreground="#EFEFEF"
+																		   Foreground="{DynamicResource ForegroundColor}"
 																		   HorizontalAlignment="Center"/>
 															</Border>
 															<Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -550,7 +561,7 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).IncrementNewItemTargetCountCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-																		  Foreground="#EFEFEF">
+																		  Foreground="{DynamicResource ForegroundColor}">
 																	<PathIcon.RenderTransform>
 																		<RotateTransform Angle="45"/>
 																	</PathIcon.RenderTransform>
@@ -563,7 +574,7 @@
 															  IsVisible="{Binding IsNewItemStepsType}">
 															<TextBlock Text="Goal:"
 																	   FontSize="12" VerticalAlignment="Center"
-																	   Foreground="#EFEFEF"
+																	   Foreground="{DynamicResource ForegroundColor}"
 																	   Opacity="0.6" Margin="0,0,8,0"/>
 															<Button Grid.Column="1" Classes="Ghost" Padding="6"
 																	Width="32" Height="32"
@@ -572,14 +583,14 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).DecrementNewItemTargetStepsCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Minus}" Width="10" Height="10"
-																		  Foreground="#EFEFEF"/>
+																		  Foreground="{DynamicResource ForegroundColor}"/>
 															</Button>
 															<Border Grid.Column="2" CornerRadius="6" Padding="10,4"
 																	Background="#15FFFFFF" MinWidth="60"
 																	HorizontalAlignment="Center">
 																<TextBlock Text="{Binding NewItemTargetCount, StringFormat='{}{0} steps'}"
 																		   FontSize="11" FontWeight="SemiBold"
-																		   Foreground="#EFEFEF"
+																		   Foreground="{DynamicResource ForegroundColor}"
 																		   HorizontalAlignment="Center"/>
 															</Border>
 															<Button Grid.Column="3" Classes="Ghost" Padding="6"
@@ -589,7 +600,7 @@
 																	Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).IncrementNewItemTargetStepsCommand}"
 																	CommandParameter="{Binding}">
 																<PathIcon Data="{x:Static shad:Icons.Cross}" Width="10" Height="10"
-																		  Foreground="#EFEFEF">
+																		  Foreground="{DynamicResource ForegroundColor}">
 																	<PathIcon.RenderTransform>
 																		<RotateTransform Angle="45"/>
 																	</PathIcon.RenderTransform>
@@ -600,7 +611,7 @@
 													<!-- Color picker -->
 													<StackPanel Spacing="3">
 														<TextBlock Text="Color" FontSize="11" Opacity="0.5"
-																   Foreground="#EFEFEF"/>
+																   Foreground="{DynamicResource ForegroundColor}"/>
 														<ItemsControl ItemsSource="{Binding ((mainComponents1:HomeViewModel)DataContext).AvailableColors, RelativeSource={RelativeSource AncestorType=UserControl}}">
 															<ItemsControl.ItemsPanel>
 																<ItemsPanelTemplate>
@@ -647,7 +658,7 @@
 																Command="{Binding $parent[ItemsControl].((mainComponents1:HomeViewModel)DataContext).CancelAddItemCommand}"
 																CommandParameter="{Binding}">
 															<TextBlock Text="Cancel" FontSize="13"
-																	   Foreground="#EFEFEF" Opacity="0.5"/>
+																	   Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
 														</Button>
 														<Button Grid.Column="1" Padding="8"
 																HorizontalAlignment="Stretch"

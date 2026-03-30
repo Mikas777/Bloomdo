@@ -90,6 +90,7 @@ public partial class GroupEditorViewModel : PageViewModel
     public bool IsNewTaskCount => NewTaskType == ActivityItemType.Count;
     public bool IsNewTaskSteps => NewTaskType == ActivityItemType.Steps;
     public bool IsNewTaskCheckbox => NewTaskType == ActivityItemType.Checkbox;
+    public bool IsNewTaskPhoto => NewTaskType == ActivityItemType.PhotoVerification;
 
     public string NewTaskPreviewSubtitle => NewTaskType switch
     {
@@ -246,6 +247,7 @@ public partial class GroupEditorViewModel : PageViewModel
             "Count" => ActivityItemType.Count,
             "Steps" => ActivityItemType.Steps,
             "Checkbox" => ActivityItemType.Checkbox,
+            "Photo" => ActivityItemType.PhotoVerification,
             _ => ActivityItemType.Timer
         };
         if (NewTaskType == ActivityItemType.Steps)
@@ -256,6 +258,7 @@ public partial class GroupEditorViewModel : PageViewModel
         OnPropertyChanged(nameof(IsNewTaskCount));
         OnPropertyChanged(nameof(IsNewTaskSteps));
         OnPropertyChanged(nameof(IsNewTaskCheckbox));
+        OnPropertyChanged(nameof(IsNewTaskPhoto));
     }
 
     [RelayCommand]
@@ -310,6 +313,7 @@ public partial class GroupEditorViewModel : PageViewModel
         OnPropertyChanged(nameof(IsNewTaskCount));
         OnPropertyChanged(nameof(IsNewTaskSteps));
         OnPropertyChanged(nameof(IsNewTaskCheckbox));
+        OnPropertyChanged(nameof(IsNewTaskPhoto));
     }
 
     [RelayCommand]

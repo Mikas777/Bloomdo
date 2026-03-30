@@ -337,6 +337,7 @@ public partial class HomeViewModel : PageViewModel
             "Count" => ActivityItemType.Count,
             "Steps" => ActivityItemType.Steps,
             "Checkbox" => ActivityItemType.Checkbox,
+            "Photo" => ActivityItemType.PhotoVerification,
             _ => ActivityItemType.Timer
         };
         foreach (var group in Groups)
