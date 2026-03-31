@@ -48,6 +48,9 @@ public class ViewLocator : IDataTemplate
                 
             case HomeViewModel:
                 return new HomeView();
+
+            case SocialViewModel:
+                return new SocialView();
                 
             case BlocksViewModel:
                 return new BlocksView();

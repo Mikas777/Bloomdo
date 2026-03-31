@@ -11,4 +11,5 @@ public class ActivityGroup : BaseEntity
 
     public Account Account { get; set; } = null!;
     public ICollection<ActivityItem> Items { get; set; } = [];
+    public ICollection<GroupMembership> Memberships { get; set; } = [];
 }

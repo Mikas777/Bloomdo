@@ -64,7 +64,7 @@
 				BorderBrush="{DynamicResource OutlineColor}"
 				BorderThickness="0,1,0,0"
 				Padding="0,12,0,8">
-			<Grid ColumnDefinitions="*,*,*,*,*,*">
+			<Grid ColumnDefinitions="*,*,*,*,*,*,*">
 				<!-- Home Tab -->
 				<Button Grid.Column="0" 
 						Classes="TabButton"
@@ -80,11 +80,26 @@
 					</StackPanel>
 				</Button>
 
-				<!-- Blocks Tab -->
+				<!-- Social Tab -->
 				<Button Grid.Column="1" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
 						CommandParameter="1">
+					<StackPanel Spacing="4" HorizontalAlignment="Center">
+						<PathIcon Data="{StaticResource people_regular}"
+								  Classes.Active="{Binding IsSocialSelected}"
+								  Classes="TabIcon"/>
+						<TextBlock Text="Social" 
+								   Classes="TabText"
+								   Classes.Active="{Binding IsSocialSelected}"/>
+					</StackPanel>
+				</Button>
+
+				<!-- Blocks Tab -->
+				<Button Grid.Column="2" 
+						Classes="TabButton"
+						Command="{Binding SelectTabCommand}"
+						CommandParameter="2">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource blocks_regular}"
 								  Classes.Active="{Binding IsBlocksSelected}"
@@ -96,10 +111,10 @@
 				</Button>
 
 				<!-- Stats Tab -->
-				<Button Grid.Column="2" 
+				<Button Grid.Column="3" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
-						CommandParameter="2">
+						CommandParameter="3">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource stats_regular}"
 								  Classes.Active="{Binding IsStatsSelected}"
@@ -111,10 +126,10 @@
 				</Button>
 
 				<!-- AI Tab -->
-				<Button Grid.Column="3" 
+				<Button Grid.Column="4" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
-						CommandParameter="3">
+						CommandParameter="4">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource chat_regular}"
 								  Classes.Active="{Binding IsAiChatSelected}"
@@ -126,10 +141,10 @@
 				</Button>
 
 				<!-- Plus Tab -->
-				<Button Grid.Column="4" 
+				<Button Grid.Column="5" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
-						CommandParameter="4">
+						CommandParameter="5">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource star_regular}"
 								  Classes.Active="{Binding IsSubscriptionSelected}"
@@ -141,10 +156,10 @@
 				</Button>
 
 				<!-- Profile Tab -->
-				<Button Grid.Column="5" 
+				<Button Grid.Column="6" 
 						Classes="TabButton"
 						Command="{Binding SelectTabCommand}"
-						CommandParameter="5">
+						CommandParameter="6">
 					<StackPanel Spacing="4" HorizontalAlignment="Center">
 						<PathIcon Data="{StaticResource profile_regular}"
 								  Classes.Active="{Binding IsProfileSelected}"

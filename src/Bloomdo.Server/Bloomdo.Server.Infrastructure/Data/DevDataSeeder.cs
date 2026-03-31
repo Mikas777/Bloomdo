@@ -1,4 +1,5 @@
 using Bloomdo.Server.Domain.Entities;
+using Bloomdo.Shared.DTOs.Activities;
 using Bloomdo.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,11 +13,13 @@ public static class DevDataSeeder
 {
     private static readonly Guid SeedAccountId = new("d0000000-0000-0000-0000-000000000001");
     private static readonly Guid DemoAccountId = new("d0000000-0000-0000-0000-000000000002");
+    private static readonly Guid FriendAccountId = new("d0000000-0000-0000-0000-000000000003");
 
     public static async Task SeedAsync(AppDbContext context, ILogger? logger = null)
     {
         await SeedTestAccountAsync(context, logger);
         await SeedDemoAccountAsync(context, logger);
+        await SeedTestFriendsAndGroupsAsync(context, logger);
     }
 
     /// <summary>
@@ -510,5 +513,149 @@ public static class DevDataSeeder
 
         await context.SaveChangesAsync();
         logger?.LogInformation("Demo seed complete: vlad@gmail.com / Vlad123! (60-day account, 4 activity groups, 11 tasks, 14 days completions, 3 achievements, 3 block rules)");
+    }
+
+    /// <summary>
+    /// Seeds social interaction data: Friendships and Shared Groups.
+    /// </summary>
+    private static async Task SeedTestFriendsAndGroupsAsync(AppDbContext context, ILogger? logger)
+    {
+        if (await context.Accounts.IgnoreQueryFilters().AnyAsync(a => a.Id == FriendAccountId))
+        {
+            return;
+        }
+
+        logger?.LogInformation("Seeding Social Features data (Friends & Shared Groups)...");
+
+        var now = DateTime.UtcNow;
+        var today = DateOnly.FromDateTime(now);
+
+        // 1. Create Friend Account
+        var friendAccount = new Account
+        {
+            Id = FriendAccountId,
+            Email = "friend@bloomdo.dev",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"),
+            FirstName = "Alice",
+            LastName = "Friend",
+            Username = "alice_friend",
+            IsEmailConfirmed = true,
+            LastLoginAt = now,
+            CreatedAt = now.AddDays(-10)
+        };
+        context.Accounts.Add(friendAccount);
+
+        context.AccountRoles.Add(new AccountRole
+        {
+            Id = Guid.NewGuid(),
+            AccountId = FriendAccountId,
+            RoleId = (int)UserRole.User,
+            CreatedAt = now
+        });
+
+        // 2. Establish Friendship (SeedAccount <-> FriendAccount)
+        context.Friendships.Add(new Friendship
+        {
+            Id = Guid.NewGuid(),
+            RequesterId = SeedAccountId,
+            AddresseeId = FriendAccountId,
+            Status = FriendshipStatus.Accepted,
+            CreatedAt = now.AddDays(-5)
+        });
+
+        // 3. Create a Shared Group (Owned by SeedAccount)
+        var sharedGroupId = Guid.NewGuid();
+        var sharedGroup = new ActivityGroup
+        {
+            Id = sharedGroupId,
+            AccountId = SeedAccountId,
+            Title = "Gym Buddies",
+            Icon = "💪",
+            Color = "#EF5350",
+            SortOrder = 10,
+            CreatedAt = now.AddDays(-3)
+        };
+        context.ActivityGroups.Add(sharedGroup);
+
+        // 4. Add Memberships
+        context.GroupMemberships.AddRange(
+            new GroupMembership
+            {
+                Id = Guid.NewGuid(),
+                ActivityGroupId = sharedGroupId,
+                AccountId = SeedAccountId,
+                Role = GroupMemberRole.Owner,
+                Status = GroupMemberStatus.Accepted,
+                CreatedAt = now.AddDays(-3)
+            },
+            new GroupMembership
+            {
+                Id = Guid.NewGuid(),
+                ActivityGroupId = sharedGroupId,
+                AccountId = FriendAccountId,
+                Role = GroupMemberRole.Member,
+                Status = GroupMemberStatus.Accepted,
+                CreatedAt = now.AddDays(-2)
+            }
+        );
+
+        // 5. Add Shared Tasks
+        var pushupsId = Guid.NewGuid();
+        var squatsId = Guid.NewGuid();
+
+        context.ActivityItems.AddRange(
+            new ActivityItem 
+            { 
+                Id = pushupsId, 
+                ActivityGroupId = sharedGroupId, 
+                Title = "50 Pushups", 
+                TaskType = (int)ActivityItemType.Count, 
+                TargetCount = 50, 
+                Icon = "👊", 
+                Color = "#EF5350", 
+                SortOrder = 1, 
+                CreatedAt = now.AddDays(-3) 
+            },
+            new ActivityItem 
+            { 
+                Id = squatsId, 
+                ActivityGroupId = sharedGroupId, 
+                Title = "30 Squats", 
+                TaskType = (int)ActivityItemType.Count, 
+                TargetCount = 30, 
+                Icon = "🦵", 
+                Color = "#FF9800", 
+                SortOrder = 2, 
+                CreatedAt = now.AddDays(-3) 
+            }
+        );
+
+        // 6. Add Completions (Variant A: Independent progress)
+        // SeedAccount completed Pushups
+        context.ActivityCompletions.Add(new ActivityCompletion
+        {
+            Id = Guid.NewGuid(),
+            ActivityItemId = pushupsId,
+            AccountId = SeedAccountId,
+            Date = today,
+            CountValue = 50,
+            CompletedAtUtc = now.AddHours(-1),
+            CreatedAt = now
+        });
+
+        // FriendAccount (Alice) completed Squats
+        context.ActivityCompletions.Add(new ActivityCompletion
+        {
+            Id = Guid.NewGuid(),
+            ActivityItemId = squatsId,
+            AccountId = FriendAccountId,
+            Date = today,
+            CountValue = 30,
+            CompletedAtUtc = now.AddHours(-2),
+            CreatedAt = now
+        });
+
+        await context.SaveChangesAsync();
+        logger?.LogInformation("Social seed complete: friend@bloomdo.dev / Test123!");
     }
 }

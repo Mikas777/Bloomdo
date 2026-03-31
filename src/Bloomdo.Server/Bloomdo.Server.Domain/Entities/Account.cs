@@ -20,4 +20,10 @@ public class Account : BaseEntity
 
     public ICollection<AccountRole> AccountRoles { get; set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+
+    public ICollection<Friendship> InitiatedFriendships { get; set; } = [];
+    public ICollection<Friendship> ReceivedFriendships { get; set; } = [];
+    public ICollection<GroupMembership> GroupMemberships { get; set; } = [];
+
+    public bool IsPrivateProfile { get; set; }
 }

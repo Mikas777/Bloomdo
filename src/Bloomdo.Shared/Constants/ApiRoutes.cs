@@ -1,4 +1,4 @@
-﻿namespace Bloomdo.Shared.Constants;
+namespace Bloomdo.Shared.Constants;
 
 public static class ApiRoutes
 {
@@ -81,5 +81,16 @@ public static class ApiRoutes
         public const string Webhook = $"{BaseRoute}/webhook";
         public const string CheckoutSuccess = $"{BaseRoute}/checkout/success";
         public const string CheckoutCancel = $"{BaseRoute}/checkout/cancel";
+    }
+
+    public static class Social
+    {
+        private const string BaseRoute = $"{Base}/social";
+
+        public const string Friends = $"{BaseRoute}/friends";
+        public const string Search = $"{BaseRoute}/search";
+        public const string Request = $"{BaseRoute}/request";
+        public const string Respond = $"{BaseRoute}/respond/{{id}}";
+        public const string Remove = $"{BaseRoute}/friends/{{id}}";
     }
 }

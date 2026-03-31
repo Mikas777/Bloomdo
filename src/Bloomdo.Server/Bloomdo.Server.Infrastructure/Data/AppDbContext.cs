@@ -1,4 +1,4 @@
-﻿using Bloomdo.Server.Domain.Entities;
+using Bloomdo.Server.Domain.Entities;
 using Bloomdo.Shared.Constants;
 using Bloomdo.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +28,8 @@ public class AppDbContext : DbContext
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<StreakFreeze> StreakFreezes { get; set; }
+    public DbSet<Friendship> Friendships { get; set; }
+    public DbSet<GroupMembership> GroupMemberships { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -320,6 +322,59 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // Friendship configuration
+        modelBuilder.Entity<Friendship>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.HasIndex(e => new { e.RequesterId, e.AddresseeId }).IsUnique()
+                .HasFilter("\"IsDeleted\" = false");
+
+            entity.HasOne(e => e.Requester)
+                .WithMany(a => a.InitiatedFriendships)
+                .HasForeignKey(e => e.RequesterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Addressee)
+                .WithMany(a => a.ReceivedFriendships)
+                .HasForeignKey(e => e.AddresseeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+            entity.HasQueryFilter(e => !e.IsDeleted);
+        });
+
+        // GroupMembership configuration
+        modelBuilder.Entity<GroupMembership>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+
+            entity.HasIndex(e => new { e.ActivityGroupId, e.AccountId }).IsUnique()
+                .HasFilter("\"IsDeleted\" = false");
+
+            entity.HasOne(e => e.Group)
+                .WithMany(g => g.Memberships)
+                .HasForeignKey(e => e.ActivityGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Account)
+                .WithMany(a => a.GroupMemberships)
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(e => e.Role).IsRequired();
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
             entity.HasQueryFilter(e => !e.IsDeleted);
         });

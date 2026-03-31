@@ -1,4 +1,4 @@
-﻿using Bloomdo.Server.Api.Authorization;
+using Bloomdo.Server.Api.Authorization;
 using Bloomdo.Server.Infrastructure.Data;
 using Bloomdo.Server.Infrastructure.Data.Repositories;
 using Bloomdo.Server.Application.Interfaces;
@@ -99,6 +99,7 @@ public static class ServiceCollectionExtensions
             serviceCollection.AddScoped<IChatService, ChatService>();
             serviceCollection.AddScoped<IVisionService, GeminiVisionService>();
             serviceCollection.AddScoped<ISubscriptionService, SubscriptionService>();
+            serviceCollection.AddScoped<ISocialService, SocialService>();
         }
 
         public void RegisterRepositories()

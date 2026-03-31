@@ -8,5 +8,6 @@ public class ActivityGroupResponse
     public string Color { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public bool IsActive { get; set; }
+    public List<Bloomdo.Shared.DTOs.Friends.GroupMembershipDto> Memberships { get; set; } = [];
     public List<ActivityItemResponse> Items { get; set; } = [];
 }

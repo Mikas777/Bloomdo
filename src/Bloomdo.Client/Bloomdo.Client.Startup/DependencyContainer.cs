@@ -238,6 +238,21 @@ public static class DependencyContainer
 #endif
             return handler;
         });
+
+        services.AddHttpClient<IFriendsApiService, FriendsApiService>(client =>
+        {
+            client.BaseAddress = new Uri(apiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .AddHttpMessageHandler<AuthHeaderHandler>()
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+#endif
+            return handler;
+        });
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -262,7 +277,14 @@ public static class DependencyContainer
         services.AddTransient<SetGoalsStepViewModel>();
         
         // Main view and tabs
-        services.AddTransient<MainViewModel>();
+        services.AddTransient<MainViewModel>(sp => new MainViewModel(
+            sp.GetRequiredService<HomeViewModel>(),
+            sp.GetRequiredService<SocialViewModel>(),
+            sp.GetRequiredService<BlocksViewModel>(),
+            sp.GetRequiredService<StatsViewModel>(),
+            sp.GetRequiredService<AiChatViewModel>(),
+            sp.GetRequiredService<SubscriptionViewModel>(),
+            sp.GetRequiredService<ProfileViewModel>()));
         services.AddTransient<HomeViewModel>(sp => new HomeViewModel(
             sp.GetRequiredService<IDailyActivityApiService>(),
             sp.GetRequiredService<IGroupCompletionStore>(),
@@ -299,6 +321,11 @@ public static class DependencyContainer
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<INavigationService>(),
             sp.GetRequiredService<IProfileApiService>()));
+
+        services.AddTransient<SocialViewModel>(sp => new SocialViewModel(
+            sp.GetRequiredService<IFriendsApiService>(),
+            sp.GetRequiredService<INavigationService>(),
+            sp.GetRequiredService<IToastService>()));
 
         services.AddTransient<AvatarEditorViewModel>(sp => new AvatarEditorViewModel(
             sp.GetRequiredService<INavigationService>(),

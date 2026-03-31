@@ -805,6 +805,109 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     b.ToTable("DailySnapshots");
                 });
 
+            modelBuilder.Entity("Bloomdo.Server.Domain.Entities.Friendship", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("AddresseeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddresseeId");
+
+                    b.HasIndex("RequesterId", "AddresseeId")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = false");
+
+                    b.ToTable("Friendships");
+                });
+
+            modelBuilder.Entity("Bloomdo.Server.Domain.Entities.GroupMembership", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ActivityGroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ActivityGroupId", "AccountId")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = false");
+
+                    b.ToTable("GroupMemberships");
+                });
+
             modelBuilder.Entity("Bloomdo.Server.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1630,6 +1733,44 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("Bloomdo.Server.Domain.Entities.Friendship", b =>
+                {
+                    b.HasOne("Bloomdo.Server.Domain.Entities.Account", "Addressee")
+                        .WithMany("ReceivedFriendships")
+                        .HasForeignKey("AddresseeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Bloomdo.Server.Domain.Entities.Account", "Requester")
+                        .WithMany("InitiatedFriendships")
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Addressee");
+
+                    b.Navigation("Requester");
+                });
+
+            modelBuilder.Entity("Bloomdo.Server.Domain.Entities.GroupMembership", b =>
+                {
+                    b.HasOne("Bloomdo.Server.Domain.Entities.Account", "Account")
+                        .WithMany("GroupMemberships")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bloomdo.Server.Domain.Entities.ActivityGroup", "Group")
+                        .WithMany("Memberships")
+                        .HasForeignKey("ActivityGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("Bloomdo.Server.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Bloomdo.Server.Domain.Entities.Account", "Account")
@@ -1678,6 +1819,12 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 {
                     b.Navigation("AccountRoles");
 
+                    b.Navigation("GroupMemberships");
+
+                    b.Navigation("InitiatedFriendships");
+
+                    b.Navigation("ReceivedFriendships");
+
                     b.Navigation("RefreshTokens");
                 });
 
@@ -1689,6 +1836,8 @@ namespace Bloomdo.Server.Infrastructure.Migrations
             modelBuilder.Entity("Bloomdo.Server.Domain.Entities.ActivityGroup", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Memberships");
                 });
 
             modelBuilder.Entity("Bloomdo.Server.Domain.Entities.ActivityItem", b =>

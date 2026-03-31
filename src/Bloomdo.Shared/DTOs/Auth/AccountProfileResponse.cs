@@ -17,4 +17,5 @@ public class AccountProfileResponse
     public bool IsEmailConfirmed { get; set; }
     public DateTime? LastLoginAt { get; set; }
     public DateTime CreatedAt { get; set; }
+    public bool IsPrivateProfile { get; set; }
 }

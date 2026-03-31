@@ -177,6 +177,32 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChatConversations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatConversations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChatConversations_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DailySnapshots",
                 columns: table => new
                 {
@@ -200,6 +226,39 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_DailySnapshots_Accounts_AccountId",
                         column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendships",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    RequesterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddresseeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Accounts_AddresseeId",
+                        column: x => x.AddresseeId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Accounts_RequesterId",
+                        column: x => x.RequesterId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -231,6 +290,65 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
                         name: "FK_RefreshTokens_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StreakFreezes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StreakFreezes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StreakFreezes_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StripeCustomerId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    StripeSubscriptionId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Plan = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CurrentPeriodStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CurrentPeriodEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CancelAtPeriodEnd = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    CancelledAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
@@ -343,6 +461,8 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     Color = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false, defaultValue: "#7E57C2"),
                     SortOrder = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    VerificationTemplateId = table.Column<int>(type: "integer", nullable: true),
+                    CustomVerificationCriteria = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -358,6 +478,67 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                         name: "FK_ActivityItems_ActivityGroups_ActivityGroupId",
                         column: x => x.ActivityGroupId,
                         principalTable: "ActivityGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupMemberships",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    ActivityGroupId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMemberships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupMemberships_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupMemberships_ActivityGroups_ActivityGroupId",
+                        column: x => x.ActivityGroupId,
+                        principalTable: "ActivityGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    ConversationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChatMessages_ChatConversations_ConversationId",
+                        column: x => x.ConversationId,
+                        principalTable: "ChatConversations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -434,43 +615,47 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                     { new Guid("00000000-0000-0000-0000-000000000006"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 0, null, null },
                     { new Guid("00000000-0000-0000-0000-000000000007"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 0, null, null },
                     { new Guid("00000000-0000-0000-0000-000000000008"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 0, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000011"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000012"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000013"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000014"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000015"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000016"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000017"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000018"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 1, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000019"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000020"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000021"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000022"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000023"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000024"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000025"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000026"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000027"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000028"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000029"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:view", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000030"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:manage", 2, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000031"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000032"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000033"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000034"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000035"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000036"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000037"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000038"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000039"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000040"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000041"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:view", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000042"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:manage", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000043"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "roles:manage", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000044"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "settings:manage", 3, null, null },
-                    { new Guid("00000000-0000-0000-0000-000000000045"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "analytics:view", 3, null, null }
+                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "chat:access", 0, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000011"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000012"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000013"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000014"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000015"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000016"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000017"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000018"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "chat:access", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000019"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000020"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 1, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000021"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000022"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000023"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000024"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000025"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000026"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000027"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000028"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000029"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "chat:access", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000030"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000031"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000032"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:view", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000033"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:manage", 2, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000034"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:view", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000035"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "profile:edit", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000036"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:create", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000037"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:edit", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000038"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "goals:delete", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000039"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "blocks:manage", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000040"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "activities:manage", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000041"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:view", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000042"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "chat:access", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000043"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "premium:access", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000044"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "stats:export", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000045"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:view", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000046"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "users:manage", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000047"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "roles:manage", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000048"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "settings:manage", 3, null, null },
+                    { new Guid("00000000-0000-0000-0000-000000000049"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "analytics:view", 3, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -550,9 +735,43 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChatConversations_AccountId",
+                table: "ChatConversations",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChatMessages_ConversationId",
+                table: "ChatMessages",
+                column: "ConversationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DailySnapshots_AccountId_Date",
                 table: "DailySnapshots",
                 columns: new[] { "AccountId", "Date" },
+                unique: true,
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_AddresseeId",
+                table: "Friendships",
+                column: "AddresseeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_RequesterId_AddresseeId",
+                table: "Friendships",
+                columns: new[] { "RequesterId", "AddresseeId" },
+                unique: true,
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMemberships_AccountId",
+                table: "GroupMemberships",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMemberships_ActivityGroupId_AccountId",
+                table: "GroupMemberships",
+                columns: new[] { "ActivityGroupId", "AccountId" },
                 unique: true,
                 filter: "\"IsDeleted\" = false");
 
@@ -578,6 +797,30 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 table: "Roles",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StreakFreezes_AccountId_Date",
+                table: "StreakFreezes",
+                columns: new[] { "AccountId", "Date" },
+                unique: true,
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_AccountId",
+                table: "Subscriptions",
+                column: "AccountId",
+                unique: true,
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_StripeCustomerId",
+                table: "Subscriptions",
+                column: "StripeCustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_StripeSubscriptionId",
+                table: "Subscriptions",
+                column: "StripeSubscriptionId");
         }
 
         /// <inheritdoc />
@@ -599,7 +842,16 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 name: "BlockRules");
 
             migrationBuilder.DropTable(
+                name: "ChatMessages");
+
+            migrationBuilder.DropTable(
                 name: "DailySnapshots");
+
+            migrationBuilder.DropTable(
+                name: "Friendships");
+
+            migrationBuilder.DropTable(
+                name: "GroupMemberships");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
@@ -608,10 +860,19 @@ namespace Bloomdo.Server.Infrastructure.Migrations
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
+                name: "StreakFreezes");
+
+            migrationBuilder.DropTable(
+                name: "Subscriptions");
+
+            migrationBuilder.DropTable(
                 name: "Achievements");
 
             migrationBuilder.DropTable(
                 name: "ActivityItems");
+
+            migrationBuilder.DropTable(
+                name: "ChatConversations");
 
             migrationBuilder.DropTable(
                 name: "Roles");

@@ -1,6 +1,7 @@
 using Bloomdo.Server.Application.Interfaces;
 using Bloomdo.Server.Domain.Entities;
 using Bloomdo.Shared.DTOs.Activities;
+using Bloomdo.Shared.Enums;
 
 namespace Bloomdo.Server.Application.Services;
 
@@ -8,16 +9,23 @@ public class DailyActivityService(
     IRepository<ActivityGroup> groupRepo,
     IRepository<ActivityItem> itemRepo,
     IRepository<ActivityCompletion> completionRepo,
+    IRepository<GroupMembership> membershipRepo,
     IVisionService visionService) : IDailyActivityService
 {
     public async Task<List<ActivityGroupResponse>> GetGroupsAsync(Guid accountId, CancellationToken ct = default)
     {
-        var groups = (await groupRepo.FindAsync(g => g.AccountId == accountId && g.IsActive && !g.IsDeleted, ct))
-            .OrderBy(g => g.SortOrder)
-            .ToList();
+        // Get owned groups
+        var ownedGroups = await groupRepo.FindAsync(g => g.AccountId == accountId && !g.IsDeleted, ct);
+        
+        // Get groups where user is a member
+        var memberships = await membershipRepo.FindAsync(m => m.AccountId == accountId && m.Status == GroupMemberStatus.Accepted, ct);
+        var sharedGroupIds = memberships.Select(m => m.ActivityGroupId).ToList();
+        var sharedGroups = await groupRepo.FindAsync(g => sharedGroupIds.Contains(g.Id) && !g.IsDeleted, ct);
+
+        var allGroups = ownedGroups.Concat(sharedGroups.Where(sg => sg.AccountId != accountId)).OrderBy(g => g.SortOrder).ToList();
 
         var result = new List<ActivityGroupResponse>();
-        foreach (var group in groups)
+        foreach (var group in allGroups)
         {
             var items = (await itemRepo.FindAsync(i => i.ActivityGroupId == group.Id, ct))
                 .OrderBy(i => i.SortOrder)
@@ -149,9 +157,14 @@ public class DailyActivityService(
 
     public async Task<DailyActivitiesResponse> GetDailyAsync(Guid accountId, DateOnly date, CancellationToken ct = default)
     {
-        var groups = (await groupRepo.FindAsync(g => g.AccountId == accountId && g.IsActive && !g.IsDeleted, ct))
-            .OrderBy(g => g.SortOrder)
-            .ToList();
+        // Get owned + shared groups
+        var ownedGroups = await groupRepo.FindAsync(g => g.AccountId == accountId && g.IsActive && !g.IsDeleted, ct);
+        var memberships = await membershipRepo.FindAsync(m => m.AccountId == accountId && m.Status == GroupMemberStatus.Accepted, ct);
+        var sharedGroupIds = memberships.Select(m => m.ActivityGroupId).ToList();
+        var sharedGroups = await groupRepo.FindAsync(g => sharedGroupIds.Contains(g.Id) && g.IsActive && !g.IsDeleted, ct);
+
+        var allGroups = ownedGroups.Concat(sharedGroups.Where(sg => sg.AccountId != accountId)).OrderBy(g => g.SortOrder).ToList();
+
 
         var response = new DailyActivitiesResponse
         {
@@ -159,7 +172,7 @@ public class DailyActivityService(
             Groups = []
         };
 
-        foreach (var group in groups)
+        foreach (var group in allGroups)
         {
             var items = (await itemRepo.FindAsync(i => i.ActivityGroupId == group.Id && i.IsActive, ct))
                 .OrderBy(i => i.SortOrder)
@@ -230,8 +243,11 @@ public class DailyActivityService(
         var item = await itemRepo.FirstOrDefaultAsync(i => i.Id == request.ActivityItemId, ct);
         if (item is null) return false;
 
-        var group = await groupRepo.FirstOrDefaultAsync(g => g.Id == item.ActivityGroupId && g.AccountId == accountId, ct);
-        if (group is null) return false;
+        // Check if owner or member
+        var isOwner = await groupRepo.ExistsAsync(g => g.Id == item.ActivityGroupId && g.AccountId == accountId, ct);
+        var isMember = !isOwner && await membershipRepo.ExistsAsync(m => m.ActivityGroupId == item.ActivityGroupId && m.AccountId == accountId && m.Status == GroupMemberStatus.Accepted, ct);
+        
+        if (!isOwner && !isMember) return false;
 
         var existing = await completionRepo.FirstOrDefaultAsync(
             c => c.ActivityItemId == request.ActivityItemId && c.AccountId == accountId && c.Date == request.Date, ct);
@@ -271,8 +287,10 @@ public class DailyActivityService(
         var item = await itemRepo.FirstOrDefaultAsync(i => i.Id == request.ActivityItemId, ct)
             ?? throw new InvalidOperationException("Activity item not found.");
 
-        var group = await groupRepo.FirstOrDefaultAsync(g => g.Id == item.ActivityGroupId && g.AccountId == accountId, ct)
-            ?? throw new InvalidOperationException("Activity item not found.");
+        var isOwner = await groupRepo.ExistsAsync(g => g.Id == item.ActivityGroupId && g.AccountId == accountId, ct);
+        var isMember = !isOwner && await membershipRepo.ExistsAsync(m => m.ActivityGroupId == item.ActivityGroupId && m.AccountId == accountId && m.Status == GroupMemberStatus.Accepted, ct);
+
+        if (!isOwner && !isMember) throw new InvalidOperationException("Activity item not found.");
 
         var imageBytes = Convert.FromBase64String(request.ImageBase64);
         var template = item.VerificationTemplateId.HasValue
