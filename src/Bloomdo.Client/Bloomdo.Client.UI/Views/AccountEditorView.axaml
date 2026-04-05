@@ -125,7 +125,7 @@
                             Cursor="Hand"
                             IsEnabled="{Binding !IsSaving}">
                         <TextBlock Text="Save Changes" FontWeight="SemiBold" FontSize="14"
-                                   VerticalAlignment="Center" Foreground="Black"/>
+                                   VerticalAlignment="Center" Foreground="White"/>
                     </Button>
                 </StackPanel>
 

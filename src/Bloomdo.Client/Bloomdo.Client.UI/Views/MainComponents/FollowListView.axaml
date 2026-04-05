@@ -5,9 +5,14 @@
              xmlns:shad="clr-namespace:ShadUI;assembly=ShadUI"
              xmlns:vms="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
              xmlns:dto="clr-namespace:Bloomdo.Shared.DTOs.Social;assembly=Bloomdo.Shared"
+             xmlns:converters="clr-namespace:Bloomdo.Client.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
              x:DataType="vms:FollowListViewModel"
              x:Class="Bloomdo.Client.UI.MainComponents.FollowListView">
+
+    <UserControl.Resources>
+        <converters:AvatarJsonToBrushConverter x:Key="AvatarJsonToBrush"/>
+    </UserControl.Resources>
 
     <Grid RowDefinitions="Auto, *">
 
@@ -59,35 +64,77 @@
                 <ItemsControl ItemsSource="{Binding Users}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="dto:FollowStatusDto">
-                            <shad:Card Margin="0,0,0,8" Padding="14,12">
+                            <shad:Card Margin="0,0,0,8" Padding="0">
                                 <Grid ColumnDefinitions="Auto, *, Auto">
-                                    <!-- Avatar -->
-                                    <Border Grid.Column="0"
-                                            Width="44" Height="44"
-                                            CornerRadius="22"
-                                            Background="{DynamicResource PrimaryColor}"
-                                            Margin="0,0,12,0"
-                                            VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding User.Username[0]}"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                    </Border>
-
-                                    <!-- Name + username -->
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                        <TextBlock FontSize="15" FontWeight="SemiBold">
-                                            <Run Text="{Binding User.FirstName}"/>
-                                            <Run Text="{Binding User.LastName}"/>
-                                        </TextBlock>
-                                        <TextBlock Text="{Binding User.Username, StringFormat='@{0}'}"
-                                                   FontSize="13" Opacity="0.6"/>
-                                    </StackPanel>
+                                    <!-- Tappable avatar + name area -->
+                                    <Button Grid.Column="0" Grid.ColumnSpan="2"
+                                            Background="Transparent" BorderThickness="0"
+                                            Padding="14,12" Cursor="Hand"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{Binding $parent[UserControl].((vms:FollowListViewModel)DataContext).OpenProfileCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Grid ColumnDefinitions="Auto, *">
+                                            <Panel Grid.Column="0" Width="44" Height="44"
+                                                   Margin="0,0,12,0" VerticalAlignment="Center">
+                                                <!-- Letter fallback -->
+                                                <Border Width="44" Height="44" CornerRadius="22"
+                                                        Background="{DynamicResource PrimaryColor}"
+                                                        IsVisible="{Binding User.AvatarJson, Converter={x:Static StringConverters.IsNullOrEmpty}}">
+                                                    <TextBlock Text="{Binding User.Username[0]}"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="Bold"
+                                                               FontSize="16"/>
+                                                </Border>
+                                                <!-- Mini avatar -->
+                                                <Border Width="44" Height="44" CornerRadius="22" ClipToBounds="True"
+                                                        IsVisible="{Binding User.AvatarJson, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                        Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Background}">
+                                                    <Viewbox Width="38" Height="38" Stretch="Uniform"
+                                                             VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                                             Margin="0,0,0,-4">
+                                                        <Canvas Width="120" Height="120">
+                                                            <Border Canvas.Left="34" Canvas.Top="72" Width="52" Height="48"
+                                                                    CornerRadius="14,14,0,0"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Clothing}"/>
+                                                            <Border Canvas.Left="52" Canvas.Top="72" Width="16" Height="5"
+                                                                    CornerRadius="0,0,8,8"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Skin}"/>
+                                                            <Border Canvas.Left="36" Canvas.Top="22" Width="48" Height="48"
+                                                                    CornerRadius="24"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Skin}"/>
+                                                            <Border Canvas.Left="32" Canvas.Top="38" Width="10" Height="12"
+                                                                    CornerRadius="5,0,0,5"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Skin}"/>
+                                                            <Border Canvas.Left="78" Canvas.Top="38" Width="10" Height="12"
+                                                                    CornerRadius="0,5,5,0"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Skin}"/>
+                                                            <Border Canvas.Left="34" Canvas.Top="18" Width="52" Height="22"
+                                                                    CornerRadius="26,26,4,4"
+                                                                    Background="{Binding User.AvatarJson, Converter={StaticResource AvatarJsonToBrush}, ConverterParameter=Hair}"/>
+                                                            <Border Canvas.Left="46" Canvas.Top="43" Width="8" Height="8" CornerRadius="4" Background="White"/>
+                                                            <Border Canvas.Left="66" Canvas.Top="43" Width="8" Height="8" CornerRadius="4" Background="White"/>
+                                                            <Border Canvas.Left="48" Canvas.Top="45" Width="5" Height="5" CornerRadius="2.5" Background="#1A1A1A"/>
+                                                            <Border Canvas.Left="68" Canvas.Top="45" Width="5" Height="5" CornerRadius="2.5" Background="#1A1A1A"/>
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                </Border>
+                                            </Panel>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock FontSize="15" FontWeight="SemiBold">
+                                                    <Run Text="{Binding User.FirstName}"/>
+                                                    <Run Text="{Binding User.LastName}"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding User.Username, StringFormat='@{0}'}"
+                                                           FontSize="13" Opacity="0.6"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
 
                                     <!-- Follow/Unfollow button -->
-                                    <Panel Grid.Column="2" VerticalAlignment="Center">
+                                    <Panel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,14,0">
                                         <Button IsVisible="{Binding IsFollowing}"
                                                 Content="Unfollow"
                                                 Classes="Outline"

@@ -43,12 +43,27 @@ public partial class AccountEditorViewModel : PageViewModel
     public override void OnAppearing()
     {
         base.OnAppearing();
-        LoadCurrentProfile();
+        _ = LoadCurrentProfileAsync();
     }
 
-    private void LoadCurrentProfile()
+    private async Task LoadCurrentProfileAsync()
     {
         var user = _tokenManager.CurrentUser;
+
+        if (user == null)
+        {
+            try
+            {
+                user = await _profileApiService.GetProfileAsync();
+                if (user != null)
+                    _tokenManager.UpdateCurrentUser(user);
+            }
+            catch
+            {
+                // Profile fetch failed – fields will stay empty
+            }
+        }
+
         if (user == null) return;
 
         FirstName = user.FirstName ?? string.Empty;

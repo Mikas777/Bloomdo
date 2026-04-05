@@ -90,6 +90,9 @@ public static class ApiRoutes
         // Search
         public const string Search = $"{BaseRoute}/search";
 
+        // Public user profile
+        public const string UserProfile = $"{BaseRoute}/profile/{{userId}}";
+
         // Followers / Following
         public const string Followers = $"{BaseRoute}/followers";
         public const string Following = $"{BaseRoute}/following";

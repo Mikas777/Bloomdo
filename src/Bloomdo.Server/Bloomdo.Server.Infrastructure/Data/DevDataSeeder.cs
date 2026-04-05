@@ -8,18 +8,45 @@ namespace Bloomdo.Server.Infrastructure.Data;
 
 /// <summary>
 /// Seeds test accounts with realistic data for development/testing.
+///
+/// ═══════════════════════════════════════════════════════════════════
+///  TEST ACCOUNTS  (login credentials)
+/// ═══════════════════════════════════════════════════════════════════
+///
+///  1. test@bloomdo.dev    / Test123!      — basic test account
+///  2. vlad@gmail.com      / Vlad123!      — demo showcase (rich data)
+///  3. friend@bloomdo.dev  / Test123!      — follower/following test
+///  4. bob@bloomdo.dev     / Test123!      — follower/following test
+///  5. premium@bloomdo.dev / Premium123!   — has active subscription (Plus)
+///  6. free@bloomdo.dev    / Free123!      — regular account (no subscription)
+///
+///  Follow graph (seeded):
+///    • test ↔ friend  (mutual follow)
+///    • test ↔ bob     (mutual follow)
+///    • vlad → friend  (one-way)
+///    • premium ↔ free (mutual follow)
+///    • premium → test (one-way)
+///    • free → vlad    (one-way)
+///
+/// ═══════════════════════════════════════════════════════════════════
 /// </summary>
 public static class DevDataSeeder
 {
     private static readonly Guid SeedAccountId = new("d0000000-0000-0000-0000-000000000001");
     private static readonly Guid DemoAccountId = new("d0000000-0000-0000-0000-000000000002");
     private static readonly Guid FriendAccountId = new("d0000000-0000-0000-0000-000000000003");
+    private static readonly Guid BobAccountId = new("d0000000-0000-0000-0000-000000000004");
+    private static readonly Guid PremiumAccountId = new("d0000000-0000-0000-0000-000000000005");
+    private static readonly Guid FreeAccountId = new("d0000000-0000-0000-0000-000000000006");
 
     public static async Task SeedAsync(AppDbContext context, ILogger? logger = null)
     {
         await SeedTestAccountAsync(context, logger);
         await SeedDemoAccountAsync(context, logger);
         await SeedTestFriendsAndGroupsAsync(context, logger);
+        await SeedPremiumAccountAsync(context, logger);
+        await SeedFreeAccountAsync(context, logger);
+        await SeedExtendedFollowGraphAsync(context, logger);
     }
 
     /// <summary>
@@ -37,6 +64,27 @@ public static class DevDataSeeder
 
         var now = DateTime.UtcNow;
 
+        var testAvatarJson = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            SkinTone = 0,
+            BodyType = 0,
+            EyeColor = 1,
+            EyeStyle = 0,
+            HairColor = 2,
+            HairStyle = 2,
+            GlassesStyle = 0,
+            GlassesColor = 0,
+            FacialHair = 0,
+            FacialHairColor = 0,
+            HeadwearStyle = 0,
+            HeadwearColor = 0,
+            ClothingStyle = 0,
+            ClothingColor = 2,
+            BackgroundColor = 3,
+            MouthStyle = 0,
+            FaceExtra = 0
+        });
+
         var account = new Account
         {
             Id = SeedAccountId,
@@ -45,6 +93,7 @@ public static class DevDataSeeder
             FirstName = "Test",
             LastName = "User",
             Username = "testuser",
+            AvatarJson = testAvatarJson,
             IsEmailConfirmed = true,
             LastLoginAt = now,
             CreatedAt = now.AddDays(-45)
@@ -252,6 +301,7 @@ public static class DevDataSeeder
             Username = "vladkozh",
             Bio = "Building better habits, one day at a time 🌱",
             AvatarJson = avatarJson,
+            ProfileVisibility = ProfileVisibility.FriendsOnly,
             IsEmailConfirmed = true,
             LastLoginAt = now,
             CreatedAt = now.AddDays(-60)
@@ -531,6 +581,27 @@ public static class DevDataSeeder
         var today = DateOnly.FromDateTime(now);
 
         // 1. Create Friend Account
+        var aliceAvatarJson = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            SkinTone = 2,
+            BodyType = 1,
+            EyeColor = 2,
+            EyeStyle = 1,
+            HairColor = 4,
+            HairStyle = 3,
+            GlassesStyle = 0,
+            GlassesColor = 0,
+            FacialHair = 0,
+            FacialHairColor = 0,
+            HeadwearStyle = 0,
+            HeadwearColor = 0,
+            ClothingStyle = 2,
+            ClothingColor = 4,
+            BackgroundColor = 2,
+            MouthStyle = 1,
+            FaceExtra = 0
+        });
+
         var friendAccount = new Account
         {
             Id = FriendAccountId,
@@ -539,6 +610,7 @@ public static class DevDataSeeder
             FirstName = "Alice",
             LastName = "Friend",
             Username = "alice_friend",
+            AvatarJson = aliceAvatarJson,
             IsEmailConfirmed = true,
             LastLoginAt = now,
             CreatedAt = now.AddDays(-10)
@@ -657,5 +729,433 @@ public static class DevDataSeeder
 
         await context.SaveChangesAsync();
         logger?.LogInformation("Social seed complete: friend@bloomdo.dev / Test123!");
+    }
+
+    /// <summary>
+    /// Bob — second test friend account: bob@bloomdo.dev / Test123!
+    /// Used purely for follower/following testing.
+    /// </summary>
+    private static async Task SeedPremiumAccountAsync(AppDbContext context, ILogger? logger)
+    {
+        // Seed Bob first (follower test account)
+        if (!await context.Accounts.IgnoreQueryFilters().AnyAsync(a => a.Id == BobAccountId))
+        {
+            logger?.LogInformation("Seeding Bob account (bob@bloomdo.dev)...");
+
+            var now = DateTime.UtcNow;
+
+            var bobAvatarJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                SkinTone = 3,
+                BodyType = 2,
+                EyeColor = 0,
+                EyeStyle = 0,
+                HairColor = 1,
+                HairStyle = 0,
+                GlassesStyle = 1,
+                GlassesColor = 1,
+                FacialHair = 0,
+                FacialHairColor = 0,
+                HeadwearStyle = 0,
+                HeadwearColor = 0,
+                ClothingStyle = 1,
+                ClothingColor = 0,
+                BackgroundColor = 0,
+                MouthStyle = 0,
+                FaceExtra = 1
+            });
+
+            var bob = new Account
+            {
+                Id = BobAccountId,
+                Email = "bob@bloomdo.dev",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"),
+                FirstName = "Bob",
+                LastName = "Tester",
+                Username = "bob_tester",
+                Bio = "Just testing things 🧪",
+                AvatarJson = bobAvatarJson,
+                ProfileVisibility = ProfileVisibility.Private,
+                IsEmailConfirmed = true,
+                LastLoginAt = now,
+                CreatedAt = now.AddDays(-20)
+            };
+            context.Accounts.Add(bob);
+
+            context.AccountRoles.Add(new AccountRole
+            {
+                Id = Guid.NewGuid(),
+                AccountId = BobAccountId,
+                RoleId = (int)UserRole.User,
+                CreatedAt = now
+            });
+
+            // Mutual follow: test ↔ bob
+            context.Friendships.AddRange(
+                new Friendship
+                {
+                    Id = Guid.NewGuid(),
+                    RequesterId = SeedAccountId,
+                    AddresseeId = BobAccountId,
+                    Status = FriendshipStatus.Accepted,
+                    CreatedAt = now.AddDays(-8)
+                },
+                new Friendship
+                {
+                    Id = Guid.NewGuid(),
+                    RequesterId = BobAccountId,
+                    AddresseeId = SeedAccountId,
+                    Status = FriendshipStatus.Accepted,
+                    CreatedAt = now.AddDays(-7)
+                }
+            );
+
+            await context.SaveChangesAsync();
+            logger?.LogInformation("Bob seed complete: bob@bloomdo.dev / Test123!");
+        }
+
+        // Seed Premium account
+        if (await context.Accounts.IgnoreQueryFilters().AnyAsync(a => a.Id == PremiumAccountId))
+        {
+            logger?.LogInformation("Premium account already exists, skipping");
+            return;
+        }
+
+        logger?.LogInformation("Seeding Premium account (premium@bloomdo.dev)...");
+
+        {
+            var now = DateTime.UtcNow;
+            var today = DateOnly.FromDateTime(now);
+
+            var premiumAvatarJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                SkinTone = 2,
+                BodyType = 2,
+                EyeColor = 4,
+                EyeStyle = 0,
+                HairColor = 3,
+                HairStyle = 0,
+                GlassesStyle = 1,
+                GlassesColor = 3,
+                FacialHair = 0,
+                FacialHairColor = 0,
+                HeadwearStyle = 0,
+                HeadwearColor = 0,
+                ClothingStyle = 0,
+                ClothingColor = 3,
+                BackgroundColor = 4,
+                MouthStyle = 1,
+                FaceExtra = 0
+            });
+
+            var account = new Account
+            {
+                Id = PremiumAccountId,
+                Email = "premium@bloomdo.dev",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Premium123!"),
+                FirstName = "Emma",
+                LastName = "Premium",
+                Username = "emma_pro",
+                Bio = "Bloomdo Plus subscriber 💎 — focused & productive",
+                AvatarJson = premiumAvatarJson,
+                IsEmailConfirmed = true,
+                LastLoginAt = now,
+                CreatedAt = now.AddDays(-90)
+            };
+            context.Accounts.Add(account);
+
+            context.AccountRoles.Add(new AccountRole
+            {
+                Id = Guid.NewGuid(),
+                AccountId = PremiumAccountId,
+                RoleId = (int)UserRole.User,
+                CreatedAt = now
+            });
+
+            // Active subscription
+            context.Subscriptions.Add(new Subscription
+            {
+                Id = Guid.NewGuid(),
+                AccountId = PremiumAccountId,
+                StripeCustomerId = "cus_seed_premium",
+                StripeSubscriptionId = "sub_seed_premium",
+                Plan = SubscriptionPlan.Monthly,
+                Status = SubscriptionStatus.Active,
+                CurrentPeriodStart = now.AddDays(-15),
+                CurrentPeriodEnd = now.AddDays(15),
+                CancelAtPeriodEnd = false,
+                CreatedAt = now.AddDays(-75)
+            });
+
+            // Activity groups
+            var productivityGroupId = Guid.NewGuid();
+            context.ActivityGroups.Add(new ActivityGroup
+            {
+                Id = productivityGroupId,
+                AccountId = PremiumAccountId,
+                Title = "Productivity",
+                Icon = "🎯",
+                Color = "#EC407A",
+                SortOrder = 1,
+                CreatedAt = now.AddDays(-80)
+            });
+
+            var deepWorkId = Guid.NewGuid();
+            var planDayId = Guid.NewGuid();
+            context.ActivityItems.AddRange(
+                new ActivityItem
+                {
+                    Id = deepWorkId,
+                    ActivityGroupId = productivityGroupId,
+                    Title = "Deep work session",
+                    DurationMinutes = 90,
+                    Description = "No distractions",
+                    Icon = "🧠",
+                    Color = "#EC407A",
+                    SortOrder = 1,
+                    CreatedAt = now.AddDays(-80)
+                },
+                new ActivityItem
+                {
+                    Id = planDayId,
+                    ActivityGroupId = productivityGroupId,
+                    Title = "Plan tomorrow",
+                    DurationMinutes = 15,
+                    Icon = "📋",
+                    Color = "#42A5F5",
+                    SortOrder = 2,
+                    CreatedAt = now.AddDays(-80)
+                }
+            );
+
+            // Block rules (unlimited because of subscription)
+            context.BlockRules.AddRange(
+                new BlockRule
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = PremiumAccountId,
+                    Title = "Social media blocker",
+                    Type = BlockType.Limit,
+                    IsActive = true,
+                    DailyLimitMinutes = 30,
+                    BlockedPackagesJson = "[\"com.instagram.android\",\"com.zhiliaoapp.musically\",\"com.twitter.android\",\"com.reddit.frontpage\"]",
+                    CreatedAt = now.AddDays(-70)
+                },
+                new BlockRule
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = PremiumAccountId,
+                    Title = "Work hours focus",
+                    Type = BlockType.Schedule,
+                    IsActive = true,
+                    StartTime = new TimeOnly(9, 0),
+                    EndTime = new TimeOnly(17, 0),
+                    BlockedPackagesJson = "[\"com.instagram.android\",\"com.google.android.youtube\",\"com.zhiliaoapp.musically\"]",
+                    ScheduleDaysJson = "[1,2,3,4,5]",
+                    CreatedAt = now.AddDays(-60)
+                },
+                new BlockRule
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = PremiumAccountId,
+                    Title = "Evening wind-down",
+                    Type = BlockType.Schedule,
+                    IsActive = true,
+                    StartTime = new TimeOnly(22, 0),
+                    EndTime = new TimeOnly(7, 0),
+                    BlockedPackagesJson = "[\"com.instagram.android\",\"com.google.android.youtube\",\"com.reddit.frontpage\"]",
+                    ScheduleDaysJson = "[0,1,2,3,4,5,6]",
+                    CreatedAt = now.AddDays(-50)
+                }
+            );
+
+            await context.SaveChangesAsync();
+            logger?.LogInformation("Premium seed complete: premium@bloomdo.dev / Premium123! (with active subscription)");
+        }
+    }
+
+    /// <summary>
+    /// Free (regular) account: free@bloomdo.dev / Free123!
+    /// No subscription — subject to free-tier limits.
+    /// </summary>
+    private static async Task SeedFreeAccountAsync(AppDbContext context, ILogger? logger)
+    {
+        if (await context.Accounts.IgnoreQueryFilters().AnyAsync(a => a.Id == FreeAccountId))
+        {
+            logger?.LogInformation("Free account already exists, skipping");
+            return;
+        }
+
+        logger?.LogInformation("Seeding Free account (free@bloomdo.dev)...");
+
+        var now = DateTime.UtcNow;
+
+        var freeAvatarJson = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            SkinTone = 3,
+            BodyType = 1,
+            EyeColor = 0,
+            EyeStyle = 1,
+            HairColor = 1,
+            HairStyle = 3,
+            GlassesStyle = 0,
+            GlassesColor = 0,
+            FacialHair = 0,
+            FacialHairColor = 0,
+            HeadwearStyle = 0,
+            HeadwearColor = 0,
+            ClothingStyle = 2,
+            ClothingColor = 5,
+            BackgroundColor = 5,
+            MouthStyle = 0,
+            FaceExtra = 2
+        });
+
+        var account = new Account
+        {
+            Id = FreeAccountId,
+            Email = "free@bloomdo.dev",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Free123!"),
+            FirstName = "Sam",
+            LastName = "Regular",
+            Username = "sam_regular",
+            Bio = "Trying to build better habits 🌿",
+            AvatarJson = freeAvatarJson,
+            IsEmailConfirmed = true,
+            LastLoginAt = now,
+            CreatedAt = now.AddDays(-14)
+        };
+        context.Accounts.Add(account);
+
+        context.AccountRoles.Add(new AccountRole
+        {
+            Id = Guid.NewGuid(),
+            AccountId = FreeAccountId,
+            RoleId = (int)UserRole.User,
+            CreatedAt = now
+        });
+
+        // One block rule (limited by free tier)
+        context.BlockRules.Add(new BlockRule
+        {
+            Id = Guid.NewGuid(),
+            AccountId = FreeAccountId,
+            Title = "Evening block",
+            Type = BlockType.Schedule,
+            IsActive = true,
+            StartTime = new TimeOnly(21, 0),
+            EndTime = new TimeOnly(8, 0),
+            BlockedPackagesJson = "[\"com.instagram.android\",\"com.google.android.youtube\"]",
+            ScheduleDaysJson = "[0,1,2,3,4,5,6]",
+            CreatedAt = now.AddDays(-10)
+        });
+
+        // Simple activity group
+        var habitsGroupId = Guid.NewGuid();
+        context.ActivityGroups.Add(new ActivityGroup
+        {
+            Id = habitsGroupId,
+            AccountId = FreeAccountId,
+            Title = "Daily Habits",
+            Icon = "🌱",
+            Color = "#66BB6A",
+            SortOrder = 1,
+            CreatedAt = now.AddDays(-12)
+        });
+
+        context.ActivityItems.AddRange(
+            new ActivityItem
+            {
+                Id = Guid.NewGuid(),
+                ActivityGroupId = habitsGroupId,
+                Title = "Read 15 min",
+                DurationMinutes = 15,
+                Icon = "📖",
+                Color = "#FF9800",
+                SortOrder = 1,
+                CreatedAt = now.AddDays(-12)
+            },
+            new ActivityItem
+            {
+                Id = Guid.NewGuid(),
+                ActivityGroupId = habitsGroupId,
+                Title = "Walk outside",
+                DurationMinutes = 20,
+                Icon = "🚶",
+                Color = "#4CAF50",
+                SortOrder = 2,
+                CreatedAt = now.AddDays(-12)
+            }
+        );
+
+        await context.SaveChangesAsync();
+        logger?.LogInformation("Free seed complete: free@bloomdo.dev / Free123! (no subscription)");
+    }
+
+    /// <summary>
+    /// Seeds additional follow relationships between premium, free, and existing accounts.
+    /// </summary>
+    private static async Task SeedExtendedFollowGraphAsync(AppDbContext context, ILogger? logger)
+    {
+        // Check if we already seeded the extended graph (use premium→free as sentinel)
+        if (await context.Friendships.IgnoreQueryFilters()
+                .AnyAsync(f => f.RequesterId == PremiumAccountId && f.AddresseeId == FreeAccountId))
+        {
+            return;
+        }
+
+        logger?.LogInformation("Seeding extended follow graph...");
+
+        var now = DateTime.UtcNow;
+
+        context.Friendships.AddRange(
+            // premium ↔ free (mutual)
+            new Friendship
+            {
+                Id = Guid.NewGuid(),
+                RequesterId = PremiumAccountId,
+                AddresseeId = FreeAccountId,
+                Status = FriendshipStatus.Accepted,
+                CreatedAt = now.AddDays(-10)
+            },
+            new Friendship
+            {
+                Id = Guid.NewGuid(),
+                RequesterId = FreeAccountId,
+                AddresseeId = PremiumAccountId,
+                Status = FriendshipStatus.Accepted,
+                CreatedAt = now.AddDays(-9)
+            },
+            // premium → test (one-way)
+            new Friendship
+            {
+                Id = Guid.NewGuid(),
+                RequesterId = PremiumAccountId,
+                AddresseeId = SeedAccountId,
+                Status = FriendshipStatus.Accepted,
+                CreatedAt = now.AddDays(-8)
+            },
+            // free → vlad (one-way)
+            new Friendship
+            {
+                Id = Guid.NewGuid(),
+                RequesterId = FreeAccountId,
+                AddresseeId = DemoAccountId,
+                Status = FriendshipStatus.Accepted,
+                CreatedAt = now.AddDays(-7)
+            },
+            // vlad → friend (one-way)
+            new Friendship
+            {
+                Id = Guid.NewGuid(),
+                RequesterId = DemoAccountId,
+                AddresseeId = FriendAccountId,
+                Status = FriendshipStatus.Accepted,
+                CreatedAt = now.AddDays(-6)
+            }
+        );
+
+        await context.SaveChangesAsync();
+        logger?.LogInformation("Extended follow graph seeded.");
     }
 }

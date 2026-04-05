@@ -18,6 +18,16 @@ public class SocialApiService(HttpClient httpClient) : ISocialApiService
         catch { return []; }
     }
 
+    public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId, CancellationToken ct = default)
+    {
+        try
+        {
+            var url = ApiRoutes.Social.UserProfile.Replace("{userId}", userId.ToString());
+            return await httpClient.GetFromJsonAsync<UserProfileDto>(url, ct);
+        }
+        catch { return null; }
+    }
+
     public async Task<List<FollowStatusDto>> GetFollowersAsync(CancellationToken ct = default)
     {
         try { return await httpClient.GetFromJsonAsync<List<FollowStatusDto>>(ApiRoutes.Social.Followers, ct) ?? []; }

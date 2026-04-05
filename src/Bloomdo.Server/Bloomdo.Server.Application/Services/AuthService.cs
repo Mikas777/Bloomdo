@@ -221,7 +221,8 @@ public class AuthService : IAuthService
             Permissions = permissions.ToList(),
             IsEmailConfirmed = account.IsEmailConfirmed,
             LastLoginAt = account.LastLoginAt,
-            CreatedAt = account.CreatedAt
+            CreatedAt = account.CreatedAt,
+            ProfileVisibility = account.ProfileVisibility
         };
     }
 
@@ -243,6 +244,7 @@ public class AuthService : IAuthService
         }
         if (request.Bio != null) account.Bio = request.Bio;
         if (request.Avatar != null) account.AvatarJson = System.Text.Json.JsonSerializer.Serialize(request.Avatar);
+        if (request.ProfileVisibility.HasValue) account.ProfileVisibility = request.ProfileVisibility.Value;
 
         await _accountRepository.UpdateAsync(account, cancellationToken);
 

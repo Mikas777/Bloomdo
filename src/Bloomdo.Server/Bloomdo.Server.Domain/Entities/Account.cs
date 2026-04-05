@@ -1,3 +1,5 @@
+using Bloomdo.Shared.Enums;
+
 namespace Bloomdo.Server.Domain.Entities;
 
 public class Account : BaseEntity
@@ -25,5 +27,8 @@ public class Account : BaseEntity
     public ICollection<Friendship> ReceivedFriendships { get; set; } = [];
     public ICollection<GroupMembership> GroupMemberships { get; set; } = [];
 
-    public bool IsPrivateProfile { get; set; }
+    /// <summary>
+    /// Controls who can view this user's full profile and statistics.
+    /// </summary>
+    public ProfileVisibility ProfileVisibility { get; set; } = ProfileVisibility.Public;
 }

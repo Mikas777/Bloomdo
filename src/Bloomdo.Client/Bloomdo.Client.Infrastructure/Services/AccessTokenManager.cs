@@ -126,6 +126,7 @@ public class AccessTokenManager : IAccessTokenManager
 
             ApplyAuthResponse(response);
             await SaveTokens(response.AccessToken, response.RefreshToken);
+            await LoadProfile();
         }
         catch (HttpRequestException)
         {

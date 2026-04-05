@@ -85,5 +85,12 @@ public partial class UserSearchViewModel : PageViewModel
     }
 
     [RelayCommand]
+    private void OpenProfile(FollowStatusDto? item)
+    {
+        if (item == null) return;
+        _navigationService.NavigateTo<UserProfileViewModel>(vm => vm.Initialize(item.User.Id));
+    }
+
+    [RelayCommand]
     private void GoBack() => _navigationService.NavigateBack();
 }

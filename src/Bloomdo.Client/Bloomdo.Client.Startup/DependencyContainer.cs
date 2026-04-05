@@ -362,6 +362,11 @@ public static class DependencyContainer
             sp.GetRequiredService<INavigationService>(),
             sp.GetRequiredService<IToastService>()));
 
+        services.AddTransient<UserProfileViewModel>(sp => new UserProfileViewModel(
+            sp.GetRequiredService<ISocialApiService>(),
+            sp.GetRequiredService<INavigationService>(),
+            sp.GetRequiredService<IToastService>()));
+
         services.AddTransient<SharedGroupDetailViewModel>(sp => new SharedGroupDetailViewModel(
             sp.GetRequiredService<ISocialApiService>(),
             sp.GetRequiredService<IDailyActivityApiService>(),
@@ -394,7 +399,8 @@ public static class DependencyContainer
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<IThemeService>(),
             sp.GetRequiredService<IToastService>(),
-            sp.GetRequiredService<IPreferencesService>()));
+            sp.GetRequiredService<IPreferencesService>(),
+            sp.GetRequiredService<IProfileApiService>()));
 
         services.AddTransient<AccountEditorViewModel>(sp => new AccountEditorViewModel(
             sp.GetRequiredService<INavigationService>(),

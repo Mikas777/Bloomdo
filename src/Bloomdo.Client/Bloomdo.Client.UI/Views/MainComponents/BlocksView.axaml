@@ -188,7 +188,8 @@
 			<Button Command="{Binding ToggleMenuCommand}" 
 					VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="24"
 					CornerRadius="50" Width="64" Height="64"
-					Background="White" Foreground="Black">
+					Background="White" Foreground="Black"
+					BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}">
 				<Panel>
 					<!-- Plus Icon (Cross rotated 45deg) -->
 					<PathIcon Data="{x:Static shad:Icons.Cross}" 

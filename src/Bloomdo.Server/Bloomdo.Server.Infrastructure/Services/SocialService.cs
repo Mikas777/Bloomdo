@@ -35,6 +35,113 @@ public class SocialService(
         return users.Select(u => BuildFollowStatus(currentAccountId, u, myFriendships)).ToList();
     }
 
+    // ─── Public User Profile ──────────────────────────────────────────────────
+
+    public async Task<UserProfileDto?> GetUserProfileAsync(Guid viewerAccountId, Guid targetUserId, CancellationToken ct = default)
+    {
+        var target = await accountRepo.GetByIdAsync(targetUserId, ct);
+        if (target == null) return null;
+
+        // Relationship
+        var iFollow = await friendshipRepo.FirstOrDefaultAsync(f =>
+            f.RequesterId == viewerAccountId && f.AddresseeId == targetUserId, ct);
+        var theyFollow = await friendshipRepo.FirstOrDefaultAsync(f =>
+            f.RequesterId == targetUserId && f.AddresseeId == viewerAccountId, ct);
+
+        var isFollowing = iFollow?.Status == FriendshipStatus.Accepted;
+        var isFollower = theyFollow?.Status == FriendshipStatus.Accepted;
+        var isMutual = isFollowing && isFollower;
+        var isPendingFollow = iFollow?.Status == FriendshipStatus.Pending;
+
+        // Follower/Following counts
+        var followersCount = await db.Friendships.CountAsync(f =>
+            f.AddresseeId == targetUserId && f.Status == FriendshipStatus.Accepted, ct);
+        var followingCount = await db.Friendships.CountAsync(f =>
+            f.RequesterId == targetUserId && f.Status == FriendshipStatus.Accepted, ct);
+
+        // Determine visibility
+        var canViewStats = target.ProfileVisibility switch
+        {
+            ProfileVisibility.Public => true,
+            ProfileVisibility.FriendsOnly => isMutual || viewerAccountId == targetUserId,
+            ProfileVisibility.Private => isFollower || viewerAccountId == targetUserId,
+            _ => false
+        };
+
+        var dto = new UserProfileDto
+        {
+            User = MapToProfileSummary(target),
+            Bio = target.Bio,
+            Visibility = target.ProfileVisibility,
+            JoinedAt = target.CreatedAt,
+            FollowersCount = followersCount,
+            FollowingCount = followingCount,
+            IsFollowing = isFollowing,
+            IsFollower = isFollower,
+            IsMutual = isMutual,
+            IsPendingFollow = isPendingFollow,
+            CanViewStats = canViewStats
+        };
+
+        if (canViewStats)
+        {
+            // Stats
+            var completions = await db.ActivityCompletions
+                .Where(c => c.AccountId == targetUserId)
+                .ToListAsync(ct);
+
+            dto.TasksCompleted = completions.Count;
+
+            // Streak
+            var streakDays = 0;
+            if (completions.Count > 0)
+            {
+                var distinctDates = completions
+                    .Select(c => c.Date)
+                    .Distinct()
+                    .OrderByDescending(d => d)
+                    .ToList();
+
+                var today = DateOnly.FromDateTime(DateTime.UtcNow);
+                var checkDate = distinctDates.Contains(today) ? today : today.AddDays(-1);
+
+                foreach (var date in distinctDates)
+                {
+                    if (date == checkDate)
+                    {
+                        streakDays++;
+                        checkDate = checkDate.AddDays(-1);
+                    }
+                    else if (date < checkDate)
+                        break;
+                }
+            }
+            dto.StreakDays = streakDays;
+
+            // Achievements
+            var achievements = await db.AccountAchievements
+                .CountAsync(a => a.AccountId == targetUserId, ct);
+            dto.AchievementsUnlocked = achievements;
+
+            // Focus hours
+            var focusHours = await db.BlockRules
+                .Where(b => b.AccountId == targetUserId && b.FocusDurationMinutes.HasValue)
+                .SumAsync(b => b.FocusDurationMinutes!.Value, ct) / 60;
+            dto.FocusHours = focusHours;
+
+            dto.Level = streakDays switch
+            {
+                >= 100 => "Legend",
+                >= 50 => "Expert",
+                >= 30 => "Dedicated",
+                >= 7 => "Committed",
+                _ => "Beginner"
+            };
+        }
+
+        return dto;
+    }
+
     // ─── Followers / Following ────────────────────────────────────────────────
 
     public async Task<List<FollowStatusDto>> GetFollowersAsync(Guid accountId, CancellationToken ct = default)
@@ -106,12 +213,16 @@ public class SocialService(
         var target = await accountRepo.GetByIdAsync(targetId, ct);
         if (target == null) return false;
 
-        var status = target.IsPrivateProfile ? FriendshipStatus.Pending : FriendshipStatus.Accepted;
+        var status = target.ProfileVisibility == ProfileVisibility.Private
+            ? FriendshipStatus.Pending
+            : FriendshipStatus.Accepted;
         var friendship = new Friendship { RequesterId = followerId, AddresseeId = targetId, Status = status };
         await friendshipRepo.AddAsync(friendship, ct);
 
         // Notification
-        var notifType = target.IsPrivateProfile ? NotificationType.FollowRequest : NotificationType.NewFollower;
+        var notifType = target.ProfileVisibility == ProfileVisibility.Private
+            ? NotificationType.FollowRequest
+            : NotificationType.NewFollower;
         var notification = new Notification
         {
             RecipientId = targetId,
@@ -158,7 +269,7 @@ public class SocialService(
                 IsFollowing = false,
                 FollowId = f.Id,
                 IsPending = true,
-                IsPrivateProfile = requester.IsPrivateProfile
+                ProfileVisibility = requester.ProfileVisibility
             });
         }
         return result;
@@ -559,7 +670,7 @@ public class SocialService(
             IsFollower = theyFollow?.Status == FriendshipStatus.Accepted,
             FollowId = iFollow?.Id,
             IsPending = iFollow?.Status == FriendshipStatus.Pending,
-            IsPrivateProfile = user.IsPrivateProfile
+            ProfileVisibility = user.ProfileVisibility
         };
     }
 

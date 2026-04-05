@@ -66,6 +66,12 @@ public partial class MainViewModel : PageViewModel
         }
     }
 
+    public override void OnAppearing()
+    {
+        base.OnAppearing();
+        CurrentPage?.OnAppearing();
+    }
+
     [RelayCommand]
     private void SelectTab(string? indexStr)
     {

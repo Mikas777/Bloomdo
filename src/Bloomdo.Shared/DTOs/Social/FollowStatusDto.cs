@@ -10,5 +10,8 @@ public record FollowStatusDto
     public bool IsFollower { get; init; }
     public Guid? FollowId { get; init; }
     public bool IsPending { get; init; }
-    public bool IsPrivateProfile { get; init; }
+    public ProfileVisibility ProfileVisibility { get; init; }
+
+    /// <summary>Backward-compat helper: true when Private.</summary>
+    public bool IsPrivateProfile => ProfileVisibility == ProfileVisibility.Private;
 }

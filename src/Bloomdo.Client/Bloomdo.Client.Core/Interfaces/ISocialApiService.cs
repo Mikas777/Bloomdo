@@ -8,6 +8,9 @@ public interface ISocialApiService
     // Search
     Task<List<FollowStatusDto>> SearchUsersAsync(string query, CancellationToken ct = default);
 
+    // Public user profile
+    Task<UserProfileDto?> GetUserProfileAsync(Guid userId, CancellationToken ct = default);
+
     // Followers / Following
     Task<List<FollowStatusDto>> GetFollowersAsync(CancellationToken ct = default);
     Task<List<FollowStatusDto>> GetFollowingAsync(CancellationToken ct = default);

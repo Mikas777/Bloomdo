@@ -23,6 +23,18 @@ public class SocialController(ISocialService socialService) : ControllerBase
         return Ok(result);
     }
 
+    // ─── Public User Profile ──────────────────────────────────────────────────
+
+    [HttpGet(ApiRoutes.Social.UserProfile)]
+    public async Task<IActionResult> GetUserProfile(Guid userId, CancellationToken ct)
+    {
+        var accountId = GetAccountId();
+        if (accountId is null) return Unauthorized();
+
+        var result = await socialService.GetUserProfileAsync(accountId.Value, userId, ct);
+        return result is null ? NotFound() : Ok(result);
+    }
+
     // ─── Followers / Following ────────────────────────────────────────────────
 
     [HttpGet(ApiRoutes.Social.Followers)]

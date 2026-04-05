@@ -6,8 +6,8 @@
  xmlns:converters="clr-namespace:Bloomdo.Client.UI.Converters"
  xmlns:mainComponents1="clr-namespace:Bloomdo.Client.Application.ViewModels.MainComponents;assembly=Bloomdo.Client.Application"
  mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
- x:DataType="mainComponents1:ProfileViewModel"
- x:Class="Bloomdo.Client.UI.MainComponents.ProfileView">
+ x:DataType="mainComponents1:UserProfileViewModel"
+ x:Class="Bloomdo.Client.UI.MainComponents.UserProfileView">
 <UserControl.Resources>
 <converters:StringToBrushConverter x:Key="StringToBrush"/>
 <converters:IntEqualConverter x:Key="IntEquals"/>
@@ -17,24 +17,12 @@
 <Border Height="220" CornerRadius="0,0,24,24" ClipToBounds="True"
 Background="{Binding AvatarBackgroundHex, Converter={StaticResource StringToBrush}}">
 <Grid>
-<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"
-Margin="0,12,16,0" Spacing="4">
 <Button Background="Transparent" BorderThickness="0" Padding="8" Cursor="Hand"
-                    Command="{Binding OpenNotificationsCommand}">
-                    <PathIcon Data="{StaticResource bell_regular}" Width="22" Height="22"
-                      Foreground="White" Opacity="0.9"/>
+        HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,12,0,0"
+        Command="{Binding GoBackCommand}">
+    <PathIcon Data="{x:Static shad:Icons.ChevronLeft}" Width="22" Height="22"
+      Foreground="White" Opacity="0.9"/>
 </Button>
-<Button Background="Transparent" BorderThickness="0" Padding="8" Cursor="Hand"
-Command="{Binding OpenSearchCommand}">
-<PathIcon Data="{StaticResource search_regular}" Width="22" Height="22"
-  Foreground="White" Opacity="0.9"/>
-</Button>
-<Button Background="Transparent" BorderThickness="0" Padding="8" Cursor="Hand"
-Command="{Binding OpenSettingsCommand}">
-<PathIcon Data="{x:Static shad:Icons.Settings}" Width="22" Height="22"
-  Foreground="White" Opacity="0.9"/>
-</Button>
-</StackPanel>
 <Viewbox Width="190" Height="190" Stretch="Uniform"
          VerticalAlignment="Bottom" HorizontalAlignment="Center">
         <Canvas Width="120" Height="120">
@@ -385,6 +373,7 @@ Background="{Binding AvatarHeadwearHex, Converter={StaticResource StringToBrush}
 </Viewbox>
 </Grid>
 </Border>
+<!-- Profile info -->
 <StackPanel Margin="24,12,24,0" Spacing="4" HorizontalAlignment="Center">
 <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="Bold"
    HorizontalAlignment="Center" Foreground="{DynamicResource ForegroundColor}"/>
@@ -406,26 +395,62 @@ Background="{Binding AvatarHeadwearHex, Converter={StaticResource StringToBrush}
 <TextBlock Text="{Binding Level}" FontSize="12"/>
 </shad:Badge>
 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="24" Margin="0,14,0,0">
-<Button Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
-Command="{Binding OpenFollowersCommand}">
 <StackPanel Orientation="Horizontal" Spacing="6">
 <TextBlock Text="{Binding FollowersCount}" FontSize="16" FontWeight="Bold"
    Foreground="{DynamicResource ForegroundColor}"/>
 <TextBlock Text="Followers" FontSize="14" Opacity="0.6"
    Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 </StackPanel>
-</Button>
-<Button Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
-Command="{Binding OpenFollowingCommand}">
 <StackPanel Orientation="Horizontal" Spacing="6">
 <TextBlock Text="{Binding FollowingCount}" FontSize="16" FontWeight="Bold"
    Foreground="{DynamicResource ForegroundColor}"/>
 <TextBlock Text="Following" FontSize="14" Opacity="0.6"
    Foreground="{DynamicResource ForegroundColor}" VerticalAlignment="Center"/>
 </StackPanel>
+</StackPanel>
+<!-- Relationship badge -->
+<shad:Badge Classes="Outline" HorizontalAlignment="Center" Margin="0,8,0,0"
+IsVisible="{Binding IsMutual}">
+<TextBlock Text="Mutual" FontSize="11"/>
+</shad:Badge>
+</StackPanel>
+<!-- Follow/Unfollow/Pending buttons -->
+<StackPanel Margin="16,16,16,0" Spacing="8">
+<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+Padding="0,12" Height="48" CornerRadius="12" Classes="Primary" Cursor="Hand"
+Command="{Binding FollowCommand}"
+IsVisible="{Binding ShowFollowButton}">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<PathIcon Data="{StaticResource add_regular}" Width="16" Height="16" Foreground="White"/>
+<TextBlock Text="Follow" FontWeight="SemiBold" FontSize="14"
+  VerticalAlignment="Center" Foreground="White"/>
+</StackPanel>
+</Button>
+<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+Padding="0,12" Height="48" CornerRadius="12" Classes="Outline" Cursor="Hand"
+Command="{Binding UnfollowCommand}"
+IsVisible="{Binding ShowUnfollowButton}">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<PathIcon Data="{x:Static shad:Icons.Check}" Width="16" Height="16"
+  Foreground="{DynamicResource ForegroundColor}"/>
+<TextBlock Text="Following" FontWeight="SemiBold" FontSize="14"
+  VerticalAlignment="Center" Foreground="{DynamicResource ForegroundColor}"/>
+</StackPanel>
+</Button>
+<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+Padding="0,12" Height="48" CornerRadius="12" Classes="Outline" Cursor="Hand"
+IsEnabled="False"
+IsVisible="{Binding ShowPendingButton}">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<PathIcon Data="{x:Static shad:Icons.DateTime}" Width="16" Height="16"
+  Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
+<TextBlock Text="Pending" FontWeight="SemiBold" FontSize="14"
+  VerticalAlignment="Center" Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
+</StackPanel>
 </Button>
 </StackPanel>
-</StackPanel>
+<!-- Stats (visible only when CanViewStats) -->
+<StackPanel IsVisible="{Binding CanViewStats}">
 <Border Margin="16,20,16,0" CornerRadius="16" Padding="16,12"
 BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}">
 <Grid ColumnDefinitions="*,Auto,*,Auto,*">
@@ -451,20 +476,7 @@ BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}">
 </StackPanel>
 </Grid>
 </Border>
-<Button Margin="16,16,16,0" HorizontalAlignment="Stretch"
-HorizontalContentAlignment="Center" Padding="0,12" Height="48"
-CornerRadius="12" Classes="Outline"
-Command="{Binding EditProfileCommand}" Cursor="Hand">
-<StackPanel Orientation="Horizontal" Spacing="8">
-<PathIcon Data="{x:Static shad:Icons.Marker}" Width="16" Height="16"
-  Foreground="{DynamicResource ForegroundColor}"/>
-<TextBlock Text="Edit Profile" FontWeight="SemiBold" FontSize="14"
-  VerticalAlignment="Center" Foreground="{DynamicResource ForegroundColor}"/>
-</StackPanel>
-</Button>
-<TextBlock Text="Overview" FontSize="18" FontWeight="Bold" Margin="24,24,24,12"
-   Foreground="{DynamicResource ForegroundColor}"/>
-<Grid ColumnDefinitions="*,*" Margin="16,0,16,0" RowDefinitions="Auto,Auto">
+<Grid ColumnDefinitions="*,*" Margin="16,16,16,0" RowDefinitions="Auto,Auto">
 <Border Grid.Column="0" Grid.Row="0" Margin="4" CornerRadius="12"
 BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}" ClipToBounds="True">
 <Grid ColumnDefinitions="6,*">
@@ -511,10 +523,10 @@ BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}" ClipToBounds="T
 <PathIcon Data="{x:Static shad:Icons.Marker}" Width="12" Height="12"
   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 </Border>
-<TextBlock Text="{Binding TotalBlocksCreated}" FontSize="20" FontWeight="Bold"
+<TextBlock Text="{Binding FocusHours}" FontSize="20" FontWeight="Bold"
    VerticalAlignment="Center" Foreground="{DynamicResource ForegroundColor}"/>
 </StackPanel>
-<TextBlock Text="Blocks Created" FontSize="12" Opacity="0.5"
+<TextBlock Text="Focus Hours" FontSize="12" Opacity="0.5"
    Foreground="{DynamicResource ForegroundColor}"/>
 </StackPanel>
 </Grid>
@@ -538,8 +550,23 @@ BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}" ClipToBounds="T
 </Grid>
 </Border>
 </Grid>
-<StackPanel Margin="16,24,16,32" Spacing="8">
 </StackPanel>
+<!-- Private profile message -->
+<Border Margin="16,24,16,0" CornerRadius="16" Padding="24,32"
+BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}"
+IsVisible="{Binding !CanViewStats}">
+<StackPanel Spacing="8" HorizontalAlignment="Center">
+<PathIcon Data="{StaticResource blocks_regular}" Width="32" Height="32"
+  Foreground="{DynamicResource ForegroundColor}" Opacity="0.4"
+  HorizontalAlignment="Center"/>
+<TextBlock Text="This profile is private" FontSize="16" FontWeight="SemiBold"
+   HorizontalAlignment="Center" Foreground="{DynamicResource ForegroundColor}"/>
+<TextBlock Text="Follow this user to see their stats and activity."
+   FontSize="13" Opacity="0.5" HorizontalAlignment="Center" TextWrapping="Wrap"
+   Foreground="{DynamicResource ForegroundColor}" TextAlignment="Center"/>
+</StackPanel>
+</Border>
+<StackPanel Margin="16,24,16,32" Spacing="8"/>
 </StackPanel>
 </ScrollViewer>
 </UserControl>

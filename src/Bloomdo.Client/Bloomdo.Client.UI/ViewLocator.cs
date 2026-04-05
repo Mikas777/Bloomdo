@@ -109,6 +109,9 @@ public class ViewLocator : IDataTemplate
             case PhotoVerificationViewModel:
                 return new PhotoVerificationView();
 
+            case UserProfileViewModel:
+                return new UserProfileView();
+
             default:
                 var message = data is null
                     ? "Data passed to ViewLocator was null."

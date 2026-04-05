@@ -86,6 +86,37 @@
                     </Border>
                 </StackPanel>
 
+                <!-- Privacy Section -->
+                <StackPanel Spacing="0">
+                    <TextBlock Text="Privacy" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"
+                               Margin="4,0,0,8"/>
+                    <Border CornerRadius="12"
+                            BorderThickness="1" BorderBrush="{DynamicResource OutlineColor}"
+                            ClipToBounds="True">
+                        <StackPanel>
+                            <Border Padding="16,14">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="Profile Visibility" FontSize="15" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource ForegroundColor}"/>
+                                        <TextBlock Text="Who can see your stats and activity" FontSize="12"
+                                                   Foreground="{DynamicResource ForegroundColor}" Opacity="0.5"/>
+                                    </StackPanel>
+                                    <ComboBox Grid.Column="1"
+                                              SelectedIndex="{Binding ProfileVisibilityIndex}"
+                                              MinWidth="130"
+                                              VerticalAlignment="Center">
+                                        <ComboBoxItem Content="Public"/>
+                                        <ComboBoxItem Content="Friends Only"/>
+                                        <ComboBoxItem Content="Private"/>
+                                    </ComboBox>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
                 <!-- Support Section -->
                 <StackPanel Spacing="0">
                     <TextBlock Text="Support" FontSize="13" FontWeight="SemiBold"

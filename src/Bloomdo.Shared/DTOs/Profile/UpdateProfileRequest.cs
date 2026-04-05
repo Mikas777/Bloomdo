@@ -1,3 +1,5 @@
+using Bloomdo.Shared.Enums;
+
 namespace Bloomdo.Shared.DTOs.Profile;
 
 public class UpdateProfileRequest
@@ -7,5 +9,5 @@ public class UpdateProfileRequest
     public string? Username { get; set; }
     public string? Bio { get; set; }
     public AvatarConfig? Avatar { get; set; }
-    public bool? IsPrivateProfile { get; set; }
+    public ProfileVisibility? ProfileVisibility { get; set; }
 }
