@@ -60,6 +60,7 @@ public partial class UserProfileViewModel : PageViewModel
     [ObservableProperty] private bool _isPendingFollow;
     [ObservableProperty] private bool _canViewStats;
     [ObservableProperty] private ProfileVisibility _visibility;
+    [ObservableProperty] private bool _isPremium;
 
     public string FollowButtonText => IsPendingFollow ? "Pending" : IsFollowing ? "Following" : "Follow";
     public bool ShowFollowButton => !IsFollowing && !IsPendingFollow;
@@ -123,6 +124,7 @@ public partial class UserProfileViewModel : PageViewModel
             IsMutual = profile.IsMutual;
             IsPendingFollow = profile.IsPendingFollow;
             CanViewStats = profile.CanViewStats;
+            IsPremium = profile.IsPremium;
 
             OnPropertyChanged(nameof(FollowButtonText));
             OnPropertyChanged(nameof(ShowFollowButton));

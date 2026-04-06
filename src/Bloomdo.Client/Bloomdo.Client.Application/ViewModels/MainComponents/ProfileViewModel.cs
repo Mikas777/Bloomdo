@@ -13,6 +13,7 @@ public partial class ProfileViewModel : PageViewModel
     private readonly INavigationService _navigationService;
     private readonly IProfileApiService _profileApiService;
     private readonly ISocialApiService _socialApiService;
+    private readonly ISubscriptionApiService _subscriptionApiService;
 
     [ObservableProperty]
     private string _name = string.Empty;
@@ -116,16 +117,27 @@ public partial class ProfileViewModel : PageViewModel
     [ObservableProperty]
     private int _followingCount;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasUnreadNotifications))]
+    private int _unreadNotificationCount;
+
+    [ObservableProperty]
+    private bool _isPremium;
+
+    public bool HasUnreadNotifications => UnreadNotificationCount > 0;
+
     public ProfileViewModel(
         IAccessTokenManager tokenManager,
         INavigationService navigationService,
         IProfileApiService profileApiService,
-        ISocialApiService socialApiService)
+        ISocialApiService socialApiService,
+        ISubscriptionApiService subscriptionApiService)
     {
         _tokenManager = tokenManager;
         _navigationService = navigationService;
         _profileApiService = profileApiService;
         _socialApiService = socialApiService;
+        _subscriptionApiService = subscriptionApiService;
     }
 
     public override void OnAppearing()
@@ -165,6 +177,14 @@ public partial class ProfileViewModel : PageViewModel
             var following = await _socialApiService.GetFollowingAsync();
             FollowersCount = followers.Count;
             FollowingCount = following.Count;
+
+            // Load unread notification count
+            var notifications = await _socialApiService.GetNotificationsAsync();
+            UnreadNotificationCount = notifications.Count(n => !n.IsRead);
+
+            // Load subscription status
+            var status = await _subscriptionApiService.GetStatusAsync();
+            IsPremium = status?.IsPremium ?? false;
 
             // Load stats
             var stats = await _profileApiService.GetProfileStatsAsync();

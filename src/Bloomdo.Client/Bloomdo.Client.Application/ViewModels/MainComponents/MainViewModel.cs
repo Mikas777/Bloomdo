@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Bloomdo.Client.Application.ViewModels.Items;
+using Bloomdo.Client.Core.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -7,6 +8,9 @@ namespace Bloomdo.Client.Application.ViewModels.MainComponents;
 
 public partial class MainViewModel : PageViewModel
 {
+    private readonly ISocialApiService _socialApiService;
+    private readonly ISignalRClientService _signalR;
+
     [ObservableProperty]
     private PageViewModel _currentPage;
 
@@ -20,6 +24,10 @@ public partial class MainViewModel : PageViewModel
     [NotifyPropertyChangedFor(nameof(IsProfileSelected))]
     private int _selectedTabIndex = 0;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasUnreadNotifications))]
+    private int _unreadNotificationCount;
+
     public bool IsHomeSelected => SelectedTabIndex == 0;
     public bool IsSocialSelected => SelectedTabIndex == 1;
     public bool IsBlocksSelected => SelectedTabIndex == 2;
@@ -27,6 +35,8 @@ public partial class MainViewModel : PageViewModel
     public bool IsAiChatSelected => SelectedTabIndex == 4;
     public bool IsSubscriptionSelected => SelectedTabIndex == 5;
     public bool IsProfileSelected => SelectedTabIndex == 6;
+
+    public bool HasUnreadNotifications => UnreadNotificationCount > 0;
 
     public ObservableCollection<TabItemViewModel> Tabs { get; }
 
@@ -37,8 +47,13 @@ public partial class MainViewModel : PageViewModel
         StatsViewModel statsViewModel,
         AiChatViewModel aiChatViewModel,
         SubscriptionViewModel subscriptionViewModel,
-        ProfileViewModel profileViewModel)
+        ProfileViewModel profileViewModel,
+        ISocialApiService socialApiService,
+        ISignalRClientService signalR)
     {
+        _socialApiService = socialApiService;
+        _signalR = signalR;
+
         Tabs = new ObservableCollection<TabItemViewModel>
         {
             new("Home", homeViewModel),
@@ -48,6 +63,13 @@ public partial class MainViewModel : PageViewModel
             new("AI", aiChatViewModel),
             new("Plus", subscriptionViewModel),
             new("Profile", profileViewModel)
+        };
+
+        // Sync badge count from ProfileViewModel (updates after returning from notifications)
+        profileViewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ProfileViewModel.UnreadNotificationCount))
+                UnreadNotificationCount = profileViewModel.UnreadNotificationCount;
         };
 
         _currentPage = homeViewModel;
@@ -63,13 +85,60 @@ public partial class MainViewModel : PageViewModel
 
             CurrentPage = Tabs[value].Content;
             CurrentPage?.OnAppearing();
+
+            // Refresh count when switching to profile tab
+            if (value == 6)
+                _ = LoadUnreadCountAsync();
         }
     }
 
     public override void OnAppearing()
     {
         base.OnAppearing();
+        SubscribeSignalR();
+        _ = LoadUnreadCountAsync();
         CurrentPage?.OnAppearing();
+    }
+
+    public override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        UnsubscribeSignalR();
+    }
+
+    private async Task LoadUnreadCountAsync()
+    {
+        try
+        {
+            var notifications = await _socialApiService.GetNotificationsAsync();
+            UnreadNotificationCount = notifications.Count(n => !n.IsRead);
+        }
+        catch
+        {
+            // Ignore errors — badge is non-critical
+        }
+    }
+
+    private void SubscribeSignalR()
+    {
+        _signalR.GroupInviteReceived += OnNotificationReceived;
+        _signalR.NewFollowerReceived += OnFollowerReceived;
+    }
+
+    private void UnsubscribeSignalR()
+    {
+        _signalR.GroupInviteReceived -= OnNotificationReceived;
+        _signalR.NewFollowerReceived -= OnFollowerReceived;
+    }
+
+    private void OnNotificationReceived(Bloomdo.Shared.DTOs.Social.SharedGroupDto _, Bloomdo.Shared.DTOs.Friends.ProfileSummaryDto __)
+    {
+        UnreadNotificationCount++;
+    }
+
+    private void OnFollowerReceived(Bloomdo.Shared.DTOs.Friends.ProfileSummaryDto _)
+    {
+        UnreadNotificationCount++;
     }
 
     [RelayCommand]

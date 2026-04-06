@@ -39,4 +39,9 @@ public class UserProfileDto
     /// Level label derived from streak.
     /// </summary>
     public string? Level { get; set; }
+
+    /// <summary>
+    /// Whether the target user has an active premium subscription.
+    /// </summary>
+    public bool IsPremium { get; set; }
 }

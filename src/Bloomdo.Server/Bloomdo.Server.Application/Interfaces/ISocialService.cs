@@ -25,6 +25,7 @@ public interface ISocialService
     // Notifications
     Task<List<NotificationDto>> GetNotificationsAsync(Guid accountId, CancellationToken ct = default);
     Task<bool> MarkNotificationReadAsync(Guid accountId, Guid notificationId, CancellationToken ct = default);
+    Task MarkAllNotificationsReadAsync(Guid accountId, CancellationToken ct = default);
 
     // Shared groups
     Task<List<SharedGroupDto>> GetMySharedGroupsAsync(Guid accountId, CancellationToken ct = default);

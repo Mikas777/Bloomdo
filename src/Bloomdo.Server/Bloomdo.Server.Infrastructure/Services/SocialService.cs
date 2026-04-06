@@ -80,7 +80,9 @@ public class SocialService(
             IsFollower = isFollower,
             IsMutual = isMutual,
             IsPendingFollow = isPendingFollow,
-            CanViewStats = canViewStats
+            CanViewStats = canViewStats,
+            IsPremium = await db.Subscriptions.AnyAsync(s =>
+                s.AccountId == targetUserId && s.Status == SubscriptionStatus.Active, ct)
         };
 
         if (canViewStats)
@@ -317,6 +319,8 @@ public class SocialService(
             if (n.ActorId.HasValue)
                 actor = await accountRepo.GetByIdAsync(n.ActorId.Value, ct);
 
+            var actionResult = await ComputeActionResultAsync(n, accountId, ct);
+
             result.Add(new NotificationDto
             {
                 Id = n.Id,
@@ -324,10 +328,40 @@ public class SocialService(
                 Actor = actor != null ? MapToProfileSummary(actor) : null,
                 ReferenceId = n.ReferenceId,
                 IsRead = n.IsRead,
-                CreatedAt = n.CreatedAt
+                CreatedAt = n.CreatedAt,
+                ActionResult = actionResult
             });
         }
         return result;
+    }
+
+    private async Task<NotificationActionResult> ComputeActionResultAsync(Notification n, Guid accountId, CancellationToken ct)
+    {
+        if (n.Type == NotificationType.GroupInvite && n.ReferenceId.HasValue)
+        {
+            var membership = await db.GroupMemberships
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.ActivityGroupId == n.ReferenceId.Value && m.AccountId == accountId, ct);
+
+            if (membership == null) return NotificationActionResult.None;
+            if (membership.IsDeleted) return NotificationActionResult.Declined;
+            if (membership.Status == GroupMemberStatus.Accepted) return NotificationActionResult.Accepted;
+            return NotificationActionResult.None;
+        }
+
+        if (n.Type == NotificationType.FollowRequest && n.ReferenceId.HasValue)
+        {
+            var friendship = await db.Friendships
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(f => f.Id == n.ReferenceId.Value, ct);
+
+            if (friendship == null) return NotificationActionResult.Declined;
+            if (friendship.IsDeleted) return NotificationActionResult.Declined;
+            if (friendship.Status == FriendshipStatus.Accepted) return NotificationActionResult.Accepted;
+            return NotificationActionResult.None;
+        }
+
+        return NotificationActionResult.None;
     }
 
     public async Task<bool> MarkNotificationReadAsync(Guid accountId, Guid notificationId, CancellationToken ct = default)
@@ -338,6 +372,18 @@ public class SocialService(
         notification.IsRead = true;
         await notificationRepo.UpdateAsync(notification, ct);
         return true;
+    }
+
+    public async Task MarkAllNotificationsReadAsync(Guid accountId, CancellationToken ct = default)
+    {
+        var unread = await notificationRepo.FindAsync(
+            n => n.RecipientId == accountId && !n.IsRead, ct);
+
+        foreach (var n in unread)
+        {
+            n.IsRead = true;
+            await notificationRepo.UpdateAsync(n, ct);
+        }
     }
 
     // ─── Shared Groups ────────────────────────────────────────────────────────
@@ -467,7 +513,7 @@ public class SocialService(
 
         var ownerMembership = new GroupMembership
         {
-            ActivityGroupId = group.Id,
+            Group = group,
             AccountId = accountId,
             Role = GroupMemberRole.Owner,
             Status = GroupMemberStatus.Accepted

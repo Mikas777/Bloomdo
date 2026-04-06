@@ -107,6 +107,7 @@ public static class ApiRoutes
         // Notifications
         public const string Notifications = $"{BaseRoute}/notifications";
         public const string ReadNotification = $"{BaseRoute}/notifications/{{id}}/read";
+        public const string ReadAllNotifications = $"{BaseRoute}/notifications/read-all";
 
         // Shared groups
         public const string SharedGroups = $"{BaseRoute}/groups";

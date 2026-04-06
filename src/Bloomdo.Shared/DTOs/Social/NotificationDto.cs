@@ -11,4 +11,5 @@ public record NotificationDto
     public Guid? ReferenceId { get; init; }
     public bool IsRead { get; init; }
     public DateTime CreatedAt { get; init; }
+    public NotificationActionResult ActionResult { get; init; }
 }

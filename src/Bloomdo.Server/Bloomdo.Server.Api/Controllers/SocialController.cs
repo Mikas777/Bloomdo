@@ -126,6 +126,16 @@ public class SocialController(ISocialService socialService) : ControllerBase
         return result ? Ok() : NotFound();
     }
 
+    [HttpPut(ApiRoutes.Social.ReadAllNotifications)]
+    public async Task<IActionResult> ReadAllNotifications(CancellationToken ct)
+    {
+        var accountId = GetAccountId();
+        if (accountId is null) return Unauthorized();
+
+        await socialService.MarkAllNotificationsReadAsync(accountId.Value, ct);
+        return Ok();
+    }
+
     // ─── Shared Groups ────────────────────────────────────────────────────────
 
     [HttpGet(ApiRoutes.Social.SharedGroups)]

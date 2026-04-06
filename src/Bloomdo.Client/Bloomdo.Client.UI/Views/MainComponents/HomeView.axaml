@@ -61,13 +61,13 @@
 									   FontSize="15" FontWeight="Bold"
 									   Foreground="{DynamicResource ForegroundColor}"/>
 						</Grid>
-						<ProgressBar Maximum="100" Value="{Binding ProgressPercent}"
-									 Height="12" CornerRadius="5"
-									 Background="{DynamicResource BorderColor30}"
-									 Foreground="#66BB6A"
-									 BorderBrush="{DynamicResource BorderColor30}" 
-									 BorderThickness="1"
-									 ShowProgressText="False"/>
+						<Border CornerRadius="6" ClipToBounds="True">
+							<ProgressBar Maximum="100" Value="{Binding ProgressPercent}"
+										 Height="12"
+										 Background="{DynamicResource BorderColor30}"
+										 Foreground="#66BB6A"
+										 ShowProgressText="False"/>
+						</Border>
 					</StackPanel>
 				</shad:Card>
 

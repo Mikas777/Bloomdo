@@ -302,7 +302,9 @@ public static class DependencyContainer
             sp.GetRequiredService<StatsViewModel>(),
             sp.GetRequiredService<AiChatViewModel>(),
             sp.GetRequiredService<SubscriptionViewModel>(),
-            sp.GetRequiredService<ProfileViewModel>()));
+            sp.GetRequiredService<ProfileViewModel>(),
+            sp.GetRequiredService<ISocialApiService>(),
+            sp.GetRequiredService<ISignalRClientService>()));
         services.AddTransient<HomeViewModel>(sp => new HomeViewModel(
             sp.GetRequiredService<IDailyActivityApiService>(),
             sp.GetRequiredService<IGroupCompletionStore>(),
@@ -339,7 +341,8 @@ public static class DependencyContainer
             sp.GetRequiredService<IAccessTokenManager>(),
             sp.GetRequiredService<INavigationService>(),
             sp.GetRequiredService<IProfileApiService>(),
-            sp.GetRequiredService<ISocialApiService>()));
+            sp.GetRequiredService<ISocialApiService>(),
+            sp.GetRequiredService<ISubscriptionApiService>()));
 
         services.AddTransient<SocialViewModel>(sp => new SocialViewModel(
             sp.GetRequiredService<ISocialApiService>(),

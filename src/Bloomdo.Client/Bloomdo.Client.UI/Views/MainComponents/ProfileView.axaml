@@ -21,8 +21,25 @@ Background="{Binding AvatarBackgroundHex, Converter={StaticResource StringToBrus
 Margin="0,12,16,0" Spacing="4">
 <Button Background="Transparent" BorderThickness="0" Padding="8" Cursor="Hand"
                     Command="{Binding OpenNotificationsCommand}">
-                    <PathIcon Data="{StaticResource bell_regular}" Width="22" Height="22"
-                      Foreground="White" Opacity="0.9"/>
+                    <Grid>
+                        <PathIcon Data="{StaticResource bell_regular}" Width="22" Height="22"
+                          Foreground="White" Opacity="0.9"/>
+                        <!-- Red notification badge -->
+                        <Border IsVisible="{Binding HasUnreadNotifications}"
+                                Background="#EF4444"
+                                CornerRadius="8"
+                                MinWidth="16" Height="16"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="0,-4,-6,0"
+                                Padding="4,0">
+                            <TextBlock Text="{Binding UnreadNotificationCount}"
+                                       Foreground="White"
+                                       FontSize="10" FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
 </Button>
 <Button Background="Transparent" BorderThickness="0" Padding="8" Cursor="Hand"
 Command="{Binding OpenSearchCommand}">
@@ -402,9 +419,29 @@ Background="{Binding AvatarHeadwearHex, Converter={StaticResource StringToBrush}
    HorizontalAlignment="Center" TextWrapping="Wrap"
    Foreground="{DynamicResource ForegroundColor}" Margin="0,4,0,0"
    IsVisible="{Binding Bio, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-<shad:Badge Classes="Secondary" HorizontalAlignment="Center" Margin="0,8,0,0">
+<shad:Badge Classes="Secondary" HorizontalAlignment="Center" Margin="0,8,0,0"
+            IsVisible="{Binding !IsPremium}">
 <TextBlock Text="{Binding Level}" FontSize="12"/>
 </shad:Badge>
+<!-- Premium gradient badge -->
+<Border IsVisible="{Binding IsPremium}"
+        CornerRadius="14" Padding="14,6"
+        HorizontalAlignment="Center" Margin="0,8,0,0">
+    <Border.Background>
+        <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+            <GradientStop Color="#7C3AED" Offset="0"/>
+            <GradientStop Color="#A855F7" Offset="0.3"/>
+            <GradientStop Color="#EC4899" Offset="0.65"/>
+            <GradientStop Color="#F59E0B" Offset="1"/>
+        </LinearGradientBrush>
+    </Border.Background>
+    <StackPanel Orientation="Horizontal" Spacing="5">
+        <TextBlock Text="✦" FontSize="11" Foreground="White"
+                   VerticalAlignment="Center" Opacity="0.9"/>
+        <TextBlock Text="Bloomdo Plus" FontSize="12" FontWeight="SemiBold"
+                   Foreground="White" LetterSpacing="0.3"/>
+    </StackPanel>
+</Border>
 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="24" Margin="0,14,0,0">
 <Button Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
 Command="{Binding OpenFollowersCommand}">

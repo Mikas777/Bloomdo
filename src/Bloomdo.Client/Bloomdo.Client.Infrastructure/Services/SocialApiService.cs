@@ -102,6 +102,16 @@ public class SocialApiService(HttpClient httpClient) : ISocialApiService
         catch { return false; }
     }
 
+    public async Task<bool> MarkAllNotificationsReadAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await httpClient.PutAsync(ApiRoutes.Social.ReadAllNotifications, null, ct);
+            return response.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
+
     public async Task<List<SharedGroupDto>> GetSharedGroupsAsync(CancellationToken ct = default)
     {
         try { return await httpClient.GetFromJsonAsync<List<SharedGroupDto>>(ApiRoutes.Social.SharedGroups, ct) ?? []; }

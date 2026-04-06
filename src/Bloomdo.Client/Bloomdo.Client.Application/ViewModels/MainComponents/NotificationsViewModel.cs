@@ -45,6 +45,10 @@ public partial class NotificationsViewModel : PageViewModel
                 Notifications.Add(n);
 
             OnPropertyChanged(nameof(HasNotifications));
+
+            // Mark all as read in the background after displaying them
+            if (items.Any(n => !n.IsRead))
+                await _socialApiService.MarkAllNotificationsReadAsync();
         }
         finally
         {
@@ -64,6 +68,9 @@ public partial class NotificationsViewModel : PageViewModel
     private async Task AcceptFollowRequestAsync(NotificationDto? notif)
     {
         if (notif?.ReferenceId == null) return;
+        if (notif.ActionResult != NotificationActionResult.None) return;
+
+        OptimisticUpdate(notif, NotificationActionResult.Accepted);
         await _socialApiService.RespondToFollowRequestAsync(notif.ReferenceId.Value, true);
         await LoadAsync();
     }
@@ -72,8 +79,40 @@ public partial class NotificationsViewModel : PageViewModel
     private async Task AcceptGroupInviteAsync(NotificationDto? notif)
     {
         if (notif?.ReferenceId == null) return;
+        if (notif.ActionResult != NotificationActionResult.None) return;
+
+        OptimisticUpdate(notif, NotificationActionResult.Accepted);
         await _socialApiService.RespondToGroupInviteAsync(notif.ReferenceId.Value, true);
         await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task DeclineFollowRequestAsync(NotificationDto? notif)
+    {
+        if (notif?.ReferenceId == null) return;
+        if (notif.ActionResult != NotificationActionResult.None) return;
+
+        OptimisticUpdate(notif, NotificationActionResult.Declined);
+        await _socialApiService.RespondToFollowRequestAsync(notif.ReferenceId.Value, false);
+        await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task DeclineGroupInviteAsync(NotificationDto? notif)
+    {
+        if (notif?.ReferenceId == null) return;
+        if (notif.ActionResult != NotificationActionResult.None) return;
+
+        OptimisticUpdate(notif, NotificationActionResult.Declined);
+        await _socialApiService.RespondToGroupInviteAsync(notif.ReferenceId.Value, false);
+        await LoadAsync();
+    }
+
+    private void OptimisticUpdate(NotificationDto notif, NotificationActionResult result)
+    {
+        var index = Notifications.IndexOf(notif);
+        if (index >= 0)
+            Notifications[index] = notif with { ActionResult = result };
     }
 
     [RelayCommand]
