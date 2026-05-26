@@ -12,6 +12,9 @@
     <Project Path="src/Bloomdo.Server/Bloomdo.Server.Domain/Bloomdo.Server.Domain.csproj" Id="105854d6-8410-4b93-b1c0-5ecc2f042c53" />
     <Project Path="src/Bloomdo.Server/Bloomdo.Server.Infrastructure/Bloomdo.Server.Infrastructure.csproj" Id="bc1a7cfd-0b34-4b4c-9468-490e253dc493" />
   </Folder>
+  <Folder Name="/04_Tests/">
+    <Project Path="tests/Bloomdo.Server.Application.Tests/Bloomdo.Server.Application.Tests.csproj" />
+  </Folder>
   <Folder Name="/03_Client/">
     <Project Path="src/Bloomdo.Client/Bloomdo.Client.Android/Bloomdo.Client.Android.csproj">
       <Deploy />
